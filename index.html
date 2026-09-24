@@ -11,38 +11,19 @@
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
     body { font-family: 'Inter', sans-serif; }
     .mono { font-family: 'JetBrains+Mono', monospace; }
-
+    
     ::-webkit-scrollbar { width: 6px; height: 6px; }
     ::-webkit-scrollbar-track { background: #0f172a; }
     ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
     ::-webkit-scrollbar-thumb:hover { background: #475569; }
-
-    /* Custom Toast Animation */
-    @keyframes slideDown {
-      from { transform: translate(-50%, -100%); opacity: 0; }
-      to { transform: translate(-50%, 0); opacity: 1; }
-    }
-    .toast-anim {
-      animation: slideDown 0.3s ease-out forwards;
-    }
   </style>
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col antialiased selection:bg-teal-500 selection:text-white">
 
-  <!-- Toast Notification Container -->
-  <div id="toast-container" class="fixed top-4 left-1/2 -translate-x-1/2 z-[100] hidden">
-    <div id="toast-box" class="toast-anim px-4 py-2.5 rounded-xl border shadow-2xl flex items-center gap-2.5 text-xs font-semibold bg-emerald-950/95 border-emerald-500/50 text-emerald-300">
-      <i data-lucide="check-circle" class="w-4 h-4 text-emerald-400"></i>
-      <span id="toast-msg">Operation Successful</span>
-    </div>
-  </div>
-
-  <!-- Hidden Iframe Dedicated for 100% Reliable A6 Printing -->
-  <iframe id="print-hidden-frame" class="hidden w-0 h-0 border-0 absolute -left-[9999px] -top-[9999px]"></iframe>
-
+  <!-- TOP HEADER & CLOUD SYNC -->
   <header class="border-b border-slate-800 bg-slate-900/90 backdrop-blur sticky top-0 z-40 px-4 lg:px-8 py-3 flex flex-wrap items-center justify-between gap-3">
     <div class="flex items-center gap-3">
-      <div class="h-10 w-10 rounded-xl bg-teal-500/20 border border-teal-500/30 flex items-center justify-center text-teal-400 font-bold text-lg">
+      <div class="h-10 w-10 rounded-xl bg-teal-500/20 border border-teal-500/30 flex items-center justify-center text-teal-400 font-bold text-lg shadow-inner">
         Rx
       </div>
       <div>
@@ -59,10 +40,10 @@
       </div>
     </div>
 
-    <!-- Right Action Buttons -->
+    <!-- Right Controls -->
     <div class="flex items-center gap-2 flex-wrap">
       <!-- Sync Status -->
-      <div id="sync-status-badge" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800/80 border border-slate-700 text-xs font-medium text-slate-300">
+      <div id="sync-status-badge" class="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-slate-800/80 border border-slate-700 text-xs font-medium text-slate-300">
         <div id="sync-dot" class="h-2 w-2 rounded-full bg-slate-500"></div>
         <span id="sync-label">Local Cache</span>
       </div>
@@ -76,8 +57,8 @@
 
       <!-- EC Portal Protected Button -->
       <button onclick="openECPortalModal()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-600/20 hover:bg-indigo-600/30 border border-indigo-500/40 text-xs font-semibold text-indigo-300 transition active:scale-95 shadow-sm">
-        <i data-lucide="shield" class="w-3.5 h-3.5 text-indigo-400"></i>
-        <span>EC Portal &amp; Expenses</span>
+        <i data-lucide="shield-check" class="w-3.5 h-3.5 text-indigo-400"></i>
+        <span>EC Portal &amp; Ledger</span>
         <kbd class="text-[9px] bg-indigo-950 px-1 py-0.5 rounded border border-indigo-700 text-indigo-300">Alt+X</kbd>
       </button>
 
@@ -100,23 +81,24 @@
     </div>
   </header>
 
-  <!-- Shortcuts Banner -->
+  <!-- SHORTCUTS BAR -->
   <section class="bg-slate-900/60 border-b border-slate-800/80 px-4 lg:px-8 py-1.5 text-[11px] text-slate-400 flex flex-wrap items-center justify-between gap-2">
     <div class="flex items-center gap-4 flex-wrap">
       <span class="text-slate-500 font-semibold uppercase text-[10px]">Shortcuts:</span>
-      <span><kbd class="bg-slate-800 border border-slate-700 px-1.5 py-0.5 rounded text-slate-300">/</kbd> Search</span>
+      <span><kbd class="bg-slate-800 border border-slate-700 px-1.5 py-0.5 rounded text-slate-300">/</kbd> Focus Search</span>
       <span><kbd class="bg-slate-800 border border-slate-700 px-1.5 py-0.5 rounded text-slate-300">Alt + N</kbd> Add Member</span>
-      <span><kbd class="bg-slate-800 border border-slate-700 px-1.5 py-0.5 rounded text-slate-300">Alt + S</kbd> Sync</span>
+      <span><kbd class="bg-slate-800 border border-slate-700 px-1.5 py-0.5 rounded text-slate-300">Alt + S</kbd> Sync Cloud</span>
       <span><kbd class="bg-slate-800 border border-slate-700 px-1.5 py-0.5 rounded text-slate-300">Alt + X</kbd> EC Portal</span>
       <span><kbd class="bg-slate-800 border border-slate-700 px-1.5 py-0.5 rounded text-slate-300">Alt + E</kbd> Export</span>
       <span><kbd class="bg-slate-800 border border-slate-700 px-1.5 py-0.5 rounded text-slate-300">Esc</kbd> Close</span>
     </div>
     <div class="text-[11px] text-emerald-400/90 flex items-center gap-1.5">
       <i data-lucide="lock" class="w-3 h-3"></i>
-      <span>Zero-Leak Client-Side Encryption Active</span>
+      <span>Zero-Leak Client-Side Encryption Enabled (data.json Vault)</span>
     </div>
   </section>
 
+  <!-- MAIN CONTAINER -->
   <main class="flex-1 max-w-7xl w-full mx-auto p-4 lg:p-8 space-y-6">
 
     <!-- KPI Statistics -->
@@ -166,16 +148,16 @@
       </div>
 
       <div class="flex items-center gap-2">
-        <button onclick="exportAttendanceReport()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-medium text-slate-200 transition">
+        <button onclick="exportAttendanceReport()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-medium text-slate-200">
           <i data-lucide="file-spreadsheet" class="w-3.5 h-3.5 text-emerald-400"></i>
           <span>Export Attendance List</span>
         </button>
       </div>
     </div>
 
+    <!-- Live Partial Search & Filters -->
     <div class="space-y-3">
       <div class="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
-        <!-- Live Partial Search -->
         <div class="relative flex-1">
           <i data-lucide="search" class="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
           <input 
@@ -199,7 +181,7 @@
       </div>
     </div>
 
-    <!-- Members Table -->
+    <!-- MEMBERS DIRECTORY TABLE -->
     <div class="border border-slate-800 bg-slate-900/60 rounded-2xl overflow-hidden shadow-xl backdrop-blur">
       <div class="overflow-x-auto">
         <table class="w-full text-left text-xs text-slate-300">
@@ -222,6 +204,8 @@
     </div>
 
   </main>
+
+  <!-- ======================== ALL MODALS ======================== -->
 
   <!-- 1. ADD / EDIT MEMBER MODAL -->
   <div id="modal-member" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4">
@@ -303,7 +287,7 @@
 
       <div class="bg-amber-950/30 border border-amber-500/30 rounded-lg p-3 text-[11px] text-amber-300 space-y-1">
         <p class="font-bold">Zero Data Leak Guarantee:</p>
-        <p>Your GitHub PAT and Master Passphrase reside <strong>only in your browser</strong>. They are never committed to your public repository.</p>
+        <p>Your GitHub PAT and Master Passphrase reside <strong>only in this browser</strong>. They are never committed to your public repository.</p>
       </div>
 
       <form id="settings-form" onsubmit="saveSettings(event)" class="space-y-3">
@@ -385,7 +369,7 @@
         </h3>
         <button onclick="closeModal('modal-ec-login')" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-4 h-4"></i></button>
       </div>
-      <p class="text-xs text-slate-400">Enter EC password to manage committee members and generate/print expense vouchers.</p>
+      <p class="text-xs text-slate-400">Enter EC master password to manage committee members, vouchers, settlements, and reports.</p>
       <form id="ec-login-form" onsubmit="handleECLogin(event)" class="space-y-3">
         <div>
           <label class="block text-[11px] font-semibold text-slate-400 mb-1">Access Password</label>
@@ -399,111 +383,111 @@
     </div>
   </div>
 
-  <!-- 5. EC PORTAL MAIN MODAL (EXPENSE CREATOR + SAVED LEDGER + EC ROSTER) -->
+  <!-- 5. EC PORTAL MAIN MODAL (EXPENSES, SAVED VOUCHERS, SETTLEMENT LEDGER, EC DIRECTORY) -->
   <div id="modal-ec-portal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden items-center justify-center p-2 sm:p-4 overflow-y-auto">
-    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-6xl w-full p-4 sm:p-6 shadow-2xl relative space-y-4 my-auto max-h-[95vh] flex flex-col">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-6xl w-full p-5 sm:p-6 shadow-2xl relative space-y-5 my-auto max-h-[94vh] flex flex-col">
       
-      <!-- Header -->
+      <!-- Top Bar -->
       <div class="flex items-center justify-between border-b border-slate-800 pb-3 flex-shrink-0">
         <div>
           <h2 class="text-base font-bold text-white flex items-center gap-2">
             <i data-lucide="shield-check" class="w-5 h-5 text-indigo-400"></i>
             <span>GDCDA Executive Committee (EC) Portal</span>
           </h2>
-          <p class="text-xs text-slate-400">Expense reimbursement creator with item-level payment tracking and A6 portrait print.</p>
+          <p class="text-xs text-slate-400">Expense reimbursement creator, automated settlement ledger &amp; A6 portrait printing.</p>
         </div>
         <div class="flex items-center gap-2">
-          <button onclick="lockECPortal()" class="text-xs px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 transition">Lock</button>
-          <button onclick="closeModal('modal-ec-portal')" class="text-slate-400 hover:text-white transition"><i data-lucide="x" class="w-5 h-5"></i></button>
+          <button onclick="lockECPortal()" class="text-xs px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300">Lock</button>
+          <button onclick="closeModal('modal-ec-portal')" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
         </div>
       </div>
 
       <!-- Navigation Tabs -->
       <div class="flex items-center gap-2 border-b border-slate-800 flex-shrink-0 overflow-x-auto">
-        <button onclick="switchECTab('expenses')" id="tab-btn-ec-expenses" class="px-4 py-2 text-xs font-bold border-b-2 border-indigo-500 text-indigo-300 transition">Expense Creator</button>
-        <button onclick="switchECTab('saved-vouchers')" id="tab-btn-ec-vouchers" class="px-4 py-2 text-xs font-semibold text-slate-400 hover:text-slate-200 transition">Saved Vouchers (<span id="ec-vouchers-count">0</span>)</button>
-        <button onclick="switchECTab('members')" id="tab-btn-ec-members" class="px-4 py-2 text-xs font-semibold text-slate-400 hover:text-slate-200 transition">EC Members Directory</button>
+        <button onclick="switchECTab('expenses')" id="tab-btn-ec-expenses" class="px-4 py-2 text-xs font-bold border-b-2 border-indigo-500 text-indigo-300">Expense Creator</button>
+        <button onclick="switchECTab('saved-vouchers')" id="tab-btn-ec-vouchers" class="px-4 py-2 text-xs font-semibold text-slate-400 hover:text-slate-200">Saved Vouchers (<span id="ec-vouchers-count">0</span>)</button>
+        <button onclick="switchECTab('settlement-ledger')" id="tab-btn-ec-settlement" class="px-4 py-2 text-xs font-semibold text-slate-400 hover:text-slate-200 flex items-center gap-1.5">
+          <i data-lucide="wallet" class="w-3.5 h-3.5 text-emerald-400"></i>
+          <span>Reimbursements &amp; Settlements</span>
+        </button>
+        <button onclick="switchECTab('members')" id="tab-btn-ec-members" class="px-4 py-2 text-xs font-semibold text-slate-400 hover:text-slate-200">EC Members Directory</button>
       </div>
 
-      <!-- Tab Content Panels -->
       <div class="overflow-y-auto flex-1 pr-1 space-y-4">
         
         <!-- TAB 1: EXPENSE CREATOR -->
         <div id="ec-tab-expenses" class="space-y-4">
           <div class="bg-slate-800/40 border border-slate-800 rounded-xl p-4 space-y-4">
-            
             <div class="flex items-center justify-between border-b border-slate-800 pb-2">
               <h4 class="text-xs font-bold text-indigo-300 uppercase tracking-wider flex items-center gap-1.5">
                 <i data-lucide="receipt" class="w-4 h-4"></i>
                 <span id="voucher-form-mode-title">Create GDCDA Expense Reimbursement Voucher</span>
               </h4>
-              <button type="button" onclick="resetVoucherForm()" class="text-[11px] text-teal-400 hover:text-teal-300 font-semibold transition flex items-center gap-1">
-                <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+              <button type="button" onclick="resetVoucherForm()" class="text-[11px] text-slate-400 hover:text-white flex items-center gap-1">
+                <i data-lucide="rotate-ccw" class="w-3 h-3"></i>
                 <span>+ New / Clear Form</span>
               </button>
             </div>
 
             <input type="hidden" id="exp-voucher-id" />
 
-            <!-- General Header Information -->
+            <!-- Metadata -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
               <div>
                 <label class="block text-[11px] font-semibold text-slate-400 mb-1">Paid By (EC Member) *</label>
-                <select id="exp-ec-member" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-2 text-xs text-white focus:outline-none focus:border-indigo-500">
+                <select id="exp-ec-member" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-2 text-xs text-white">
                 </select>
               </div>
               <div>
                 <label class="block text-[11px] font-semibold text-slate-400 mb-1">Voucher Date *</label>
-                <input id="exp-date" type="date" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-2 text-xs text-white focus:outline-none focus:border-indigo-500" />
+                <input id="exp-date" type="date" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-2 text-xs text-white" />
               </div>
               <div>
                 <label class="block text-[11px] font-semibold text-slate-400 mb-1">General Purpose / Remarks *</label>
-                <input id="exp-remarks" type="text" placeholder="e.g. 24 SEPT WORLD PHARMACIST DAY EXPENSES" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-2 text-xs text-white focus:outline-none focus:border-indigo-500" />
+                <input id="exp-remarks" type="text" placeholder="e.g. WORLD PHARMACIST DAY 2026" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-2 text-xs text-white" />
               </div>
             </div>
 
             <!-- Dynamic Line Items -->
             <div class="space-y-2 pt-2 border-t border-slate-800">
               <div class="flex items-center justify-between">
-                <span class="text-[11px] font-bold text-slate-300 uppercase tracking-wide">
-                  Expense Items Breakdown (Each with own Date, Mode, &amp; Reference)
-                </span>
-                <button type="button" onclick="addExpenseItemRow()" class="text-xs text-indigo-400 hover:text-indigo-300 flex items-center gap-1 font-semibold transition">
+                <span class="text-[11px] font-bold text-slate-300 uppercase">Expense Items Breakdown (Each with own Date, Mode, &amp; Reference)</span>
+                <button type="button" onclick="addExpenseItemRow()" class="text-xs text-indigo-400 hover:text-indigo-300 flex items-center gap-1 font-semibold">
                   <i data-lucide="plus-circle" class="w-3.5 h-3.5"></i>
                   <span>Add Item Row</span>
                 </button>
               </div>
 
-              <!-- Header for Large Screens -->
-              <div class="hidden md:grid md:grid-cols-12 gap-2 text-[10px] font-bold uppercase text-slate-400 px-2.5">
-                <div class="md:col-span-4">Particulars / Description</div>
-                <div class="md:col-span-2">Date</div>
-                <div class="md:col-span-2">Payment Mode</div>
-                <div class="md:col-span-2">Ref / UTR / Remarks</div>
-                <div class="md:col-span-1 text-right">Amount (₹)</div>
-                <div class="md:col-span-1 text-center">Action</div>
+              <!-- Header labels for row table -->
+              <div class="hidden md:grid grid-cols-12 gap-2 text-[10px] font-bold text-slate-400 uppercase px-2 py-1 bg-slate-900/40 rounded-lg border border-slate-800/60">
+                <div class="col-span-4">Particulars / Description</div>
+                <div class="col-span-2">Date</div>
+                <div class="col-span-2">Payment Mode</div>
+                <div class="col-span-2">Ref / UTR / Remarks</div>
+                <div class="col-span-1 text-right">Amount (₹)</div>
+                <div class="col-span-1 text-center">Action</div>
               </div>
 
               <!-- Container for Rows -->
               <div id="expense-items-container" class="space-y-2">
               </div>
 
-              <!-- Grand Total Display -->
-              <div class="flex justify-between items-center bg-slate-900/90 p-3 rounded-xl border border-slate-800 text-xs">
+              <!-- Grand Total Banner -->
+              <div class="flex justify-between items-center bg-slate-900/80 p-3 rounded-xl border border-slate-800 text-xs">
                 <span class="font-bold text-slate-300">Total Calculated Voucher Amount:</span>
                 <span class="text-base font-bold text-emerald-400 mono">₹ <span id="exp-grand-total">0.00</span></span>
               </div>
             </div>
 
-            <!-- Actions: Save & Print -->
-            <div class="flex flex-wrap items-center justify-end gap-3 pt-3 border-t border-slate-800/80">
-              <button type="button" id="btn-save-voucher" onclick="saveVoucherRecord()" class="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-bold text-slate-200 flex items-center gap-2 transition active:scale-95 shadow-md">
-                <i data-lucide="save" class="w-4 h-4 text-teal-400"></i>
+            <!-- Save & Print Buttons -->
+            <div class="flex flex-wrap items-center justify-end gap-2 pt-2">
+              <button type="button" onclick="saveVoucherRecord()" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-bold text-slate-200 flex items-center gap-1.5 transition">
+                <i data-lucide="save" class="w-3.5 h-3.5 text-teal-400"></i>
                 <span id="btn-save-voucher-text">Save Voucher to Ledger</span>
               </button>
 
-              <button type="button" id="btn-print-voucher-top" onclick="printCurrentVoucher()" class="px-6 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-xs font-bold text-white flex items-center gap-2 shadow-lg shadow-indigo-600/30 transition active:scale-95 cursor-pointer">
-                <i data-lucide="printer" class="w-4 h-4 text-white"></i>
+              <button type="button" onclick="printCurrentVoucher()" class="px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-xs font-bold text-white flex items-center gap-2 shadow-lg shadow-indigo-600/30 transition">
+                <i data-lucide="printer" class="w-4 h-4"></i>
                 <span>Print A6 Portrait Voucher</span>
               </button>
             </div>
@@ -517,15 +501,15 @@
             <span class="text-[11px] text-slate-400">All vouchers saved permanently in vault sync.</span>
           </div>
 
-          <div class="border border-slate-800 rounded-xl overflow-hidden bg-slate-900/60">
+          <div class="border border-slate-800 rounded-xl overflow-hidden shadow">
             <table class="w-full text-left text-xs text-slate-300">
               <thead class="bg-slate-800/80 text-[10px] uppercase font-bold text-slate-400">
                 <tr>
                   <th class="p-3">Voucher #</th>
                   <th class="p-3">Date</th>
                   <th class="p-3">Paid By &amp; Purpose</th>
-                  <th class="p-3">Items Count</th>
-                  <th class="p-3">Total (₹)</th>
+                  <th class="p-3">Total Claimed</th>
+                  <th class="p-3">Reimbursed Status</th>
                   <th class="p-3 text-right">Actions</th>
                 </tr>
               </thead>
@@ -535,17 +519,55 @@
           </div>
         </div>
 
-        <!-- TAB 3: EC MEMBERS DIRECTORY -->
+        <!-- TAB 3: REIMBURSEMENT SETTLEMENT LEDGER (NEW) -->
+        <div id="ec-tab-settlement-ledger" class="hidden space-y-4">
+          <!-- Summary Cards -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <div class="bg-slate-800/60 border border-slate-800 p-3.5 rounded-xl">
+              <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Total Claims Submitted</span>
+              <div class="text-xl font-bold text-white mono mt-1">₹ <span id="set-total-claimed">0.00</span></div>
+            </div>
+            <div class="bg-emerald-950/30 border border-emerald-500/30 p-3.5 rounded-xl">
+              <span class="text-[10px] uppercase font-bold text-emerald-400 tracking-wider">Total Reimbursed / Paid Out</span>
+              <div class="text-xl font-bold text-emerald-400 mono mt-1">₹ <span id="set-total-paid">0.00</span></div>
+            </div>
+            <div class="bg-amber-950/30 border border-amber-500/30 p-3.5 rounded-xl">
+              <span class="text-[10px] uppercase font-bold text-amber-400 tracking-wider">Pending Balance to Pay</span>
+              <div class="text-xl font-bold text-amber-400 mono mt-1">₹ <span id="set-total-pending">0.00</span></div>
+            </div>
+          </div>
+
+          <!-- Settlements Table -->
+          <div class="border border-slate-800 rounded-xl overflow-hidden shadow">
+            <table class="w-full text-left text-xs text-slate-300">
+              <thead class="bg-slate-800/80 text-[10px] uppercase font-bold text-slate-400">
+                <tr>
+                  <th class="p-3">Voucher Details</th>
+                  <th class="p-3">Claimant Member</th>
+                  <th class="p-3">Claimed</th>
+                  <th class="p-3">Reimbursed</th>
+                  <th class="p-3">Outstanding Balance</th>
+                  <th class="p-3">Status</th>
+                  <th class="p-3 text-right">Record Payment</th>
+                </tr>
+              </thead>
+              <tbody id="settlement-ledger-table-body" class="divide-y divide-slate-800">
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- TAB 4: EC MEMBERS DIRECTORY -->
         <div id="ec-tab-members" class="hidden space-y-4">
           <div class="flex flex-wrap items-center justify-between gap-3">
             <h4 class="text-xs font-bold uppercase tracking-wider text-slate-300">Official Committee Members</h4>
-            <button onclick="toggleAddECForm()" class="px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-xs font-semibold text-white flex items-center gap-1.5 transition">
+            <button onclick="toggleAddECForm()" class="px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-xs font-semibold text-white flex items-center gap-1.5">
               <i data-lucide="plus" class="w-3.5 h-3.5"></i>
               <span>Add EC Member</span>
             </button>
           </div>
 
-          <!-- Inline Add EC Form -->
+          <!-- Add Form -->
           <div id="add-ec-form-box" class="hidden bg-slate-800/60 border border-slate-700/80 rounded-xl p-4 space-y-3">
             <form onsubmit="saveECMember(event)" class="grid grid-cols-1 md:grid-cols-4 gap-3">
               <div>
@@ -565,14 +587,14 @@
                 <input id="ec-add-mobile" required pattern="[0-9]{10}" type="tel" placeholder="10 Digits" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white" />
               </div>
               <div class="md:col-span-4 flex justify-end gap-2 pt-1">
-                <button type="button" onclick="toggleAddECForm()" class="px-3 py-1 bg-slate-800 text-xs rounded text-slate-400 hover:text-white">Cancel</button>
+                <button type="button" onclick="toggleAddECForm()" class="px-3 py-1 bg-slate-800 text-xs rounded text-slate-400">Cancel</button>
                 <button type="submit" class="px-4 py-1 bg-indigo-600 hover:bg-indigo-500 text-xs font-semibold text-white rounded">Save Member</button>
               </div>
             </form>
           </div>
 
-          <!-- EC Members Table -->
-          <div class="border border-slate-800 rounded-xl overflow-hidden bg-slate-900/60">
+          <!-- Table -->
+          <div class="border border-slate-800 rounded-xl overflow-hidden">
             <table class="w-full text-left text-xs text-slate-300">
               <thead class="bg-slate-800/80 text-[10px] uppercase font-bold text-slate-400">
                 <tr>
@@ -588,10 +610,90 @@
             </table>
           </div>
         </div>
+
       </div>
     </div>
   </div>
 
+  <!-- 6. RECORD SETTLEMENT / PAYMENT MODAL -->
+  <div id="modal-settle-payment" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <h3 class="text-sm font-bold text-white flex items-center gap-2">
+          <i data-lucide="hand-coins" class="w-4 h-4 text-emerald-400"></i>
+          <span>Record Reimbursement Inflow / Payout</span>
+        </h3>
+        <button onclick="closeModal('modal-settle-payment')" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-4 h-4"></i></button>
+      </div>
+
+      <div class="bg-slate-800/60 p-3 rounded-xl border border-slate-700/80 text-xs space-y-1">
+        <div class="flex justify-between">
+          <span class="text-slate-400">Voucher:</span>
+          <span id="settle-v-no" class="font-bold text-white mono"></span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-slate-400">Claimant:</span>
+          <span id="settle-v-claimant" class="text-slate-200"></span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-slate-400">Total Claimed:</span>
+          <span id="settle-v-claimed" class="font-bold text-white mono"></span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-slate-400">Remaining Balance:</span>
+          <span id="settle-v-balance" class="font-bold text-amber-400 mono"></span>
+        </div>
+      </div>
+
+      <form id="settlement-form" onsubmit="saveSettlementPayment(event)" class="space-y-3">
+        <input type="hidden" id="settle-target-voucher-id" />
+        
+        <div>
+          <label class="block text-[11px] font-semibold text-slate-400 mb-1">Amount Reimbursed / Paid (₹) *</label>
+          <input id="settle-amount" required type="number" step="0.5" min="1" placeholder="Enter amount paid" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white mono font-bold focus:outline-none focus:border-emerald-500" />
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-400 mb-1">Settlement Date *</label>
+            <input id="settle-date" required type="date" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500" />
+          </div>
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-400 mb-1">Payment Mode *</label>
+            <select id="settle-mode" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500">
+              <option value="UPI">UPI</option>
+              <option value="CASH">CASH</option>
+              <option value="NEFT">NEFT</option>
+              <option value="RTGS">RTGS</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-[11px] font-semibold text-slate-400 mb-1">Bank UTR / Trans Ref / Cheque No *</label>
+          <input id="settle-ref" required type="text" placeholder="e.g. UTR / UPI Ref 49201938190" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500" />
+        </div>
+
+        <div>
+          <label class="block text-[11px] font-semibold text-slate-400 mb-1">Notes / Disbursed By</label>
+          <input id="settle-notes" type="text" placeholder="e.g. Disbursed by GDCDA Treasurer via Bank" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500" />
+        </div>
+
+        <div class="flex justify-end gap-2 pt-2 border-t border-slate-800">
+          <button type="button" onclick="closeModal('modal-settle-payment')" class="px-3 py-1.5 rounded-lg bg-slate-800 text-xs text-slate-300">Cancel</button>
+          <button type="submit" class="px-4 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-xs text-white font-semibold flex items-center gap-1.5">
+            <i data-lucide="check" class="w-3.5 h-3.5"></i>
+            <span>Commit Settlement Entry</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Hidden Print Frame to guarantee 0% blank pages -->
+  <iframe id="printIframe" style="position: absolute; width: 0; height: 0; border: none; visibility: hidden;"></iframe>
+
+  <!-- SCRIPT ENGINE -->
   <script>
     const EC_MASTER_HASH = "GDCDARocks@144EC";
 
@@ -602,9 +704,9 @@
       checkins: {},
       ecMembers: [
         { id: "ec-shubham", name: "Shubham Agrawal", role: "Volunteer", area: "Gondia City", mobile: "9823001122" },
-        { id: "ec-1", name: "Santosh Agrawal", role: "President", area: "Gondia City", mobile: "9422100001" },
-        { id: "ec-2", name: "Pravin Patel", role: "Hon. Secretary", area: "Tirora Zone", mobile: "9422891234" },
-        { id: "ec-3", name: "Sunil Jain", role: "Treasurer", area: "Goregaon Zone", mobile: "9823145678" }
+        { id: "ec-2", name: "Santosh Agrawal", role: "President", area: "Gondia City", mobile: "9422100001" },
+        { id: "ec-3", name: "Pravin Patel", role: "Hon. Secretary", area: "Tirora Zone", mobile: "9422891234" },
+        { id: "ec-4", name: "Sunil Jain", role: "Treasurer", area: "Goregaon Zone", mobile: "9823145678" }
       ],
       vouchers: [],
       filter: "all",
@@ -622,46 +724,7 @@
 
     let fileSha = null;
 
-    // --- TOAST FEEDBACK UTILITY ---
-    function showToast(message, isError = false) {
-      const container = document.getElementById("toast-container");
-      const box = document.getElementById("toast-box");
-      const msg = document.getElementById("toast-msg");
-
-      msg.innerText = message;
-      if (isError) {
-        box.className = "toast-anim px-4 py-2.5 rounded-xl border shadow-2xl flex items-center gap-2.5 text-xs font-semibold bg-rose-950/95 border-rose-500/50 text-rose-300";
-      } else {
-        box.className = "toast-anim px-4 py-2.5 rounded-xl border shadow-2xl flex items-center gap-2.5 text-xs font-semibold bg-emerald-950/95 border-emerald-500/50 text-emerald-300";
-      }
-
-      container.classList.remove("hidden");
-      setTimeout(() => {
-        container.classList.add("hidden");
-      }, 2500);
-    }
-
-    // Number to words helper for Indian Currency
-    function numberToWordsINR(amount) {
-      const num = Math.floor(amount);
-      if (num === 0) return "Zero Rupees Only";
-
-      const a = ['', 'One ', 'Two ', 'Three ', 'Four ', 'Five ', 'Six ', 'Seven ', 'Eight ', 'Nine ', 'Ten ', 'Eleven ', 'Twelve ', 'Thirteen ', 'Fourteen ', 'Fifteen ', 'Sixteen ', 'Seventeen ', 'Eighteen ', 'Nineteen '];
-      const b = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
-
-      function inWords(n) {
-        if (n === 0) return '';
-        if (n < 20) return a[n];
-        if (n < 100) return b[Math.floor(n / 10)] + (n % 10 !== 0 ? ' ' + a[n % 10] : ' ');
-        if (n < 1000) return a[Math.floor(n / 100)] + 'Hundred ' + (n % 100 !== 0 ? 'and ' + inWords(n % 100) : '');
-        if (n < 100000) return inWords(Math.floor(n / 1000)) + 'Thousand ' + (n % 1000 !== 0 ? inWords(n % 1000) : '');
-        if (n < 10000000) return inWords(Math.floor(n / 100000)) + 'Lakh ' + (n % 100000 !== 0 ? inWords(n % 100000) : '');
-        return inWords(Math.floor(n / 10000000)) + 'Crore ' + (n % 10000000 !== 0 ? inWords(n % 10000000) : '');
-      }
-
-      return (inWords(num).trim() + " Rupees Only").replace(/\s+/g, ' ');
-    }
-
+    // --- CRYPTO SUITE: AES-256-GCM ---
     async function deriveKey(passphrase, salt) {
       const enc = new TextEncoder();
       const keyMaterial = await crypto.subtle.importKey(
@@ -724,6 +787,7 @@
       return JSON.parse(dec.decode(decrypted));
     }
 
+    // --- INITIALIZATION ---
     function initializeData() {
       const savedConfig = localStorage.getItem("gdcda_cloud_cfg");
       if (savedConfig) {
@@ -739,8 +803,7 @@
         }
       }
 
-      // Ensure EC Roster has proper defaults
-      if (!appState.ecMembers) appState.ecMembers = [];
+      // Ensure Shubham Agrawal is present
       if (!appState.ecMembers.some(ec => ec.name.includes("Shubham Agrawal"))) {
         appState.ecMembers.unshift({
           id: "ec-shubham",
@@ -751,30 +814,36 @@
         });
       }
 
-      // Ensure the exact voucher requested is seeded and loaded
+      // Ensure World Pharmacist Day 2026 voucher is saved permanently
       if (!appState.vouchers) appState.vouchers = [];
-      const hasPharmacistDayVoucher = appState.vouchers.some(v => v.remarks && v.remarks.includes("24 SEPT WORLD PHARMACIST DAY"));
-      if (!hasPharmacistDayVoucher) {
-        const pharmacistDayVoucher = {
+      const hasImageVoucher = appState.vouchers.some(v => v.remarks && (v.remarks.includes("WORLD PHARMACIST DAY") || v.remarks.includes("24 SEPT")));
+      if (!hasImageVoucher) {
+        const preSavedVoucher = {
           id: "vch-2026-09-24-001",
           voucherNo: "GDCDA-VCH-3535",
           date: "2026-09-24",
           payer: "Shubham Agrawal - Volunteer [Gondia City]",
-          remarks: "24 SEPT WORLD PHARMACIST DAY EXPENSES",
+          remarks: "WORLD PHARMACIST DAY 2026",
           total: 3535.00,
+          settlements: [], // Array of { id, date, amount, mode, ref, notes }
           items: [
-            { desc: "EVENING SNACK + DINNER TO RIYA IMPERIAL FOR BALLAL SIR", date: "2026-09-24", mode: "UPI", ref: "UPI Paid", amt: 367 },
-            { desc: "MORNING BREAKFAST", date: "2026-09-24", mode: "UPI", ref: "UPI Paid", amt: 155 },
-            { desc: "BALLAL SIR TKT GND TO NGP VIDARBHA 2ND AC", date: "2026-09-24", mode: "UPI", ref: "IRCTC UTR", amt: 794 },
-            { desc: "HOTEL RIYA IMPERIAL EXECUTIVE 301 ROOM BOOKING AMT", date: "2026-09-24", mode: "UPI", ref: "Booking UPI", amt: 1800 },
-            { desc: "AIOCD STRIKE RIBBON EXP", date: "2026-09-24", mode: "CASH", ref: "Cash Paid", amt: 120 },
-            { desc: "GDCDA PIS SERVICES ONE TIME EXPENSE", date: "2026-09-24", mode: "UPI", ref: "Online portal", amt: 299 }
+            { desc: "HOTEL RIYA IMPERIAL EXECUTIVE ROOM 301 BOOKED", date: "2026-09-23", mode: "UPI", ref: "PAYTM/UJJIVANICA/31535", amt: 1800 },
+            { desc: "BALLAL SIR GND TO NGP VIDARBHA 2ND AC TKT", date: "2026-09-23", mode: "UPI", ref: "VIA IRCTC ID", amt: 794 },
+            { desc: "BALLAL SIR MORNING BREAKFAST", date: "2026-09-24", mode: "CASH", ref: "Cash Paid", amt: 155 },
+            { desc: "BALLAL SIR EVENING NASTA+DINNER", date: "2026-09-24", mode: "UPI", ref: "PAYTM/UJJIVANICA/31535", amt: 367 },
+            { desc: "AIOCD STRIKE PURANA FOR RIBBON", date: "2026-09-24", mode: "CASH", ref: "Cash Paid", amt: 120 },
+            { desc: "GDCDA PIS SERVICES ONE TIME EXPENSE", date: "2026-09-24", mode: "UPI", ref: "Online Portal", amt: 299 }
           ]
         };
-        appState.vouchers.unshift(pharmacistDayVoucher);
+        appState.vouchers.unshift(preSavedVoucher);
       }
 
-      // Seed initial members if empty
+      // Ensure every voucher has a settlements array
+      appState.vouchers.forEach(v => {
+        if (!v.settlements) v.settlements = [];
+      });
+
+      // Default sample members
       if (!appState.members || appState.members.length === 0) {
         appState.members = [
           {
@@ -811,7 +880,6 @@
             feeNote: "Due for 2026-27"
           }
         ];
-        if (!appState.checkins) appState.checkins = {};
         if (!appState.checkins[appState.activeMeeting]) {
           appState.checkins[appState.activeMeeting] = [appState.members[0].id];
         }
@@ -823,10 +891,13 @@
       updateStats();
       populateECMemberDropdown();
       renderSavedVouchersTable();
+      renderSettlementLedgerTable();
       lucide.createIcons();
 
-      // Automatically load the pre-saved voucher into form
-      loadVoucherIntoForm(appState.vouchers[0]);
+      // Preload active voucher into creator form
+      if (appState.vouchers.length > 0) {
+        loadVoucherIntoForm(appState.vouchers[0]);
+      }
 
       if (cloudConfig.token && cloudConfig.repo && cloudConfig.owner) {
         syncWithCloud();
@@ -837,6 +908,7 @@
       localStorage.setItem("gdcda_local_data", JSON.stringify(appState));
     }
 
+    // --- GITHUB CLOUD SYNC ---
     async function syncWithCloud() {
       if (!cloudConfig.token || !cloudConfig.repo || !cloudConfig.owner) {
         setSyncStatus("neutral", "Config Required");
@@ -848,6 +920,7 @@
       }
 
       setSyncStatus("syncing", "Syncing...");
+
       const url = `https://api.github.com/repos/${cloudConfig.owner}/${cloudConfig.repo}/contents/${cloudConfig.path}?ref=${cloudConfig.branch}`;
 
       try {
@@ -869,24 +942,26 @@
               if (envelope.encrypted) {
                 const decrypted = await decryptPayload(envelope, cloudConfig.passphrase);
                 appState = decrypted;
+                if (!appState.vouchers) appState.vouchers = [];
+                appState.vouchers.forEach(v => { if (!v.settlements) v.settlements = []; });
                 persistLocal();
                 populateMeetingSelect();
                 renderMembersTable();
                 updateStats();
                 populateECMemberDropdown();
                 renderSavedVouchersTable();
+                renderSettlementLedgerTable();
                 setSyncStatus("success", "Synced");
-                showToast("Data Synced with Cloud");
                 return;
               }
             } catch (err) {
               console.error(err);
               setSyncStatus("failed", "Decryption Failed");
-              showToast("Passphrase incorrect or Decryption failed", true);
               return;
             }
           }
         }
+
         await pushToCloud();
       } catch (err) {
         console.error(err);
@@ -897,39 +972,34 @@
     async function pushToCloud() {
       if (!cloudConfig.token || !cloudConfig.passphrase) return;
 
-      try {
-        const encryptedEnvelope = await encryptPayload(appState, cloudConfig.passphrase);
-        const jsonContent = JSON.stringify(encryptedEnvelope, null, 2);
-        const b64Content = btoa(unescape(encodeURIComponent(jsonContent)));
+      const encryptedEnvelope = await encryptPayload(appState, cloudConfig.passphrase);
+      const jsonContent = JSON.stringify(encryptedEnvelope, null, 2);
+      const b64Content = btoa(unescape(encodeURIComponent(jsonContent)));
 
-        const putUrl = `https://api.github.com/repos/${cloudConfig.owner}/${cloudConfig.repo}/contents/${cloudConfig.path}`;
-        const payload = {
-          message: `GDCDA Cloud Vault Auto-Sync [${new Date().toLocaleString('en-IN')}]`,
-          content: b64Content,
-          branch: cloudConfig.branch
-        };
-        if (fileSha) payload.sha = fileSha;
+      const putUrl = `https://api.github.com/repos/${cloudConfig.owner}/${cloudConfig.repo}/contents/${cloudConfig.path}`;
+      const payload = {
+        message: `GDCDA Cloud Vault Auto-Sync [${new Date().toLocaleString('en-IN')}]`,
+        content: b64Content,
+        branch: cloudConfig.branch
+      };
+      if (fileSha) payload.sha = fileSha;
 
-        const putRes = await fetch(putUrl, {
-          method: "PUT",
-          headers: {
-            "Authorization": `Bearer ${cloudConfig.token}`,
-            "Content-Type": "application/json",
-            "Accept": "application/vnd.github.v3+json"
-          },
-          body: JSON.stringify(payload)
-        });
+      const putRes = await fetch(putUrl, {
+        method: "PUT",
+        headers: {
+          "Authorization": `Bearer ${cloudConfig.token}`,
+          "Content-Type": "application/json",
+          "Accept": "application/vnd.github.v3+json"
+        },
+        body: JSON.stringify(payload)
+      });
 
-        if (putRes.ok) {
-          const jsonRes = await putRes.json();
-          fileSha = jsonRes.content.sha;
-          setSyncStatus("success", "Encrypted & Synced");
-        } else {
-          setSyncStatus("failed", "Push Error");
-        }
-      } catch (e) {
-        console.error(e);
-        setSyncStatus("failed", "Push Failed");
+      if (putRes.ok) {
+        const jsonRes = await putRes.json();
+        fileSha = jsonRes.content.sha;
+        setSyncStatus("success", "Encrypted & Synced");
+      } else {
+        setSyncStatus("failed", "Push Error");
       }
     }
 
@@ -949,6 +1019,7 @@
       }
     }
 
+    // --- MEMBERS DIRECTORY ---
     function renderMembersTable() {
       const tbody = document.getElementById("members-table-body");
       const noRecords = document.getElementById("no-records");
@@ -1049,7 +1120,7 @@
       const total = appState.members.length;
       const paid = appState.members.filter(m => m.feeStatus === "PAID").length;
       const pending = total - paid;
-      const currentMeetChecked = (appState.checkins && appState.checkins[appState.activeMeeting]) ? appState.checkins[appState.activeMeeting] : [];
+      const currentMeetChecked = appState.checkins[appState.activeMeeting] || [];
       const presentCount = currentMeetChecked.length;
       const absentCount = total - presentCount;
 
@@ -1160,7 +1231,6 @@
       updateStats();
       renderMembersTable();
       closeModal("modal-member");
-      showToast("Member Saved Successfully!");
       pushToCloud();
     }
 
@@ -1175,11 +1245,11 @@
         persistLocal();
         updateStats();
         renderMembersTable();
-        showToast("Member Deleted");
         pushToCloud();
       }
     }
 
+    // --- MEETINGS ---
     function populateMeetingSelect() {
       const sel = document.getElementById("meeting-select");
       sel.innerHTML = "";
@@ -1221,16 +1291,12 @@
         updateStats();
         renderMembersTable();
         closeModal("modal-meeting");
-        showToast("Meeting Created Successfully");
         pushToCloud();
       }
     }
 
     function exportToCSV() {
-      if (appState.members.length === 0) {
-        showToast("No members to export", true);
-        return;
-      }
+      if (appState.members.length === 0) return alert("No members to export!");
       let csv = "Firm Name,Owner Name,Additional Pharmacist,Mobile,Area,Address,Fee Status,Receipt Note\n";
       appState.members.forEach(m => {
         csv += `"${(m.firm||'').replace(/"/g, '""')}","${(m.owner||'').replace(/"/g, '""')}","${(m.pharmacist||'').replace(/"/g, '""')}","${m.mobile}","${(m.area||'').replace(/"/g, '""')}","${(m.address||'').replace(/"/g, '""')}","${m.feeStatus}","${(m.feeNote||'').replace(/"/g, '""')}"\n`;
@@ -1261,6 +1327,7 @@
       URL.revokeObjectURL(url);
     }
 
+    // --- SETTINGS VAULT ---
     function openSettingsModal() {
       document.getElementById("cfg-passphrase").value = cloudConfig.passphrase || "";
       document.getElementById("cfg-owner").value = cloudConfig.owner || "techisinmydna";
@@ -1282,10 +1349,10 @@
 
       localStorage.setItem("gdcda_cloud_cfg", JSON.stringify(cloudConfig));
       closeModal("modal-settings");
-      showToast("Cloud Credentials Saved");
       syncWithCloud();
     }
 
+    // --- EC PORTAL LOGIC ---
     let isECAuthenticated = false;
 
     function openECPortalModal() {
@@ -1296,6 +1363,7 @@
         renderECMembers();
         populateECMemberDropdown();
         renderSavedVouchersTable();
+        renderSettlementLedgerTable();
         openModal("modal-ec-portal");
       }
     }
@@ -1307,27 +1375,21 @@
         isECAuthenticated = true;
         closeModal("modal-ec-login");
         openECPortalModal();
-        showToast("EC Portal Unlocked");
       } else {
-        const input = document.getElementById("ec-password-input");
-        input.classList.add("border-rose-500");
-        input.value = "";
-        input.placeholder = "Incorrect Password! Try again.";
-        showToast("Invalid EC Password", true);
+        alert("Invalid EC Authorization Password!");
       }
     }
 
     function lockECPortal() {
       isECAuthenticated = false;
       closeModal("modal-ec-portal");
-      showToast("EC Portal Locked");
     }
 
     function switchECTab(tab) {
-      const tabs = ["expenses", "saved-vouchers", "members"];
+      const tabs = ["expenses", "saved-vouchers", "settlement-ledger", "members"];
       tabs.forEach(t => {
         const panel = document.getElementById("ec-tab-" + t);
-        const btn = document.getElementById("tab-btn-ec-" + (t === "saved-vouchers" ? "vouchers" : t));
+        const btn = document.getElementById("tab-btn-ec-" + (t === "saved-vouchers" ? "vouchers" : (t === "settlement-ledger" ? "settlement" : t)));
         if (t === tab) {
           panel.classList.remove("hidden");
           btn.className = "px-4 py-2 text-xs font-bold border-b-2 border-indigo-500 text-indigo-300";
@@ -1339,10 +1401,13 @@
 
       if (tab === "saved-vouchers") {
         renderSavedVouchersTable();
+      } else if (tab === "settlement-ledger") {
+        renderSettlementLedgerTable();
       }
       lucide.createIcons();
     }
 
+    // --- EC MEMBERS DIRECTORY ---
     function renderECMembers() {
       const tbody = document.getElementById("ec-members-table-body");
       tbody.innerHTML = "";
@@ -1355,7 +1420,7 @@
           <td class="p-3 text-slate-300">${escapeHtml(ec.area)}</td>
           <td class="p-3 font-mono text-slate-400">${ec.mobile}</td>
           <td class="p-3 text-right">
-            <button onclick="deleteECMember('${ec.id}')" class="text-rose-400 hover:text-rose-300 text-xs font-medium">Remove</button>
+            <button onclick="deleteECMember('${ec.id}')" class="text-rose-400 hover:text-rose-300 text-xs">Remove</button>
           </td>
         `;
         tbody.appendChild(tr);
@@ -1381,7 +1446,6 @@
       renderECMembers();
       populateECMemberDropdown();
       toggleAddECForm();
-      showToast("EC Member Added");
       pushToCloud();
     }
 
@@ -1391,7 +1455,6 @@
         persistLocal();
         renderECMembers();
         populateECMemberDropdown();
-        showToast("EC Member Removed");
         pushToCloud();
       }
     }
@@ -1411,6 +1474,7 @@
       });
     }
 
+    // --- EXPENSE CREATOR & ITEMS BREAKDOWN ---
     function addExpenseItemRow(item = null) {
       const container = document.getElementById("expense-items-container");
       const row = document.createElement("div");
@@ -1418,19 +1482,19 @@
 
       const defaultDate = item ? item.date : (document.getElementById("exp-date").value || new Date().toISOString().slice(0, 10));
       const defaultMode = item ? item.mode : "UPI";
-      const defaultRef = item ? (item.ref || "") : "";
       const defaultDesc = item ? item.desc : "";
+      const defaultRef = item ? (item.ref || "") : "";
       const defaultAmt = item ? item.amt : "";
 
       row.innerHTML = `
         <div class="md:col-span-4">
-          <input type="text" value="${escapeHtml(defaultDesc)}" placeholder="Expense item description *" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white exp-item-desc" required />
+          <input type="text" value="${escapeHtml(defaultDesc)}" placeholder="Expense item description" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white exp-item-desc" required />
         </div>
         <div class="md:col-span-2">
           <input type="date" value="${defaultDate}" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2 py-1.5 text-xs text-slate-300 exp-item-date" required />
         </div>
         <div class="md:col-span-2">
-          <select class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2 py-1.5 text-xs text-slate-200 exp-item-mode">
+          <select class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2 py-1.5 text-xs text-slate-300 exp-item-mode">
             <option value="UPI" ${defaultMode === 'UPI' ? 'selected' : ''}>UPI</option>
             <option value="CASH" ${defaultMode === 'CASH' ? 'selected' : ''}>CASH</option>
             <option value="NEFT" ${defaultMode === 'NEFT' ? 'selected' : ''}>NEFT</option>
@@ -1438,15 +1502,14 @@
           </select>
         </div>
         <div class="md:col-span-2">
-          <input type="text" value="${escapeHtml(defaultRef)}" placeholder="Ref / UTR / Remarks" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2 py-1.5 text-xs text-slate-300 exp-item-ref" />
+          <input type="text" value="${escapeHtml(defaultRef)}" placeholder="Ref / UTR / Remarks" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white exp-item-ref" />
         </div>
         <div class="md:col-span-1 relative">
-          <span class="absolute left-2 top-1/2 -translate-y-1/2 text-slate-400 text-xs">₹</span>
-          <input type="number" min="0" step="0.5" value="${defaultAmt}" placeholder="0.00" oninput="calculateExpenseTotal()" class="w-full bg-slate-800 border border-slate-700 rounded-lg pl-5 pr-1.5 py-1.5 text-xs text-white mono exp-item-amt font-semibold" required />
+          <input type="number" min="0" step="0.5" value="${defaultAmt}" placeholder="0" oninput="calculateExpenseTotal()" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2 py-1.5 text-xs text-white mono exp-item-amt font-semibold text-right" required />
         </div>
         <div class="md:col-span-1 text-center">
-          <button type="button" onclick="this.closest('.expense-item-row').remove(); calculateExpenseTotal();" class="p-1.5 text-slate-400 hover:text-rose-400 transition" title="Delete Row">
-            <i data-lucide="trash-2" class="w-4 h-4 mx-auto"></i>
+          <button type="button" onclick="this.closest('.expense-item-row').remove(); calculateExpenseTotal();" class="p-1.5 text-slate-500 hover:text-rose-400">
+            <i data-lucide="trash-2" class="w-4 h-4"></i>
           </button>
         </div>
       `;
@@ -1476,8 +1539,6 @@
       const container = document.getElementById("expense-items-container");
       container.innerHTML = "";
       addExpenseItemRow();
-      calculateExpenseTotal();
-      showToast("Form Reset");
     }
 
     function loadVoucherIntoForm(voucher) {
@@ -1496,7 +1557,6 @@
       } else {
         addExpenseItemRow();
       }
-      calculateExpenseTotal();
     }
 
     function saveVoucherRecord() {
@@ -1506,13 +1566,8 @@
       const remarks = document.getElementById("exp-remarks").value.trim();
 
       if (!remarks) {
-        const remInput = document.getElementById("exp-remarks");
-        remInput.focus();
-        remInput.classList.add("border-rose-500");
-        showToast("Please enter General Purpose / Remarks", true);
+        alert("Please enter General Purpose / Remarks for this expense voucher.");
         return;
-      } else {
-        document.getElementById("exp-remarks").classList.remove("border-rose-500");
       }
 
       const rows = document.querySelectorAll(".expense-item-row");
@@ -1529,15 +1584,13 @@
       });
 
       if (items.length === 0) {
-        showToast("Please enter at least one valid expense item", true);
-        addExpenseItemRow();
+        alert("Please add at least one line item with description and amount.");
         return;
       }
 
       const total = calculateExpenseTotal();
 
       if (vId) {
-        // Update existing voucher
         const idx = appState.vouchers.findIndex(v => v.id === vId);
         if (idx > -1) {
           appState.vouchers[idx] = {
@@ -1548,9 +1601,9 @@
             items,
             total
           };
+          alert("Voucher updated successfully!");
         }
       } else {
-        // Create new voucher
         const newVoucher = {
           id: "vch-" + Date.now(),
           voucherNo: `GDCDA-VCH-${Math.floor(1000 + Math.random() * 9000)}`,
@@ -1558,28 +1611,21 @@
           date,
           remarks,
           items,
-          total
+          total,
+          settlements: []
         };
         appState.vouchers.unshift(newVoucher);
         document.getElementById("exp-voucher-id").value = newVoucher.id;
         document.getElementById("voucher-form-mode-title").innerText = `Edit Voucher: ${newVoucher.voucherNo}`;
         document.getElementById("btn-save-voucher-text").innerText = "Update Voucher";
+        alert(`Voucher ${newVoucher.voucherNo} saved successfully!`);
       }
 
       persistLocal();
       updateStats();
       renderSavedVouchersTable();
+      renderSettlementLedgerTable();
       pushToCloud();
-
-      showToast("Voucher Saved Successfully!");
-
-      // Button feedback
-      const btnText = document.getElementById("btn-save-voucher-text");
-      const orig = btnText.innerText;
-      btnText.innerText = "✓ Saved Successfully!";
-      setTimeout(() => {
-        btnText.innerText = orig;
-      }, 1500);
     }
 
     function renderSavedVouchersTable() {
@@ -1588,27 +1634,43 @@
       tbody.innerHTML = "";
 
       (appState.vouchers || []).forEach(v => {
+        const totalReimbursed = (v.settlements || []).reduce((sum, s) => sum + s.amount, 0);
+        const balance = Math.max(0, v.total - totalReimbursed);
+        let statusBadge = `<span class="px-2 py-0.5 rounded bg-rose-950/60 border border-rose-500/40 text-rose-400 text-[10px] font-bold">UNPAID</span>`;
+        if (totalReimbursed >= v.total && v.total > 0) {
+          statusBadge = `<span class="px-2 py-0.5 rounded bg-emerald-950/60 border border-emerald-500/40 text-emerald-400 text-[10px] font-bold">SETTLED</span>`;
+        } else if (totalReimbursed > 0) {
+          statusBadge = `<span class="px-2 py-0.5 rounded bg-amber-950/60 border border-amber-500/40 text-amber-400 text-[10px] font-bold">PARTIAL</span>`;
+        }
+
         const tr = document.createElement("tr");
-        tr.className = "hover:bg-slate-800/40 border-b border-slate-800/60 transition";
+        tr.className = "hover:bg-slate-800/40 border-b border-slate-800/60";
         tr.innerHTML = `
           <td class="p-3 font-mono font-bold text-teal-400">${escapeHtml(v.voucherNo)}</td>
-          <td class="p-3 text-slate-300 whitespace-nowrap">${v.date}</td>
+          <td class="p-3 text-slate-300">${v.date}</td>
           <td class="p-3">
             <div class="font-semibold text-white">${escapeHtml(v.payer)}</div>
             <div class="text-[11px] text-indigo-300 font-medium">${escapeHtml(v.remarks)}</div>
           </td>
-          <td class="p-3 text-slate-400 font-mono">${(v.items || []).length} items</td>
-          <td class="p-3 font-bold mono text-emerald-400 whitespace-nowrap">₹ ${v.total.toFixed(2)}</td>
-          <td class="p-3 text-right whitespace-nowrap">
-            <div class="flex items-center justify-end gap-1.5">
-              <button onclick="printSavedVoucher('${v.id}')" class="px-2.5 py-1.5 bg-indigo-600/30 hover:bg-indigo-600/60 text-indigo-300 rounded text-xs flex items-center gap-1 font-semibold transition active:scale-95 cursor-pointer" title="Print A6 Voucher">
+          <td class="p-3 font-bold mono text-white">₹ ${v.total.toFixed(2)}</td>
+          <td class="p-3">
+            ${statusBadge}
+            <div class="text-[10px] text-slate-400 mt-1">Paid: <span class="mono text-emerald-400">₹${totalReimbursed.toFixed(2)}</span> / Bal: <span class="mono text-amber-400">₹${balance.toFixed(2)}</span></div>
+          </td>
+          <td class="p-3 text-right">
+            <div class="flex items-center justify-end gap-1">
+              <button onclick="printSavedVoucher('${v.id}')" class="px-2.5 py-1 bg-indigo-600/30 hover:bg-indigo-600/60 text-indigo-300 rounded text-xs flex items-center gap-1 font-semibold" title="Print Voucher">
                 <i data-lucide="printer" class="w-3.5 h-3.5"></i>
                 <span>Print</span>
               </button>
-              <button onclick="editSavedVoucher('${v.id}')" class="p-1.5 hover:bg-slate-800 rounded text-slate-400 hover:text-slate-200 transition" title="Edit">
+              <button onclick="openSettlementModal('${v.id}')" class="px-2 py-1 bg-emerald-950/60 hover:bg-emerald-900/80 border border-emerald-500/40 text-emerald-300 rounded text-xs flex items-center gap-1 font-semibold" title="Record Settlement">
+                <i data-lucide="hand-coins" class="w-3.5 h-3.5"></i>
+                <span>Settle</span>
+              </button>
+              <button onclick="editSavedVoucher('${v.id}')" class="p-1 hover:bg-slate-800 rounded text-slate-400 hover:text-slate-200" title="Edit">
                 <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
               </button>
-              <button onclick="deleteSavedVoucher('${v.id}')" class="p-1.5 hover:bg-rose-950/60 rounded text-slate-400 hover:text-rose-400 transition" title="Delete">
+              <button onclick="deleteSavedVoucher('${v.id}')" class="p-1 hover:bg-rose-950/60 rounded text-slate-400 hover:text-rose-400" title="Delete">
                 <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
               </button>
             </div>
@@ -1628,19 +1690,160 @@
     }
 
     function deleteSavedVoucher(id) {
-      if (confirm("Delete this saved voucher permanently from ledger?")) {
+      if (confirm("Delete this saved voucher permanently?")) {
         appState.vouchers = appState.vouchers.filter(x => x.id !== id);
-        if (document.getElementById("exp-voucher-id").value === id) {
-          resetVoucherForm();
-        }
         persistLocal();
         updateStats();
         renderSavedVouchersTable();
-        showToast("Voucher Deleted");
+        renderSettlementLedgerTable();
         pushToCloud();
       }
     }
 
+    // --- REIMBURSEMENT SETTLEMENT LEDGER (INFLOWS & PAYOUTS) ---
+    function renderSettlementLedgerTable() {
+      const tbody = document.getElementById("settlement-ledger-table-body");
+      if (!tbody) return;
+      tbody.innerHTML = "";
+
+      let totalClaimedAll = 0;
+      let totalPaidAll = 0;
+
+      (appState.vouchers || []).forEach(v => {
+        totalClaimedAll += v.total;
+        const totalReimbursed = (v.settlements || []).reduce((sum, s) => sum + s.amount, 0);
+        totalPaidAll += totalReimbursed;
+        const balance = Math.max(0, v.total - totalReimbursed);
+
+        let statusBadge = `<span class="px-2 py-0.5 rounded bg-rose-950/60 border border-rose-500/40 text-rose-400 text-[10px] font-bold">UNPAID</span>`;
+        if (totalReimbursed >= v.total && v.total > 0) {
+          statusBadge = `<span class="px-2 py-0.5 rounded bg-emerald-950/60 border border-emerald-500/40 text-emerald-400 text-[10px] font-bold">SETTLED</span>`;
+        } else if (totalReimbursed > 0) {
+          statusBadge = `<span class="px-2 py-0.5 rounded bg-amber-950/60 border border-amber-500/40 text-amber-400 text-[10px] font-bold">PARTIAL</span>`;
+        }
+
+        let historyHtml = "";
+        if (v.settlements && v.settlements.length > 0) {
+          historyHtml = `<div class="mt-2 space-y-1">`;
+          v.settlements.forEach(st => {
+            historyHtml += `
+              <div class="text-[10px] bg-slate-900/80 px-2 py-1 rounded border border-slate-800 text-slate-300 flex items-center justify-between">
+                <span><strong class="text-emerald-400 mono">₹${st.amount.toFixed(2)}</strong> via <strong>${st.mode}</strong> (${st.date})</span>
+                <span class="text-slate-400 font-mono text-[9px] truncate max-w-[150px]" title="${escapeHtml(st.ref)}">Ref: ${escapeHtml(st.ref)}</span>
+                <button onclick="deleteSettlementEntry('${v.id}', '${st.id}')" class="text-rose-400 hover:text-rose-300 ml-2" title="Delete payment entry"><i data-lucide="x" class="w-3 h-3 inline"></i></button>
+              </div>
+            `;
+          });
+          historyHtml += `</div>`;
+        }
+
+        const tr = document.createElement("tr");
+        tr.className = "hover:bg-slate-800/40 border-b border-slate-800/60 align-top";
+        tr.innerHTML = `
+          <td class="p-3">
+            <div class="font-mono font-bold text-teal-400 text-xs">${escapeHtml(v.voucherNo)}</div>
+            <div class="text-[11px] text-slate-400">${v.date}</div>
+            <div class="text-[11px] text-indigo-300 font-medium mt-0.5">${escapeHtml(v.remarks)}</div>
+          </td>
+          <td class="p-3 text-white font-medium text-xs">
+            ${escapeHtml(v.payer)}
+          </td>
+          <td class="p-3 font-bold mono text-white">₹ ${v.total.toFixed(2)}</td>
+          <td class="p-3 font-bold mono text-emerald-400">
+            ₹ ${totalReimbursed.toFixed(2)}
+            ${historyHtml}
+          </td>
+          <td class="p-3 font-bold mono text-amber-400">₹ ${balance.toFixed(2)}</td>
+          <td class="p-3">${statusBadge}</td>
+          <td class="p-3 text-right">
+            <button onclick="openSettlementModal('${v.id}')" class="px-3 py-1.5 bg-emerald-600/30 hover:bg-emerald-600/50 border border-emerald-500/40 text-emerald-300 rounded-lg text-xs font-semibold flex items-center gap-1.5 ml-auto">
+              <i data-lucide="hand-coins" class="w-3.5 h-3.5"></i>
+              <span>+ Record Payment</span>
+            </button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      document.getElementById("set-total-claimed").innerText = totalClaimedAll.toFixed(2);
+      document.getElementById("set-total-paid").innerText = totalPaidAll.toFixed(2);
+      document.getElementById("set-total-pending").innerText = Math.max(0, totalClaimedAll - totalPaidAll).toFixed(2);
+      lucide.createIcons();
+    }
+
+    function openSettlementModal(vId) {
+      const v = appState.vouchers.find(x => x.id === vId);
+      if (!v) return;
+
+      const totalReimbursed = (v.settlements || []).reduce((sum, s) => sum + s.amount, 0);
+      const balance = Math.max(0, v.total - totalReimbursed);
+
+      document.getElementById("settle-target-voucher-id").value = v.id;
+      document.getElementById("settle-v-no").innerText = v.voucherNo;
+      document.getElementById("settle-v-claimant").innerText = v.payer;
+      document.getElementById("settle-v-claimed").innerText = `₹ ${v.total.toFixed(2)}`;
+      document.getElementById("settle-v-balance").innerText = `₹ ${balance.toFixed(2)}`;
+
+      document.getElementById("settle-amount").value = balance > 0 ? balance : "";
+      document.getElementById("settle-date").valueAsDate = new Date();
+      document.getElementById("settle-mode").value = "UPI";
+      document.getElementById("settle-ref").value = "";
+      document.getElementById("settle-notes").value = "";
+
+      openModal("modal-settle-payment");
+    }
+
+    function saveSettlementPayment(e) {
+      e.preventDefault();
+      const vId = document.getElementById("settle-target-voucher-id").value;
+      const v = appState.vouchers.find(x => x.id === vId);
+      if (!v) return;
+
+      const amount = parseFloat(document.getElementById("settle-amount").value) || 0;
+      const date = document.getElementById("settle-date").value || new Date().toISOString().slice(0, 10);
+      const mode = document.getElementById("settle-mode").value;
+      const ref = document.getElementById("settle-ref").value.trim();
+      const notes = document.getElementById("settle-notes").value.trim();
+
+      if (amount <= 0) {
+        alert("Please enter a valid payment amount.");
+        return;
+      }
+
+      if (!v.settlements) v.settlements = [];
+      const entry = {
+        id: "st-" + Date.now(),
+        date,
+        amount,
+        mode,
+        ref,
+        notes
+      };
+
+      v.settlements.push(entry);
+      persistLocal();
+      updateStats();
+      renderSavedVouchersTable();
+      renderSettlementLedgerTable();
+      closeModal("modal-settle-payment");
+      pushToCloud();
+      alert(`Settlement entry of ₹${amount.toFixed(2)} recorded for ${v.voucherNo}!`);
+    }
+
+    function deleteSettlementEntry(vId, settlementId) {
+      const v = appState.vouchers.find(x => x.id === vId);
+      if (!v || !v.settlements) return;
+      if (confirm("Remove this reimbursement settlement record?")) {
+        v.settlements = v.settlements.filter(s => s.id !== settlementId);
+        persistLocal();
+        updateStats();
+        renderSavedVouchersTable();
+        renderSettlementLedgerTable();
+        pushToCloud();
+      }
+    }
+
+    // --- A6 PRINT ENGINE ---
     function printCurrentVoucher() {
       const payer = document.getElementById("exp-ec-member").value;
       const date = document.getElementById("exp-date").value || new Date().toISOString().slice(0, 10);
@@ -1660,8 +1863,7 @@
       });
 
       if (items.length === 0) {
-        showToast("Add at least one item before printing", true);
-        addExpenseItemRow();
+        alert("Please add at least one line item to print.");
         return;
       }
 
@@ -1679,115 +1881,133 @@
         total
       };
 
-      triggerA6IsolatedPrint(voucherData);
+      triggerIframePrint(voucherData);
     }
 
     function printSavedVoucher(id) {
       const v = appState.vouchers.find(x => x.id === id);
       if (v) {
-        triggerA6IsolatedPrint(v);
+        triggerIframePrint(v);
       }
     }
 
-    // Directly renders clean document into hidden iframe to guarantee crisp Canon LBP2900 single-page print without blank sheets
-    function triggerA6IsolatedPrint(v) {
-      let rowsHtml = "";
-      v.items.forEach((it, idx) => {
-        rowsHtml += `
-          <tr style="border-bottom: 1px solid #1e293b;">
-            <td style="padding: 2.5px 2px; text-align: center; border-right: 1px solid #1e293b; font-size: 8px;">${idx + 1}</td>
-            <td style="padding: 2.5px 4px; border-right: 1px solid #1e293b; font-size: 8px; line-height: 1.15;">
+    function numberToWordsINR(num) {
+      const a = ['', 'One ', 'Two ', 'Three ', 'Four ', 'Five ', 'Six ', 'Seven ', 'Eight ', 'Nine ', 'Ten ', 'Eleven ', 'Twelve ', 'Thirteen ', 'Fourteen ', 'Fifteen ', 'Sixteen ', 'Seventeen ', 'Eighteen ', 'Nineteen '];
+      const b = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
+      num = Math.floor(num);
+      if (num === 0) return 'Zero Rupees Only';
+      function inWords(n) {
+        if (n < 20) return a[n];
+        if (n < 100) return b[Math.floor(n / 10)] + (n % 10 !== 0 ? ' ' + a[n % 10] : ' ');
+        if (n < 1000) return a[Math.floor(n / 100)] + 'Hundred ' + (n % 100 !== 0 ? inWords(n % 100) : '');
+        if (n < 100000) return inWords(Math.floor(n / 1000)) + 'Thousand ' + (n % 1000 !== 0 ? inWords(n % 1000) : '');
+        if (n < 10000000) return inWords(Math.floor(n / 100000)) + 'Lakh ' + (n % 100000 !== 0 ? inWords(n % 100000) : '');
+        return inWords(Math.floor(n / 10000000)) + 'Crore ' + (n % 10000000 !== 0 ? inWords(n % 10000000) : '');
+      }
+      return inWords(num).trim() + ' Rupees Only';
+    }
+
+    function triggerIframePrint(v) {
+      const iframe = document.getElementById("printIframe");
+      const doc = iframe.contentWindow.document;
+
+      let itemsRowsHtml = "";
+      v.items.forEach((it, index) => {
+        itemsRowsHtml += `
+          <tr style="border-bottom: 1px solid #d1d5db;">
+            <td style="padding: 3.5px; text-align: center; border-right: 1px solid #000; font-size: 8px;">${index + 1}</td>
+            <td style="padding: 3.5px; border-right: 1px solid #000; font-size: 8px;">
               <strong>${escapeHtml(it.desc)}</strong>
+              <div style="font-size: 7.2px; color: #374151;">Date: ${it.date} | Mode: <strong>${it.mode}</strong> ${it.ref ? '| Ref: ' + escapeHtml(it.ref) : ''}</div>
             </td>
-            <td style="padding: 2.5px 2px; text-align: center; border-right: 1px solid #1e293b; font-size: 7.5px;">${it.date || v.date}</td>
-            <td style="padding: 2.5px 2px; text-align: center; border-right: 1px solid #1e293b; font-size: 7.5px; font-weight: bold;">${it.mode || 'UPI'}</td>
-            <td style="padding: 2.5px 3px; border-right: 1px solid #1e293b; font-size: 7.5px; color: #334155;">${escapeHtml(it.ref || '-')}</td>
-            <td style="padding: 2.5px 4px; text-align: right; font-size: 8px; font-family: monospace; font-weight: bold;">₹ ${it.amt.toFixed(2)}</td>
+            <td style="padding: 3.5px; text-align: right; font-size: 8.5px; font-family: monospace; font-weight: bold;">₹ ${it.amt.toFixed(2)}</td>
           </tr>
         `;
       });
 
-      const totalInWords = numberToWordsINR(v.total);
+      const totalWords = numberToWordsINR(v.total);
 
       const printHtml = `
         <!DOCTYPE html>
         <html>
         <head>
-          <meta charset="UTF-8">
-          <title>GDCDA Voucher ${v.voucherNo}</title>
+          <title>GDCDA Voucher - ${v.voucherNo}</title>
           <style>
             @page {
               size: 105mm 148mm portrait;
-              margin: 3mm;
-            }
-            * {
-              box-sizing: border-box;
+              margin: 4mm;
             }
             body {
-              font-family: Arial, Helvetica, sans-serif;
+              font-family: Arial, sans-serif;
+              margin: 0;
+              padding: 4mm;
               color: #000000;
               background: #ffffff;
-              margin: 0;
-              padding: 2mm;
-              font-size: 8px;
-              line-height: 1.15;
+              box-sizing: border-box;
             }
             .header-box {
               text-align: center;
-              border-bottom: 2px solid #000000;
-              padding-bottom: 3px;
-              margin-bottom: 4px;
+              border-bottom: 2px solid #000;
+              padding-bottom: 4px;
+              margin-bottom: 5px;
             }
-            .main-heading {
-              font-size: 10.5px;
+            .title {
+              font-size: 11.5px;
               font-weight: 900;
               text-transform: uppercase;
               margin: 0;
-              letter-spacing: 0.2px;
             }
-            .sub-heading {
+            .sub-title {
               font-size: 8px;
-              font-weight: 700;
-              color: #1e293b;
               margin: 1px 0;
+              font-weight: 600;
+              color: #374151;
+            }
+            .tag {
+              display: inline-block;
+              border: 1px solid #000;
+              padding: 2px 7px;
+              margin-top: 2px;
+              font-weight: 800;
+              font-size: 8.5px;
+              text-transform: uppercase;
+              background-color: #f3f4f6;
             }
             .meta-table {
               width: 100%;
               border-collapse: collapse;
-              margin-bottom: 4px;
-              font-size: 8px;
+              font-size: 8.5px;
+              margin-bottom: 5px;
             }
             .meta-table td {
               padding: 1.5px 0;
-              vertical-align: top;
             }
             .items-table {
               width: 100%;
               border-collapse: collapse;
-              border: 1.5px solid #000000;
-              margin-bottom: 4px;
+              border: 1px solid #000;
+              margin-bottom: 5px;
             }
             .items-table th {
-              background: #f1f5f9;
-              border-bottom: 1.5px solid #000000;
-              padding: 2.5px 2px;
-              font-size: 7.5px;
-              text-transform: uppercase;
-              font-weight: 800;
+              background-color: #f3f4f6;
+              border-bottom: 1.5px solid #000;
+              padding: 3px;
+              font-size: 8px;
+              text-align: left;
             }
-            .signatures-box {
+            .signatures {
               display: flex;
               justify-content: space-between;
               margin-top: 22px;
-              padding-top: 2px;
+              padding-top: 4px;
             }
-            .sig-column {
+            .sign-box {
               width: 31%;
               text-align: center;
             }
-            .sig-line {
-              border-top: 1px dashed #000000;
-              padding-top: 2px;
+            .sign-line {
+              border-top: 1px dashed #000;
+              padding-top: 2.5px;
               font-size: 7.5px;
               font-weight: 700;
             }
@@ -1795,83 +2015,73 @@
         </head>
         <body>
           <div class="header-box">
-            <h1 class="main-heading">GDCDA EC MEMBER EXPENSE REIMBURSEMENT</h1>
-            <p class="sub-heading">Gondia District Chemist &amp; Druggist Association (Affiliated to MSCDA)</p>
+            <div class="title">GDCDA EC MEMBER EXPENSE REIMBURSEMENT</div>
+            <div class="sub-title">Gondia District Chemist &amp; Druggist Association (Affiliated to MSCDA)</div>
+            <div class="tag">Official Reimbursement Claim Voucher</div>
           </div>
 
           <table class="meta-table">
             <tr>
-              <td style="width: 55%;"><strong>Voucher No:</strong> <span style="font-family: monospace; font-weight: bold;">${v.voucherNo}</span></td>
-              <td style="width: 45%; text-align: right;"><strong>Date:</strong> ${v.date}</td>
+              <td><strong>Voucher No:</strong> <span style="font-family: monospace; font-weight: bold;">${v.voucherNo}</span></td>
+              <td style="text-align: right;"><strong>Date:</strong> ${v.date}</td>
             </tr>
             <tr>
-              <td colspan="2"><strong>Paid By:</strong> ${escapeHtml(v.payer)}</td>
+              <td colspan="2"><strong>Claimant (EC Member):</strong> ${escapeHtml(v.payer)}</td>
             </tr>
             <tr>
-              <td colspan="2"><strong>General Purpose / Remarks:</strong> <u>${escapeHtml(v.remarks)}</u></td>
+              <td colspan="2"><strong>General Purpose:</strong> <u>${escapeHtml(v.remarks)}</u></td>
             </tr>
           </table>
 
           <table class="items-table">
             <thead>
               <tr>
-                <th style="width: 14px; border-right: 1px solid #1e293b;">#</th>
-                <th style="border-right: 1px solid #1e293b; text-align: left; padding-left: 4px;">Particulars / Description</th>
-                <th style="width: 46px; border-right: 1px solid #1e293b; text-align: center;">Date</th>
-                <th style="width: 28px; border-right: 1px solid #1e293b; text-align: center;">Mode</th>
-                <th style="width: 50px; border-right: 1px solid #1e293b; text-align: left; padding-left: 2px;">Ref / UTR</th>
-                <th style="width: 52px; text-align: right; padding-right: 4px;">Amount (₹)</th>
+                <th style="width: 18px; text-align: center; border-right: 1px solid #000;">#</th>
+                <th style="border-right: 1px solid #000;">Particulars / Description</th>
+                <th style="width: 65px; text-align: right;">Amount (₹)</th>
               </tr>
             </thead>
             <tbody>
-              ${rowsHtml}
+              ${itemsRowsHtml}
             </tbody>
             <tfoot>
-              <tr style="border-top: 1.5px solid #000000; background: #f8fafc; font-weight: bold;">
-                <td colspan="5" style="padding: 3px; text-align: right; border-right: 1px solid #1e293b; font-size: 8.5px;">Grand Total:</td>
-                <td style="padding: 3px 4px; text-align: right; font-size: 8.5px; font-family: monospace;">₹ ${v.total.toFixed(2)}</td>
+              <tr style="border-top: 1.5px solid #000; background: #f9fafb; font-weight: bold;">
+                <td colspan="2" style="padding: 3.5px; text-align: right; border-right: 1px solid #000; font-size: 8.5px;">Grand Total Claimed:</td>
+                <td style="padding: 3.5px; text-align: right; font-size: 9px; font-family: monospace;">₹ ${v.total.toFixed(2)}</td>
               </tr>
             </tfoot>
           </table>
 
-          <div style="font-size: 7.5px; margin-bottom: 2px;">
-            <strong>Amount in Words:</strong> <i>${totalInWords}</i>
+          <div style="font-size: 8px; margin-top: 3px;">
+            <strong>Amount in Words:</strong> <em>${totalWords}</em>
           </div>
 
-          <div style="font-size: 7px; color: #334155; margin-bottom: 6px;">
-            <strong>Verification Note:</strong> Certified that all expenses logged above are bonafide association disbursements.
-          </div>
-
-          <div class="signatures-box">
-            <div class="sig-column">
-              <div class="sig-line">Claimant / Submitting EC Member</div>
+          <div class="signatures">
+            <div class="sign-box">
+              <div class="sign-line">Claimant (EC Member)</div>
             </div>
-            <div class="sig-column">
-              <div class="sig-line">Hon. Treasurer (GDCDA)</div>
+            <div class="sign-box">
+              <div class="sign-line">Hon. Treasurer (GDCDA)</div>
             </div>
-            <div class="sig-column">
-              <div class="sig-line">Approved by President / Gen. Sec.</div>
+            <div class="sign-box">
+              <div class="sign-line">Approved by President / GS</div>
             </div>
           </div>
         </body>
         </html>
       `;
 
-      const iframe = document.getElementById("print-hidden-frame");
-      const doc = iframe.contentWindow || iframe.contentDocument;
-      const targetDoc = doc.document || doc;
-
-      targetDoc.open();
-      targetDoc.write(printHtml);
-      targetDoc.close();
+      doc.open();
+      doc.write(printHtml);
+      doc.close();
 
       setTimeout(() => {
         iframe.contentWindow.focus();
         iframe.contentWindow.print();
-        showToast("Print Dialog Triggered");
       }, 250);
     }
 
+    // --- MODAL UTILS ---
     function openModal(id) {
       document.getElementById(id).classList.remove("hidden");
       document.getElementById(id).classList.add("flex");
@@ -1888,40 +2098,33 @@
       return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
     }
 
-    // Keyboard Shortcuts
+    // --- SHORTCUTS LISTENER ---
     window.addEventListener("keydown", (e) => {
-      // Focus Search: /
       if (e.key === "/" && document.activeElement.tagName !== "INPUT" && document.activeElement.tagName !== "TEXTAREA") {
         e.preventDefault();
         document.getElementById("search-input").focus();
       }
-      // Add Member: Alt + N
       if (e.altKey && (e.key === "n" || e.key === "N")) {
         e.preventDefault();
         openMemberModal();
       }
-      // Sync Cloud: Alt + S
       if (e.altKey && (e.key === "s" || e.key === "S")) {
         e.preventDefault();
         syncWithCloud();
       }
-      // EC Portal: Alt + X
       if (e.altKey && (e.key === "x" || e.key === "X")) {
         e.preventDefault();
         openECPortalModal();
       }
-      // Export CSV: Alt + E
       if (e.altKey && (e.key === "e" || e.key === "E")) {
         e.preventDefault();
         exportToCSV();
       }
-      // Close Modals: Esc
       if (e.key === "Escape") {
-        ["modal-member", "modal-settings", "modal-meeting", "modal-ec-login", "modal-ec-portal"].forEach(closeModal);
+        ["modal-member", "modal-settings", "modal-meeting", "modal-ec-login", "modal-ec-portal", "modal-settle-payment"].forEach(closeModal);
       }
     });
 
-    // Start application on load
     window.addEventListener("DOMContentLoaded", initializeData);
   </script>
 </body>
