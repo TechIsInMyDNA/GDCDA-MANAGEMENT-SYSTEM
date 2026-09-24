@@ -16,9 +16,29 @@
     ::-webkit-scrollbar-track { background: #0f172a; }
     ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
     ::-webkit-scrollbar-thumb:hover { background: #475569; }
+
+    /* Custom Toast Animation */
+    @keyframes slideDown {
+      from { transform: translate(-50%, -100%); opacity: 0; }
+      to { transform: translate(-50%, 0); opacity: 1; }
+    }
+    .toast-anim {
+      animation: slideDown 0.3s ease-out forwards;
+    }
   </style>
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col antialiased selection:bg-teal-500 selection:text-white">
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="fixed top-4 left-1/2 -translate-x-1/2 z-[100] hidden">
+    <div id="toast-box" class="toast-anim px-4 py-2.5 rounded-xl border shadow-2xl flex items-center gap-2.5 text-xs font-semibold bg-emerald-950/95 border-emerald-500/50 text-emerald-300">
+      <i data-lucide="check-circle" class="w-4 h-4 text-emerald-400"></i>
+      <span id="toast-msg">Operation Successful</span>
+    </div>
+  </div>
+
+  <!-- Hidden Iframe Dedicated for 100% Reliable A6 Printing -->
+  <iframe id="print-hidden-frame" class="hidden w-0 h-0 border-0 absolute -left-[9999px] -top-[9999px]"></iframe>
 
   <header class="border-b border-slate-800 bg-slate-900/90 backdrop-blur sticky top-0 z-40 px-4 lg:px-8 py-3 flex flex-wrap items-center justify-between gap-3">
     <div class="flex items-center gap-3">
@@ -146,14 +166,13 @@
       </div>
 
       <div class="flex items-center gap-2">
-        <button onclick="exportAttendanceReport()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-medium text-slate-200">
+        <button onclick="exportAttendanceReport()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-medium text-slate-200 transition">
           <i data-lucide="file-spreadsheet" class="w-3.5 h-3.5 text-emerald-400"></i>
           <span>Export Attendance List</span>
         </button>
       </div>
     </div>
 
-    <!-- Search & Filter Controls -->
     <div class="space-y-3">
       <div class="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
         <!-- Live Partial Search -->
@@ -203,7 +222,6 @@
     </div>
 
   </main>
-
 
   <!-- 1. ADD / EDIT MEMBER MODAL -->
   <div id="modal-member" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4">
@@ -381,9 +399,9 @@
     </div>
   </div>
 
-  <!-- 5. EC PORTAL MAIN MODAL (MEMBERS + EXPENSE CREATOR + SAVED VOUCHERS) -->
+  <!-- 5. EC PORTAL MAIN MODAL (EXPENSE CREATOR + SAVED LEDGER + EC ROSTER) -->
   <div id="modal-ec-portal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden items-center justify-center p-2 sm:p-4 overflow-y-auto">
-    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-6xl w-full p-5 sm:p-6 shadow-2xl relative space-y-4 my-auto max-h-[94vh] flex flex-col">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-6xl w-full p-4 sm:p-6 shadow-2xl relative space-y-4 my-auto max-h-[95vh] flex flex-col">
       
       <!-- Header -->
       <div class="flex items-center justify-between border-b border-slate-800 pb-3 flex-shrink-0">
@@ -419,8 +437,9 @@
                 <i data-lucide="receipt" class="w-4 h-4"></i>
                 <span id="voucher-form-mode-title">Create GDCDA Expense Reimbursement Voucher</span>
               </h4>
-              <button type="button" onclick="resetVoucherForm()" class="text-[11px] text-teal-400 hover:text-teal-300 font-semibold transition">
-                + New / Clear Form
+              <button type="button" onclick="resetVoucherForm()" class="text-[11px] text-teal-400 hover:text-teal-300 font-semibold transition flex items-center gap-1">
+                <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+                <span>+ New / Clear Form</span>
               </button>
             </div>
 
@@ -438,12 +457,12 @@
                 <input id="exp-date" type="date" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-2 text-xs text-white focus:outline-none focus:border-indigo-500" />
               </div>
               <div>
-                <label class="block text-[11px] font-semibold text-slate-400 mb-1">General Purpose / Meeting Remarks *</label>
+                <label class="block text-[11px] font-semibold text-slate-400 mb-1">General Purpose / Remarks *</label>
                 <input id="exp-remarks" type="text" placeholder="e.g. 24 SEPT WORLD PHARMACIST DAY EXPENSES" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-2 text-xs text-white focus:outline-none focus:border-indigo-500" />
               </div>
             </div>
 
-            <!-- Dynamic Line Items (Every item has its own Mode, Ref/UTR, Date, and Amount) -->
+            <!-- Dynamic Line Items -->
             <div class="space-y-2 pt-2 border-t border-slate-800">
               <div class="flex items-center justify-between">
                 <span class="text-[11px] font-bold text-slate-300 uppercase tracking-wide">
@@ -477,14 +496,14 @@
             </div>
 
             <!-- Actions: Save & Print -->
-            <div class="flex flex-wrap items-center justify-end gap-2 pt-2 border-t border-slate-800/80">
-              <button type="button" id="btn-save-voucher" onclick="saveVoucherRecord()" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-bold text-slate-200 flex items-center gap-1.5 transition active:scale-95">
-                <i data-lucide="save" class="w-3.5 h-3.5 text-teal-400"></i>
+            <div class="flex flex-wrap items-center justify-end gap-3 pt-3 border-t border-slate-800/80">
+              <button type="button" id="btn-save-voucher" onclick="saveVoucherRecord()" class="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-bold text-slate-200 flex items-center gap-2 transition active:scale-95 shadow-md">
+                <i data-lucide="save" class="w-4 h-4 text-teal-400"></i>
                 <span id="btn-save-voucher-text">Save Voucher to Ledger</span>
               </button>
 
-              <button type="button" onclick="printCurrentVoucher()" class="px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-xs font-bold text-white flex items-center gap-2 shadow-lg shadow-indigo-600/30 transition active:scale-95">
-                <i data-lucide="printer" class="w-4 h-4"></i>
+              <button type="button" id="btn-print-voucher-top" onclick="printCurrentVoucher()" class="px-6 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-xs font-bold text-white flex items-center gap-2 shadow-lg shadow-indigo-600/30 transition active:scale-95 cursor-pointer">
+                <i data-lucide="printer" class="w-4 h-4 text-white"></i>
                 <span>Print A6 Portrait Voucher</span>
               </button>
             </div>
@@ -498,7 +517,7 @@
             <span class="text-[11px] text-slate-400">All vouchers saved permanently in vault sync.</span>
           </div>
 
-          <div class="border border-slate-800 rounded-xl overflow-hidden">
+          <div class="border border-slate-800 rounded-xl overflow-hidden bg-slate-900/60">
             <table class="w-full text-left text-xs text-slate-300">
               <thead class="bg-slate-800/80 text-[10px] uppercase font-bold text-slate-400">
                 <tr>
@@ -520,7 +539,7 @@
         <div id="ec-tab-members" class="hidden space-y-4">
           <div class="flex flex-wrap items-center justify-between gap-3">
             <h4 class="text-xs font-bold uppercase tracking-wider text-slate-300">Official Committee Members</h4>
-            <button onclick="toggleAddECForm()" class="px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-xs font-semibold text-white flex items-center gap-1.5">
+            <button onclick="toggleAddECForm()" class="px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-xs font-semibold text-white flex items-center gap-1.5 transition">
               <i data-lucide="plus" class="w-3.5 h-3.5"></i>
               <span>Add EC Member</span>
             </button>
@@ -546,14 +565,14 @@
                 <input id="ec-add-mobile" required pattern="[0-9]{10}" type="tel" placeholder="10 Digits" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white" />
               </div>
               <div class="md:col-span-4 flex justify-end gap-2 pt-1">
-                <button type="button" onclick="toggleAddECForm()" class="px-3 py-1 bg-slate-800 text-xs rounded text-slate-400">Cancel</button>
+                <button type="button" onclick="toggleAddECForm()" class="px-3 py-1 bg-slate-800 text-xs rounded text-slate-400 hover:text-white">Cancel</button>
                 <button type="submit" class="px-4 py-1 bg-indigo-600 hover:bg-indigo-500 text-xs font-semibold text-white rounded">Save Member</button>
               </div>
             </form>
           </div>
 
           <!-- EC Members Table -->
-          <div class="border border-slate-800 rounded-xl overflow-hidden">
+          <div class="border border-slate-800 rounded-xl overflow-hidden bg-slate-900/60">
             <table class="w-full text-left text-xs text-slate-300">
               <thead class="bg-slate-800/80 text-[10px] uppercase font-bold text-slate-400">
                 <tr>
@@ -582,10 +601,10 @@
       activeMeeting: "AGM 2026 - Gondia",
       checkins: {},
       ecMembers: [
-        { id: "ec-1", name: "Shubham Agrawal", role: "Volunteer", area: "Gondia City", mobile: "9823001122" },
-        { id: "ec-2", name: "Santosh Agrawal", role: "President", area: "Gondia City", mobile: "9422100001" },
-        { id: "ec-3", name: "Pravin Patel", role: "Hon. Secretary", area: "Tirora Zone", mobile: "9422891234" },
-        { id: "ec-4", name: "Sunil Jain", role: "Treasurer", area: "Goregaon Zone", mobile: "9823145678" }
+        { id: "ec-shubham", name: "Shubham Agrawal", role: "Volunteer", area: "Gondia City", mobile: "9823001122" },
+        { id: "ec-1", name: "Santosh Agrawal", role: "President", area: "Gondia City", mobile: "9422100001" },
+        { id: "ec-2", name: "Pravin Patel", role: "Hon. Secretary", area: "Tirora Zone", mobile: "9422891234" },
+        { id: "ec-3", name: "Sunil Jain", role: "Treasurer", area: "Goregaon Zone", mobile: "9823145678" }
       ],
       vouchers: [],
       filter: "all",
@@ -603,7 +622,46 @@
 
     let fileSha = null;
 
-    // --- CRYPTO SUITE: AES-256-GCM ---
+    // --- TOAST FEEDBACK UTILITY ---
+    function showToast(message, isError = false) {
+      const container = document.getElementById("toast-container");
+      const box = document.getElementById("toast-box");
+      const msg = document.getElementById("toast-msg");
+
+      msg.innerText = message;
+      if (isError) {
+        box.className = "toast-anim px-4 py-2.5 rounded-xl border shadow-2xl flex items-center gap-2.5 text-xs font-semibold bg-rose-950/95 border-rose-500/50 text-rose-300";
+      } else {
+        box.className = "toast-anim px-4 py-2.5 rounded-xl border shadow-2xl flex items-center gap-2.5 text-xs font-semibold bg-emerald-950/95 border-emerald-500/50 text-emerald-300";
+      }
+
+      container.classList.remove("hidden");
+      setTimeout(() => {
+        container.classList.add("hidden");
+      }, 2500);
+    }
+
+    // Number to words helper for Indian Currency
+    function numberToWordsINR(amount) {
+      const num = Math.floor(amount);
+      if (num === 0) return "Zero Rupees Only";
+
+      const a = ['', 'One ', 'Two ', 'Three ', 'Four ', 'Five ', 'Six ', 'Seven ', 'Eight ', 'Nine ', 'Ten ', 'Eleven ', 'Twelve ', 'Thirteen ', 'Fourteen ', 'Fifteen ', 'Sixteen ', 'Seventeen ', 'Eighteen ', 'Nineteen '];
+      const b = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
+
+      function inWords(n) {
+        if (n === 0) return '';
+        if (n < 20) return a[n];
+        if (n < 100) return b[Math.floor(n / 10)] + (n % 10 !== 0 ? ' ' + a[n % 10] : ' ');
+        if (n < 1000) return a[Math.floor(n / 100)] + 'Hundred ' + (n % 100 !== 0 ? 'and ' + inWords(n % 100) : '');
+        if (n < 100000) return inWords(Math.floor(n / 1000)) + 'Thousand ' + (n % 1000 !== 0 ? inWords(n % 1000) : '');
+        if (n < 10000000) return inWords(Math.floor(n / 100000)) + 'Lakh ' + (n % 100000 !== 0 ? inWords(n % 100000) : '');
+        return inWords(Math.floor(n / 10000000)) + 'Crore ' + (n % 10000000 !== 0 ? inWords(n % 10000000) : '');
+      }
+
+      return (inWords(num).trim() + " Rupees Only").replace(/\s+/g, ' ');
+    }
+
     async function deriveKey(passphrase, salt) {
       const enc = new TextEncoder();
       const keyMaterial = await crypto.subtle.importKey(
@@ -681,7 +739,8 @@
         }
       }
 
-      // Ensure Shubham Agrawal is in EC list
+      // Ensure EC Roster has proper defaults
+      if (!appState.ecMembers) appState.ecMembers = [];
       if (!appState.ecMembers.some(ec => ec.name.includes("Shubham Agrawal"))) {
         appState.ecMembers.unshift({
           id: "ec-shubham",
@@ -692,11 +751,11 @@
         });
       }
 
-      // Preload user's exact voucher from Image 1 if not exists
+      // Ensure the exact voucher requested is seeded and loaded
       if (!appState.vouchers) appState.vouchers = [];
-      const hasImage1Voucher = appState.vouchers.some(v => v.remarks && v.remarks.includes("24 SEPT WORLD PHARMACIST DAY"));
-      if (!hasImage1Voucher) {
-        const preSavedVoucher = {
+      const hasPharmacistDayVoucher = appState.vouchers.some(v => v.remarks && v.remarks.includes("24 SEPT WORLD PHARMACIST DAY"));
+      if (!hasPharmacistDayVoucher) {
+        const pharmacistDayVoucher = {
           id: "vch-2026-09-24-001",
           voucherNo: "GDCDA-VCH-3535",
           date: "2026-09-24",
@@ -712,10 +771,10 @@
             { desc: "GDCDA PIS SERVICES ONE TIME EXPENSE", date: "2026-09-24", mode: "UPI", ref: "Online portal", amt: 299 }
           ]
         };
-        appState.vouchers.unshift(preSavedVoucher);
+        appState.vouchers.unshift(pharmacistDayVoucher);
       }
 
-      // Preload default sample members if empty
+      // Seed initial members if empty
       if (!appState.members || appState.members.length === 0) {
         appState.members = [
           {
@@ -752,6 +811,7 @@
             feeNote: "Due for 2026-27"
           }
         ];
+        if (!appState.checkins) appState.checkins = {};
         if (!appState.checkins[appState.activeMeeting]) {
           appState.checkins[appState.activeMeeting] = [appState.members[0].id];
         }
@@ -765,7 +825,7 @@
       renderSavedVouchersTable();
       lucide.createIcons();
 
-      // Load initial voucher into creator
+      // Automatically load the pre-saved voucher into form
       loadVoucherIntoForm(appState.vouchers[0]);
 
       if (cloudConfig.token && cloudConfig.repo && cloudConfig.owner) {
@@ -816,11 +876,13 @@
                 populateECMemberDropdown();
                 renderSavedVouchersTable();
                 setSyncStatus("success", "Synced");
+                showToast("Data Synced with Cloud");
                 return;
               }
             } catch (err) {
               console.error(err);
               setSyncStatus("failed", "Decryption Failed");
+              showToast("Passphrase incorrect or Decryption failed", true);
               return;
             }
           }
@@ -987,7 +1049,7 @@
       const total = appState.members.length;
       const paid = appState.members.filter(m => m.feeStatus === "PAID").length;
       const pending = total - paid;
-      const currentMeetChecked = appState.checkins[appState.activeMeeting] || [];
+      const currentMeetChecked = (appState.checkins && appState.checkins[appState.activeMeeting]) ? appState.checkins[appState.activeMeeting] : [];
       const presentCount = currentMeetChecked.length;
       const absentCount = total - presentCount;
 
@@ -1098,6 +1160,7 @@
       updateStats();
       renderMembersTable();
       closeModal("modal-member");
+      showToast("Member Saved Successfully!");
       pushToCloud();
     }
 
@@ -1112,6 +1175,7 @@
         persistLocal();
         updateStats();
         renderMembersTable();
+        showToast("Member Deleted");
         pushToCloud();
       }
     }
@@ -1157,12 +1221,16 @@
         updateStats();
         renderMembersTable();
         closeModal("modal-meeting");
+        showToast("Meeting Created Successfully");
         pushToCloud();
       }
     }
 
     function exportToCSV() {
-      if (appState.members.length === 0) return;
+      if (appState.members.length === 0) {
+        showToast("No members to export", true);
+        return;
+      }
       let csv = "Firm Name,Owner Name,Additional Pharmacist,Mobile,Area,Address,Fee Status,Receipt Note\n";
       appState.members.forEach(m => {
         csv += `"${(m.firm||'').replace(/"/g, '""')}","${(m.owner||'').replace(/"/g, '""')}","${(m.pharmacist||'').replace(/"/g, '""')}","${m.mobile}","${(m.area||'').replace(/"/g, '""')}","${(m.address||'').replace(/"/g, '""')}","${m.feeStatus}","${(m.feeNote||'').replace(/"/g, '""')}"\n`;
@@ -1214,6 +1282,7 @@
 
       localStorage.setItem("gdcda_cloud_cfg", JSON.stringify(cloudConfig));
       closeModal("modal-settings");
+      showToast("Cloud Credentials Saved");
       syncWithCloud();
     }
 
@@ -1238,17 +1307,20 @@
         isECAuthenticated = true;
         closeModal("modal-ec-login");
         openECPortalModal();
+        showToast("EC Portal Unlocked");
       } else {
         const input = document.getElementById("ec-password-input");
         input.classList.add("border-rose-500");
         input.value = "";
         input.placeholder = "Incorrect Password! Try again.";
+        showToast("Invalid EC Password", true);
       }
     }
 
     function lockECPortal() {
       isECAuthenticated = false;
       closeModal("modal-ec-portal");
+      showToast("EC Portal Locked");
     }
 
     function switchECTab(tab) {
@@ -1309,6 +1381,7 @@
       renderECMembers();
       populateECMemberDropdown();
       toggleAddECForm();
+      showToast("EC Member Added");
       pushToCloud();
     }
 
@@ -1318,6 +1391,7 @@
         persistLocal();
         renderECMembers();
         populateECMemberDropdown();
+        showToast("EC Member Removed");
         pushToCloud();
       }
     }
@@ -1402,6 +1476,8 @@
       const container = document.getElementById("expense-items-container");
       container.innerHTML = "";
       addExpenseItemRow();
+      calculateExpenseTotal();
+      showToast("Form Reset");
     }
 
     function loadVoucherIntoForm(voucher) {
@@ -1433,6 +1509,7 @@
         const remInput = document.getElementById("exp-remarks");
         remInput.focus();
         remInput.classList.add("border-rose-500");
+        showToast("Please enter General Purpose / Remarks", true);
         return;
       } else {
         document.getElementById("exp-remarks").classList.remove("border-rose-500");
@@ -1452,6 +1529,7 @@
       });
 
       if (items.length === 0) {
+        showToast("Please enter at least one valid expense item", true);
         addExpenseItemRow();
         return;
       }
@@ -1493,15 +1571,14 @@
       renderSavedVouchersTable();
       pushToCloud();
 
-      // UI Confirmation feedback on button
-      const btn = document.getElementById("btn-save-voucher");
+      showToast("Voucher Saved Successfully!");
+
+      // Button feedback
       const btnText = document.getElementById("btn-save-voucher-text");
       const orig = btnText.innerText;
       btnText.innerText = "✓ Saved Successfully!";
-      btn.classList.add("bg-emerald-700");
       setTimeout(() => {
         btnText.innerText = orig;
-        btn.classList.remove("bg-emerald-700");
       }, 1500);
     }
 
@@ -1512,7 +1589,7 @@
 
       (appState.vouchers || []).forEach(v => {
         const tr = document.createElement("tr");
-        tr.className = "hover:bg-slate-800/40 border-b border-slate-800/60";
+        tr.className = "hover:bg-slate-800/40 border-b border-slate-800/60 transition";
         tr.innerHTML = `
           <td class="p-3 font-mono font-bold text-teal-400">${escapeHtml(v.voucherNo)}</td>
           <td class="p-3 text-slate-300 whitespace-nowrap">${v.date}</td>
@@ -1524,14 +1601,14 @@
           <td class="p-3 font-bold mono text-emerald-400 whitespace-nowrap">₹ ${v.total.toFixed(2)}</td>
           <td class="p-3 text-right whitespace-nowrap">
             <div class="flex items-center justify-end gap-1.5">
-              <button onclick="printSavedVoucher('${v.id}')" class="px-2.5 py-1 bg-indigo-600/30 hover:bg-indigo-600/60 text-indigo-300 rounded text-xs flex items-center gap-1 font-semibold transition" title="Print A6 Voucher">
+              <button onclick="printSavedVoucher('${v.id}')" class="px-2.5 py-1.5 bg-indigo-600/30 hover:bg-indigo-600/60 text-indigo-300 rounded text-xs flex items-center gap-1 font-semibold transition active:scale-95 cursor-pointer" title="Print A6 Voucher">
                 <i data-lucide="printer" class="w-3.5 h-3.5"></i>
                 <span>Print</span>
               </button>
-              <button onclick="editSavedVoucher('${v.id}')" class="p-1 hover:bg-slate-800 rounded text-slate-400 hover:text-slate-200 transition" title="Edit">
+              <button onclick="editSavedVoucher('${v.id}')" class="p-1.5 hover:bg-slate-800 rounded text-slate-400 hover:text-slate-200 transition" title="Edit">
                 <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
               </button>
-              <button onclick="deleteSavedVoucher('${v.id}')" class="p-1 hover:bg-rose-950/60 rounded text-slate-400 hover:text-rose-400 transition" title="Delete">
+              <button onclick="deleteSavedVoucher('${v.id}')" class="p-1.5 hover:bg-rose-950/60 rounded text-slate-400 hover:text-rose-400 transition" title="Delete">
                 <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
               </button>
             </div>
@@ -1559,6 +1636,7 @@
         persistLocal();
         updateStats();
         renderSavedVouchersTable();
+        showToast("Voucher Deleted");
         pushToCloud();
       }
     }
@@ -1582,6 +1660,7 @@
       });
 
       if (items.length === 0) {
+        showToast("Add at least one item before printing", true);
         addExpenseItemRow();
         return;
       }
@@ -1600,33 +1679,35 @@
         total
       };
 
-      renderAndPrintVoucherWindow(voucherData);
+      triggerA6IsolatedPrint(voucherData);
     }
 
     function printSavedVoucher(id) {
       const v = appState.vouchers.find(x => x.id === id);
       if (v) {
-        renderAndPrintVoucherWindow(v);
+        triggerA6IsolatedPrint(v);
       }
     }
 
-    // Opens a pristine dedicated print window to completely avoid Chrome/Canon blank preview issues
-    function renderAndPrintVoucherWindow(v) {
+    // Directly renders clean document into hidden iframe to guarantee crisp Canon LBP2900 single-page print without blank sheets
+    function triggerA6IsolatedPrint(v) {
       let rowsHtml = "";
       v.items.forEach((it, idx) => {
         rowsHtml += `
-          <tr style="border-bottom: 1px solid #e2e8f0;">
-            <td style="padding: 3px 2px; text-align: center; border-right: 1px solid #1e293b; font-size: 8px;">${idx + 1}</td>
-            <td style="padding: 3px 4px; border-right: 1px solid #1e293b; font-size: 8px;">
-              <strong style="display:block; line-height: 1.1;">${escapeHtml(it.desc)}</strong>
-              ${it.ref ? `<span style="font-size:7px; color:#475569;">Ref: ${escapeHtml(it.ref)}</span>` : ''}
+          <tr style="border-bottom: 1px solid #1e293b;">
+            <td style="padding: 2.5px 2px; text-align: center; border-right: 1px solid #1e293b; font-size: 8px;">${idx + 1}</td>
+            <td style="padding: 2.5px 4px; border-right: 1px solid #1e293b; font-size: 8px; line-height: 1.15;">
+              <strong>${escapeHtml(it.desc)}</strong>
             </td>
-            <td style="padding: 3px 2px; text-align: center; border-right: 1px solid #1e293b; font-size: 7.5px;">${it.date || v.date}</td>
-            <td style="padding: 3px 2px; text-align: center; border-right: 1px solid #1e293b; font-size: 7.5px; font-weight: bold;">${it.mode || 'UPI'}</td>
-            <td style="padding: 3px 4px; text-align: right; font-size: 8px; font-family: monospace; font-weight: bold;">₹ ${it.amt.toFixed(2)}</td>
+            <td style="padding: 2.5px 2px; text-align: center; border-right: 1px solid #1e293b; font-size: 7.5px;">${it.date || v.date}</td>
+            <td style="padding: 2.5px 2px; text-align: center; border-right: 1px solid #1e293b; font-size: 7.5px; font-weight: bold;">${it.mode || 'UPI'}</td>
+            <td style="padding: 2.5px 3px; border-right: 1px solid #1e293b; font-size: 7.5px; color: #334155;">${escapeHtml(it.ref || '-')}</td>
+            <td style="padding: 2.5px 4px; text-align: right; font-size: 8px; font-family: monospace; font-weight: bold;">₹ ${it.amt.toFixed(2)}</td>
           </tr>
         `;
       });
+
+      const totalInWords = numberToWordsINR(v.total);
 
       const printHtml = `
         <!DOCTYPE html>
@@ -1637,84 +1718,75 @@
           <style>
             @page {
               size: 105mm 148mm portrait;
-              margin: 4mm;
+              margin: 3mm;
             }
             * {
               box-sizing: border-box;
             }
             body {
-              font-family: Arial, sans-serif;
+              font-family: Arial, Helvetica, sans-serif;
               color: #000000;
               background: #ffffff;
               margin: 0;
               padding: 2mm;
-              font-size: 8.5px;
-              line-height: 1.2;
+              font-size: 8px;
+              line-height: 1.15;
             }
-            .header {
+            .header-box {
               text-align: center;
-              border-bottom: 2px solid #000;
-              padding-bottom: 4px;
-              margin-bottom: 5px;
+              border-bottom: 2px solid #000000;
+              padding-bottom: 3px;
+              margin-bottom: 4px;
             }
-            .header h1 {
-              font-size: 11px;
+            .main-heading {
+              font-size: 10.5px;
               font-weight: 900;
               text-transform: uppercase;
               margin: 0;
               letter-spacing: 0.2px;
             }
-            .header p {
-              font-size: 7.5px;
-              font-weight: 600;
-              color: #334155;
-              margin: 1px 0;
-            }
-            .badge {
-              display: inline-block;
-              border: 1px solid #000;
-              padding: 2px 6px;
-              margin-top: 2px;
-              font-weight: 800;
+            .sub-heading {
               font-size: 8px;
-              text-transform: uppercase;
-              background-color: #f1f5f9;
+              font-weight: 700;
+              color: #1e293b;
+              margin: 1px 0;
             }
             .meta-table {
               width: 100%;
               border-collapse: collapse;
-              margin-bottom: 5px;
+              margin-bottom: 4px;
               font-size: 8px;
             }
             .meta-table td {
               padding: 1.5px 0;
+              vertical-align: top;
             }
             .items-table {
               width: 100%;
               border-collapse: collapse;
-              border: 1.5px solid #000;
-              margin-bottom: 5px;
+              border: 1.5px solid #000000;
+              margin-bottom: 4px;
             }
             .items-table th {
               background: #f1f5f9;
-              border-bottom: 1.5px solid #000;
-              padding: 3px 2px;
+              border-bottom: 1.5px solid #000000;
+              padding: 2.5px 2px;
               font-size: 7.5px;
               text-transform: uppercase;
               font-weight: 800;
             }
-            .signatures {
+            .signatures-box {
               display: flex;
               justify-content: space-between;
-              margin-top: 24px;
-              padding-top: 4px;
+              margin-top: 22px;
+              padding-top: 2px;
             }
-            .sig-col {
-              width: 30%;
+            .sig-column {
+              width: 31%;
               text-align: center;
             }
             .sig-line {
-              border-top: 1px dashed #000;
+              border-top: 1px dashed #000000;
               padding-top: 2px;
               font-size: 7.5px;
               font-weight: 700;
@@ -1722,80 +1794,82 @@
           </style>
         </head>
         <body>
-          <div class="header">
-            <h1>Gondia District Chemist &amp; Druggist Association</h1>
-            <p>(Affiliated to MSCDA) - Gondia, Maharashtra</p>
-            <div class="badge">GDCDA Expense Reimbursement Voucher</div>
+          <div class="header-box">
+            <h1 class="main-heading">GDCDA EC MEMBER EXPENSE REIMBURSEMENT</h1>
+            <p class="sub-heading">Gondia District Chemist &amp; Druggist Association (Affiliated to MSCDA)</p>
           </div>
 
           <table class="meta-table">
             <tr>
-              <td><strong>Voucher No:</strong> <span style="font-family: monospace; font-weight:bold;">${v.voucherNo}</span></td>
-              <td style="text-align: right;"><strong>Date:</strong> ${v.date}</td>
+              <td style="width: 55%;"><strong>Voucher No:</strong> <span style="font-family: monospace; font-weight: bold;">${v.voucherNo}</span></td>
+              <td style="width: 45%; text-align: right;"><strong>Date:</strong> ${v.date}</td>
             </tr>
             <tr>
               <td colspan="2"><strong>Paid By:</strong> ${escapeHtml(v.payer)}</td>
             </tr>
             <tr>
-              <td colspan="2"><strong>Purpose:</strong> <u>${escapeHtml(v.remarks)}</u></td>
+              <td colspan="2"><strong>General Purpose / Remarks:</strong> <u>${escapeHtml(v.remarks)}</u></td>
             </tr>
           </table>
 
           <table class="items-table">
             <thead>
               <tr>
-                <th style="width: 16px; border-right: 1px solid #1e293b;">#</th>
-                <th style="border-right: 1px solid #1e293b; text-align: left; padding-left: 4px;">Particulars</th>
-                <th style="width: 48px; border-right: 1px solid #1e293b; text-align: center;">Date</th>
-                <th style="width: 32px; border-right: 1px solid #1e293b; text-align: center;">Mode</th>
-                <th style="width: 55px; text-align: right; padding-right: 4px;">Amount (₹)</th>
+                <th style="width: 14px; border-right: 1px solid #1e293b;">#</th>
+                <th style="border-right: 1px solid #1e293b; text-align: left; padding-left: 4px;">Particulars / Description</th>
+                <th style="width: 46px; border-right: 1px solid #1e293b; text-align: center;">Date</th>
+                <th style="width: 28px; border-right: 1px solid #1e293b; text-align: center;">Mode</th>
+                <th style="width: 50px; border-right: 1px solid #1e293b; text-align: left; padding-left: 2px;">Ref / UTR</th>
+                <th style="width: 52px; text-align: right; padding-right: 4px;">Amount (₹)</th>
               </tr>
             </thead>
             <tbody>
               ${rowsHtml}
             </tbody>
             <tfoot>
-              <tr style="border-top: 1.5px solid #000; background: #f8fafc; font-weight: bold;">
-                <td colspan="4" style="padding: 4px; text-align: right; border-right: 1px solid #1e293b; font-size: 8.5px;">Grand Total:</td>
-                <td style="padding: 4px; text-align: right; font-size: 8.5px; font-family: monospace;">₹ ${v.total.toFixed(2)}</td>
+              <tr style="border-top: 1.5px solid #000000; background: #f8fafc; font-weight: bold;">
+                <td colspan="5" style="padding: 3px; text-align: right; border-right: 1px solid #1e293b; font-size: 8.5px;">Grand Total:</td>
+                <td style="padding: 3px 4px; text-align: right; font-size: 8.5px; font-family: monospace;">₹ ${v.total.toFixed(2)}</td>
               </tr>
             </tfoot>
           </table>
 
-          <div style="font-size: 7.5px; margin-top: 3px;">
+          <div style="font-size: 7.5px; margin-bottom: 2px;">
+            <strong>Amount in Words:</strong> <i>${totalInWords}</i>
+          </div>
+
+          <div style="font-size: 7px; color: #334155; margin-bottom: 6px;">
             <strong>Verification Note:</strong> Certified that all expenses logged above are bonafide association disbursements.
           </div>
 
-          <div class="signatures">
-            <div class="sig-col">
-              <div class="sig-line">Claimant Signature</div>
+          <div class="signatures-box">
+            <div class="sig-column">
+              <div class="sig-line">Claimant / Submitting EC Member</div>
             </div>
-            <div class="sig-col">
-              <div class="sig-line">Hon. Treasurer</div>
+            <div class="sig-column">
+              <div class="sig-line">Hon. Treasurer (GDCDA)</div>
             </div>
-            <div class="sig-col">
-              <div class="sig-line">President / Gen. Sec.</div>
+            <div class="sig-column">
+              <div class="sig-line">Approved by President / Gen. Sec.</div>
             </div>
           </div>
         </body>
         </html>
       `;
 
-      const printWin = window.open('', '_blank', 'width=650,height=800');
-      if (!printWin) {
-        alert("Please enable pop-ups in your browser to print the voucher.");
-        return;
-      }
-      printWin.document.open();
-      printWin.document.write(printHtml);
-      printWin.document.close();
+      const iframe = document.getElementById("print-hidden-frame");
+      const doc = iframe.contentWindow || iframe.contentDocument;
+      const targetDoc = doc.document || doc;
 
-      printWin.onload = function() {
-        printWin.focus();
-        setTimeout(() => {
-          printWin.print();
-        }, 150);
-      };
+      targetDoc.open();
+      targetDoc.write(printHtml);
+      targetDoc.close();
+
+      setTimeout(() => {
+        iframe.contentWindow.focus();
+        iframe.contentWindow.print();
+        showToast("Print Dialog Triggered");
+      }, 250);
     }
 
     function openModal(id) {
@@ -1814,8 +1888,9 @@
       return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
     }
 
+    // Keyboard Shortcuts
     window.addEventListener("keydown", (e) => {
-      // Search: /
+      // Focus Search: /
       if (e.key === "/" && document.activeElement.tagName !== "INPUT" && document.activeElement.tagName !== "TEXTAREA") {
         e.preventDefault();
         document.getElementById("search-input").focus();
@@ -1846,6 +1921,7 @@
       }
     });
 
+    // Start application on load
     window.addEventListener("DOMContentLoaded", initializeData);
   </script>
 </body>
