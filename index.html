@@ -8,10 +8,10 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
     body { font-family: 'Inter', sans-serif; }
     .mono { font-family: 'JetBrains+Mono', monospace; }
-    
+
     ::-webkit-scrollbar { width: 6px; height: 6px; }
     ::-webkit-scrollbar-track { background: #0f172a; }
     ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
@@ -42,7 +42,7 @@
     <!-- Right Action Buttons -->
     <div class="flex items-center gap-2 flex-wrap">
       <!-- Sync Status -->
-      <div id="sync-status-badge" class="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-slate-800/80 border border-slate-700 text-xs font-medium text-slate-300">
+      <div id="sync-status-badge" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800/80 border border-slate-700 text-xs font-medium text-slate-300">
         <div id="sync-dot" class="h-2 w-2 rounded-full bg-slate-500"></div>
         <span id="sync-label">Local Cache</span>
       </div>
@@ -55,7 +55,7 @@
       </button>
 
       <!-- EC Portal Protected Button -->
-      <button onclick="openECPortalModal()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-600/20 hover:bg-indigo-600/30 border border-indigo-500/40 text-xs font-semibold text-indigo-300 transition active:scale-95">
+      <button onclick="openECPortalModal()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-600/20 hover:bg-indigo-600/30 border border-indigo-500/40 text-xs font-semibold text-indigo-300 transition active:scale-95 shadow-sm">
         <i data-lucide="shield" class="w-3.5 h-3.5 text-indigo-400"></i>
         <span>EC Portal &amp; Expenses</span>
         <kbd class="text-[9px] bg-indigo-950 px-1 py-0.5 rounded border border-indigo-700 text-indigo-300">Alt+X</kbd>
@@ -80,19 +80,20 @@
     </div>
   </header>
 
+  <!-- Shortcuts Banner -->
   <section class="bg-slate-900/60 border-b border-slate-800/80 px-4 lg:px-8 py-1.5 text-[11px] text-slate-400 flex flex-wrap items-center justify-between gap-2">
     <div class="flex items-center gap-4 flex-wrap">
       <span class="text-slate-500 font-semibold uppercase text-[10px]">Shortcuts:</span>
-      <span><kbd class="bg-slate-800 border border-slate-700 px-1.5 py-0.5 rounded text-slate-300">/</kbd> Focus Search</span>
+      <span><kbd class="bg-slate-800 border border-slate-700 px-1.5 py-0.5 rounded text-slate-300">/</kbd> Search</span>
       <span><kbd class="bg-slate-800 border border-slate-700 px-1.5 py-0.5 rounded text-slate-300">Alt + N</kbd> Add Member</span>
-      <span><kbd class="bg-slate-800 border border-slate-700 px-1.5 py-0.5 rounded text-slate-300">Alt + S</kbd> Sync Cloud</span>
+      <span><kbd class="bg-slate-800 border border-slate-700 px-1.5 py-0.5 rounded text-slate-300">Alt + S</kbd> Sync</span>
       <span><kbd class="bg-slate-800 border border-slate-700 px-1.5 py-0.5 rounded text-slate-300">Alt + X</kbd> EC Portal</span>
       <span><kbd class="bg-slate-800 border border-slate-700 px-1.5 py-0.5 rounded text-slate-300">Alt + E</kbd> Export</span>
       <span><kbd class="bg-slate-800 border border-slate-700 px-1.5 py-0.5 rounded text-slate-300">Esc</kbd> Close</span>
     </div>
     <div class="text-[11px] text-emerald-400/90 flex items-center gap-1.5">
       <i data-lucide="lock" class="w-3 h-3"></i>
-      <span>Zero-Leak Client-Side Encryption Enabled</span>
+      <span>Zero-Leak Client-Side Encryption Active</span>
     </div>
   </section>
 
@@ -179,6 +180,7 @@
       </div>
     </div>
 
+    <!-- Members Table -->
     <div class="border border-slate-800 bg-slate-900/60 rounded-2xl overflow-hidden shadow-xl backdrop-blur">
       <div class="overflow-x-auto">
         <table class="w-full text-left text-xs text-slate-300">
@@ -201,6 +203,7 @@
     </div>
 
   </main>
+
 
   <!-- 1. ADD / EDIT MEMBER MODAL -->
   <div id="modal-member" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4">
@@ -282,7 +285,7 @@
 
       <div class="bg-amber-950/30 border border-amber-500/30 rounded-lg p-3 text-[11px] text-amber-300 space-y-1">
         <p class="font-bold">Zero Data Leak Guarantee:</p>
-        <p>Your GitHub PAT and Master Passphrase reside <strong>only in this browser</strong>. They are never committed to your public repository.</p>
+        <p>Your GitHub PAT and Master Passphrase reside <strong>only in your browser</strong>. They are never committed to your public repository.</p>
       </div>
 
       <form id="settings-form" onsubmit="saveSettings(event)" class="space-y-3">
@@ -364,7 +367,7 @@
         </h3>
         <button onclick="closeModal('modal-ec-login')" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-4 h-4"></i></button>
       </div>
-      <p class="text-xs text-slate-400">Enter EC password to manage committee members, reimbursement vouchers, and view reports.</p>
+      <p class="text-xs text-slate-400">Enter EC password to manage committee members and generate/print expense vouchers.</p>
       <form id="ec-login-form" onsubmit="handleECLogin(event)" class="space-y-3">
         <div>
           <label class="block text-[11px] font-semibold text-slate-400 mb-1">Access Password</label>
@@ -380,109 +383,107 @@
 
   <!-- 5. EC PORTAL MAIN MODAL (MEMBERS + EXPENSE CREATOR + SAVED VOUCHERS) -->
   <div id="modal-ec-portal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden items-center justify-center p-2 sm:p-4 overflow-y-auto">
-    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-5xl w-full p-5 sm:p-6 shadow-2xl relative space-y-5 my-auto max-h-[92vh] flex flex-col">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-6xl w-full p-5 sm:p-6 shadow-2xl relative space-y-4 my-auto max-h-[94vh] flex flex-col">
       
       <!-- Header -->
       <div class="flex items-center justify-between border-b border-slate-800 pb-3 flex-shrink-0">
         <div>
           <h2 class="text-base font-bold text-white flex items-center gap-2">
             <i data-lucide="shield-check" class="w-5 h-5 text-indigo-400"></i>
-            <span>GDCDA Executive Committee (EC) Management</span>
+            <span>GDCDA Executive Committee (EC) Portal</span>
           </h2>
-          <p class="text-xs text-slate-400">Manage EC roster and create, save, edit, &amp; print A6 Portrait Expense Reimbursement Vouchers.</p>
+          <p class="text-xs text-slate-400">Expense reimbursement creator with item-level payment tracking and A6 portrait print.</p>
         </div>
         <div class="flex items-center gap-2">
-          <button onclick="lockECPortal()" class="text-xs px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300">Lock</button>
-          <button onclick="closeModal('modal-ec-portal')" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+          <button onclick="lockECPortal()" class="text-xs px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 transition">Lock</button>
+          <button onclick="closeModal('modal-ec-portal')" class="text-slate-400 hover:text-white transition"><i data-lucide="x" class="w-5 h-5"></i></button>
         </div>
       </div>
 
       <!-- Navigation Tabs -->
       <div class="flex items-center gap-2 border-b border-slate-800 flex-shrink-0 overflow-x-auto">
-        <button onclick="switchECTab('expenses')" id="tab-btn-ec-expenses" class="px-4 py-2 text-xs font-bold border-b-2 border-indigo-500 text-indigo-300">Expense Creator</button>
-        <button onclick="switchECTab('saved-vouchers')" id="tab-btn-ec-vouchers" class="px-4 py-2 text-xs font-semibold text-slate-400 hover:text-slate-200">Saved Vouchers (<span id="ec-vouchers-count">0</span>)</button>
-        <button onclick="switchECTab('members')" id="tab-btn-ec-members" class="px-4 py-2 text-xs font-semibold text-slate-400 hover:text-slate-200">EC Members Directory</button>
+        <button onclick="switchECTab('expenses')" id="tab-btn-ec-expenses" class="px-4 py-2 text-xs font-bold border-b-2 border-indigo-500 text-indigo-300 transition">Expense Creator</button>
+        <button onclick="switchECTab('saved-vouchers')" id="tab-btn-ec-vouchers" class="px-4 py-2 text-xs font-semibold text-slate-400 hover:text-slate-200 transition">Saved Vouchers (<span id="ec-vouchers-count">0</span>)</button>
+        <button onclick="switchECTab('members')" id="tab-btn-ec-members" class="px-4 py-2 text-xs font-semibold text-slate-400 hover:text-slate-200 transition">EC Members Directory</button>
       </div>
 
+      <!-- Tab Content Panels -->
       <div class="overflow-y-auto flex-1 pr-1 space-y-4">
+        
         <!-- TAB 1: EXPENSE CREATOR -->
         <div id="ec-tab-expenses" class="space-y-4">
           <div class="bg-slate-800/40 border border-slate-800 rounded-xl p-4 space-y-4">
+            
             <div class="flex items-center justify-between border-b border-slate-800 pb-2">
               <h4 class="text-xs font-bold text-indigo-300 uppercase tracking-wider flex items-center gap-1.5">
                 <i data-lucide="receipt" class="w-4 h-4"></i>
                 <span id="voucher-form-mode-title">Create GDCDA Expense Reimbursement Voucher</span>
               </h4>
-              <button type="button" onclick="resetVoucherForm()" class="text-[11px] text-slate-400 hover:text-white">
-                Clear / New Voucher
+              <button type="button" onclick="resetVoucherForm()" class="text-[11px] text-teal-400 hover:text-teal-300 font-semibold transition">
+                + New / Clear Form
               </button>
             </div>
 
             <input type="hidden" id="exp-voucher-id" />
 
-            <!-- Main Metadata Form -->
+            <!-- General Header Information -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
               <div>
                 <label class="block text-[11px] font-semibold text-slate-400 mb-1">Paid By (EC Member) *</label>
-                <select id="exp-ec-member" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-2 text-xs text-white">
+                <select id="exp-ec-member" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-2 text-xs text-white focus:outline-none focus:border-indigo-500">
                 </select>
               </div>
               <div>
                 <label class="block text-[11px] font-semibold text-slate-400 mb-1">Voucher Date *</label>
-                <input id="exp-date" type="date" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-2 text-xs text-white" />
-              </div>
-              <div>
-                <label class="block text-[11px] font-semibold text-slate-400 mb-1">Overall Payment Mode *</label>
-                <select id="exp-pay-type" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-2 text-xs text-white">
-                  <option value="UPI">UPI</option>
-                  <option value="CASH">CASH</option>
-                  <option value="CASH+UPI">CASH+UPI</option>
-                  <option value="NEFT">NEFT</option>
-                  <option value="RTGS">RTGS</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-              <div>
-                <label class="block text-[11px] font-semibold text-slate-400 mb-1">Payment Reference / UTR / Remarks</label>
-                <input id="exp-pay-ref" type="text" placeholder="e.g. CASH+UPI / UTR 93821038" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-2 text-xs text-white" />
+                <input id="exp-date" type="date" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-2 text-xs text-white focus:outline-none focus:border-indigo-500" />
               </div>
               <div>
                 <label class="block text-[11px] font-semibold text-slate-400 mb-1">General Purpose / Meeting Remarks *</label>
-                <input id="exp-remarks" type="text" placeholder="e.g. 24 SEPT WORLD PHARMACIST DAY EXPENSES" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-2 text-xs text-white" />
+                <input id="exp-remarks" type="text" placeholder="e.g. 24 SEPT WORLD PHARMACIST DAY EXPENSES" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-2 text-xs text-white focus:outline-none focus:border-indigo-500" />
               </div>
             </div>
 
-            <!-- Dynamic Line Items -->
+            <!-- Dynamic Line Items (Every item has its own Mode, Ref/UTR, Date, and Amount) -->
             <div class="space-y-2 pt-2 border-t border-slate-800">
               <div class="flex items-center justify-between">
-                <span class="text-[11px] font-bold text-slate-300 uppercase">Expense Items Breakdown (With Individual Date &amp; Mode)</span>
-                <button type="button" onclick="addExpenseItemRow()" class="text-xs text-indigo-400 hover:text-indigo-300 flex items-center gap-1 font-semibold">
+                <span class="text-[11px] font-bold text-slate-300 uppercase tracking-wide">
+                  Expense Items Breakdown (Each with own Date, Mode, &amp; Reference)
+                </span>
+                <button type="button" onclick="addExpenseItemRow()" class="text-xs text-indigo-400 hover:text-indigo-300 flex items-center gap-1 font-semibold transition">
                   <i data-lucide="plus-circle" class="w-3.5 h-3.5"></i>
-                  <span>Add Item</span>
+                  <span>Add Item Row</span>
                 </button>
+              </div>
+
+              <!-- Header for Large Screens -->
+              <div class="hidden md:grid md:grid-cols-12 gap-2 text-[10px] font-bold uppercase text-slate-400 px-2.5">
+                <div class="md:col-span-4">Particulars / Description</div>
+                <div class="md:col-span-2">Date</div>
+                <div class="md:col-span-2">Payment Mode</div>
+                <div class="md:col-span-2">Ref / UTR / Remarks</div>
+                <div class="md:col-span-1 text-right">Amount (₹)</div>
+                <div class="md:col-span-1 text-center">Action</div>
               </div>
 
               <!-- Container for Rows -->
               <div id="expense-items-container" class="space-y-2">
               </div>
 
-              <!-- Grand Total Banner -->
-              <div class="flex justify-between items-center bg-slate-900/80 p-3 rounded-xl border border-slate-800 text-xs">
-                <span class="font-bold text-slate-300">Total Calculated Amount:</span>
+              <!-- Grand Total Display -->
+              <div class="flex justify-between items-center bg-slate-900/90 p-3 rounded-xl border border-slate-800 text-xs">
+                <span class="font-bold text-slate-300">Total Calculated Voucher Amount:</span>
                 <span class="text-base font-bold text-emerald-400 mono">₹ <span id="exp-grand-total">0.00</span></span>
               </div>
             </div>
 
             <!-- Actions: Save & Print -->
-            <div class="flex flex-wrap items-center justify-end gap-2 pt-2">
-              <button type="button" onclick="saveVoucherRecord()" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-bold text-slate-200 flex items-center gap-1.5 transition">
+            <div class="flex flex-wrap items-center justify-end gap-2 pt-2 border-t border-slate-800/80">
+              <button type="button" id="btn-save-voucher" onclick="saveVoucherRecord()" class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-bold text-slate-200 flex items-center gap-1.5 transition active:scale-95">
                 <i data-lucide="save" class="w-3.5 h-3.5 text-teal-400"></i>
                 <span id="btn-save-voucher-text">Save Voucher to Ledger</span>
               </button>
 
-              <button type="button" onclick="printCurrentVoucher()" class="px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-xs font-bold text-white flex items-center gap-2 shadow-lg shadow-indigo-600/30 transition">
+              <button type="button" onclick="printCurrentVoucher()" class="px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-xs font-bold text-white flex items-center gap-2 shadow-lg shadow-indigo-600/30 transition active:scale-95">
                 <i data-lucide="printer" class="w-4 h-4"></i>
                 <span>Print A6 Portrait Voucher</span>
               </button>
@@ -504,7 +505,7 @@
                   <th class="p-3">Voucher #</th>
                   <th class="p-3">Date</th>
                   <th class="p-3">Paid By &amp; Purpose</th>
-                  <th class="p-3">Payment Mode</th>
+                  <th class="p-3">Items Count</th>
                   <th class="p-3">Total (₹)</th>
                   <th class="p-3 text-right">Actions</th>
                 </tr>
@@ -571,9 +572,6 @@
       </div>
     </div>
   </div>
-
-  <!-- Hidden Print Frame to guarantee 0% blank pages -->
-  <iframe id="printIframe" style="position: absolute; width: 0; height: 0; border: none; visibility: hidden;"></iframe>
 
   <script>
     const EC_MASTER_HASH = "GDCDARocks@144EC";
@@ -694,7 +692,7 @@
         });
       }
 
-      // PRE-SAVE EXACT USER VOUCHER FROM IMAGE 1 IF NOT ALREADY PRESENT
+      // Preload user's exact voucher from Image 1 if not exists
       if (!appState.vouchers) appState.vouchers = [];
       const hasImage1Voucher = appState.vouchers.some(v => v.remarks && v.remarks.includes("24 SEPT WORLD PHARMACIST DAY"));
       if (!hasImage1Voucher) {
@@ -703,23 +701,21 @@
           voucherNo: "GDCDA-VCH-3535",
           date: "2026-09-24",
           payer: "Shubham Agrawal - Volunteer [Gondia City]",
-          paymentType: "UPI",
-          paymentRef: "CASH+UPI",
           remarks: "24 SEPT WORLD PHARMACIST DAY EXPENSES",
           total: 3535.00,
           items: [
-            { desc: "EVENING SNACK + DINNER TO RIYA IMPERIAL FOR BALLAL SIR", date: "2026-09-24", mode: "UPI", amt: 367 },
-            { desc: "MORNING BREAKFAST", date: "2026-09-24", mode: "UPI", amt: 155 },
-            { desc: "BALLAL SIR TKT GND TO NGP VIDARBHA 2ND AC", date: "2026-09-24", mode: "UPI", amt: 794 },
-            { desc: "HOTEL RIYA IMPERIAL EXECUTIVE 301 ROOM BOOKING AMT", date: "2026-09-24", mode: "UPI", amt: 1800 },
-            { desc: "AIOCD STRIKE RIBBON EXP", date: "2026-09-24", mode: "CASH", amt: 120 },
-            { desc: "GDCDA PIS SERVICES ONE TIME EXPENSE", date: "2026-09-24", mode: "UPI", amt: 299 }
+            { desc: "EVENING SNACK + DINNER TO RIYA IMPERIAL FOR BALLAL SIR", date: "2026-09-24", mode: "UPI", ref: "UPI Paid", amt: 367 },
+            { desc: "MORNING BREAKFAST", date: "2026-09-24", mode: "UPI", ref: "UPI Paid", amt: 155 },
+            { desc: "BALLAL SIR TKT GND TO NGP VIDARBHA 2ND AC", date: "2026-09-24", mode: "UPI", ref: "IRCTC UTR", amt: 794 },
+            { desc: "HOTEL RIYA IMPERIAL EXECUTIVE 301 ROOM BOOKING AMT", date: "2026-09-24", mode: "UPI", ref: "Booking UPI", amt: 1800 },
+            { desc: "AIOCD STRIKE RIBBON EXP", date: "2026-09-24", mode: "CASH", ref: "Cash Paid", amt: 120 },
+            { desc: "GDCDA PIS SERVICES ONE TIME EXPENSE", date: "2026-09-24", mode: "UPI", ref: "Online portal", amt: 299 }
           ]
         };
         appState.vouchers.unshift(preSavedVoucher);
       }
 
-      // Preload default sample members if completely empty
+      // Preload default sample members if empty
       if (!appState.members || appState.members.length === 0) {
         appState.members = [
           {
@@ -769,7 +765,7 @@
       renderSavedVouchersTable();
       lucide.createIcons();
 
-      // Automatically load the pre-saved voucher into the creator form
+      // Load initial voucher into creator
       loadVoucherIntoForm(appState.vouchers[0]);
 
       if (cloudConfig.token && cloudConfig.repo && cloudConfig.owner) {
@@ -792,7 +788,6 @@
       }
 
       setSyncStatus("syncing", "Syncing...");
-
       const url = `https://api.github.com/repos/${cloudConfig.owner}/${cloudConfig.repo}/contents/${cloudConfig.path}?ref=${cloudConfig.branch}`;
 
       try {
@@ -826,12 +821,10 @@
             } catch (err) {
               console.error(err);
               setSyncStatus("failed", "Decryption Failed");
-              alert("Master Passphrase does not match remote encrypted data.json!");
               return;
             }
           }
         }
-
         await pushToCloud();
       } catch (err) {
         console.error(err);
@@ -842,34 +835,39 @@
     async function pushToCloud() {
       if (!cloudConfig.token || !cloudConfig.passphrase) return;
 
-      const encryptedEnvelope = await encryptPayload(appState, cloudConfig.passphrase);
-      const jsonContent = JSON.stringify(encryptedEnvelope, null, 2);
-      const b64Content = btoa(unescape(encodeURIComponent(jsonContent)));
+      try {
+        const encryptedEnvelope = await encryptPayload(appState, cloudConfig.passphrase);
+        const jsonContent = JSON.stringify(encryptedEnvelope, null, 2);
+        const b64Content = btoa(unescape(encodeURIComponent(jsonContent)));
 
-      const putUrl = `https://api.github.com/repos/${cloudConfig.owner}/${cloudConfig.repo}/contents/${cloudConfig.path}`;
-      const payload = {
-        message: `GDCDA Cloud Vault Auto-Sync [${new Date().toLocaleString('en-IN')}]`,
-        content: b64Content,
-        branch: cloudConfig.branch
-      };
-      if (fileSha) payload.sha = fileSha;
+        const putUrl = `https://api.github.com/repos/${cloudConfig.owner}/${cloudConfig.repo}/contents/${cloudConfig.path}`;
+        const payload = {
+          message: `GDCDA Cloud Vault Auto-Sync [${new Date().toLocaleString('en-IN')}]`,
+          content: b64Content,
+          branch: cloudConfig.branch
+        };
+        if (fileSha) payload.sha = fileSha;
 
-      const putRes = await fetch(putUrl, {
-        method: "PUT",
-        headers: {
-          "Authorization": `Bearer ${cloudConfig.token}`,
-          "Content-Type": "application/json",
-          "Accept": "application/vnd.github.v3+json"
-        },
-        body: JSON.stringify(payload)
-      });
+        const putRes = await fetch(putUrl, {
+          method: "PUT",
+          headers: {
+            "Authorization": `Bearer ${cloudConfig.token}`,
+            "Content-Type": "application/json",
+            "Accept": "application/vnd.github.v3+json"
+          },
+          body: JSON.stringify(payload)
+        });
 
-      if (putRes.ok) {
-        const jsonRes = await putRes.json();
-        fileSha = jsonRes.content.sha;
-        setSyncStatus("success", "Encrypted & Synced");
-      } else {
-        setSyncStatus("failed", "Push Error");
+        if (putRes.ok) {
+          const jsonRes = await putRes.json();
+          fileSha = jsonRes.content.sha;
+          setSyncStatus("success", "Encrypted & Synced");
+        } else {
+          setSyncStatus("failed", "Push Error");
+        }
+      } catch (e) {
+        console.error(e);
+        setSyncStatus("failed", "Push Failed");
       }
     }
 
@@ -1058,7 +1056,6 @@
       pushToCloud();
     }
 
-    // --- MEMBER FORM ACTIONS ---
     function openMemberModal(mem = null) {
       document.getElementById("mem-id").value = mem ? mem.id : "";
       document.getElementById("mem-firm").value = mem ? mem.firm : "";
@@ -1119,7 +1116,6 @@
       }
     }
 
-    // --- MEETINGS HANDLING ---
     function populateMeetingSelect() {
       const sel = document.getElementById("meeting-select");
       sel.innerHTML = "";
@@ -1165,9 +1161,8 @@
       }
     }
 
-    // --- CSV EXPORTS ---
     function exportToCSV() {
-      if (appState.members.length === 0) return alert("No members to export!");
+      if (appState.members.length === 0) return;
       let csv = "Firm Name,Owner Name,Additional Pharmacist,Mobile,Area,Address,Fee Status,Receipt Note\n";
       appState.members.forEach(m => {
         csv += `"${(m.firm||'').replace(/"/g, '""')}","${(m.owner||'').replace(/"/g, '""')}","${(m.pharmacist||'').replace(/"/g, '""')}","${m.mobile}","${(m.area||'').replace(/"/g, '""')}","${(m.address||'').replace(/"/g, '""')}","${m.feeStatus}","${(m.feeNote||'').replace(/"/g, '""')}"\n`;
@@ -1198,7 +1193,6 @@
       URL.revokeObjectURL(url);
     }
 
-    // --- SETTINGS VAULT MODAL ---
     function openSettingsModal() {
       document.getElementById("cfg-passphrase").value = cloudConfig.passphrase || "";
       document.getElementById("cfg-owner").value = cloudConfig.owner || "techisinmydna";
@@ -1245,7 +1239,10 @@
         closeModal("modal-ec-login");
         openECPortalModal();
       } else {
-        alert("Invalid EC Authorization Password!");
+        const input = document.getElementById("ec-password-input");
+        input.classList.add("border-rose-500");
+        input.value = "";
+        input.placeholder = "Incorrect Password! Try again.";
       }
     }
 
@@ -1274,7 +1271,6 @@
       lucide.createIcons();
     }
 
-    // --- EC MEMBERS DIRECTORY ---
     function renderECMembers() {
       const tbody = document.getElementById("ec-members-table-body");
       tbody.innerHTML = "";
@@ -1287,7 +1283,7 @@
           <td class="p-3 text-slate-300">${escapeHtml(ec.area)}</td>
           <td class="p-3 font-mono text-slate-400">${ec.mobile}</td>
           <td class="p-3 text-right">
-            <button onclick="deleteECMember('${ec.id}')" class="text-rose-400 hover:text-rose-300 text-xs">Remove</button>
+            <button onclick="deleteECMember('${ec.id}')" class="text-rose-400 hover:text-rose-300 text-xs font-medium">Remove</button>
           </td>
         `;
         tbody.appendChild(tr);
@@ -1348,31 +1344,35 @@
 
       const defaultDate = item ? item.date : (document.getElementById("exp-date").value || new Date().toISOString().slice(0, 10));
       const defaultMode = item ? item.mode : "UPI";
+      const defaultRef = item ? (item.ref || "") : "";
       const defaultDesc = item ? item.desc : "";
       const defaultAmt = item ? item.amt : "";
 
       row.innerHTML = `
-        <div class="md:col-span-5">
-          <input type="text" value="${escapeHtml(defaultDesc)}" placeholder="Expense item description" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white exp-item-desc" required />
+        <div class="md:col-span-4">
+          <input type="text" value="${escapeHtml(defaultDesc)}" placeholder="Expense item description *" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white exp-item-desc" required />
         </div>
         <div class="md:col-span-2">
           <input type="date" value="${defaultDate}" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2 py-1.5 text-xs text-slate-300 exp-item-date" required />
         </div>
         <div class="md:col-span-2">
-          <select class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2 py-1.5 text-xs text-slate-300 exp-item-mode">
+          <select class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2 py-1.5 text-xs text-slate-200 exp-item-mode">
             <option value="UPI" ${defaultMode === 'UPI' ? 'selected' : ''}>UPI</option>
             <option value="CASH" ${defaultMode === 'CASH' ? 'selected' : ''}>CASH</option>
             <option value="NEFT" ${defaultMode === 'NEFT' ? 'selected' : ''}>NEFT</option>
             <option value="RTGS" ${defaultMode === 'RTGS' ? 'selected' : ''}>RTGS</option>
           </select>
         </div>
-        <div class="md:col-span-2 relative">
-          <span class="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs">₹</span>
-          <input type="number" min="0" step="0.5" value="${defaultAmt}" placeholder="0.00" oninput="calculateExpenseTotal()" class="w-full bg-slate-800 border border-slate-700 rounded-lg pl-6 pr-2 py-1.5 text-xs text-white mono exp-item-amt font-semibold" required />
+        <div class="md:col-span-2">
+          <input type="text" value="${escapeHtml(defaultRef)}" placeholder="Ref / UTR / Remarks" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-2 py-1.5 text-xs text-slate-300 exp-item-ref" />
         </div>
-        <div class="md:col-span-1 text-right">
-          <button type="button" onclick="this.closest('.expense-item-row').remove(); calculateExpenseTotal();" class="p-1.5 text-slate-500 hover:text-rose-400">
-            <i data-lucide="trash-2" class="w-4 h-4"></i>
+        <div class="md:col-span-1 relative">
+          <span class="absolute left-2 top-1/2 -translate-y-1/2 text-slate-400 text-xs">₹</span>
+          <input type="number" min="0" step="0.5" value="${defaultAmt}" placeholder="0.00" oninput="calculateExpenseTotal()" class="w-full bg-slate-800 border border-slate-700 rounded-lg pl-5 pr-1.5 py-1.5 text-xs text-white mono exp-item-amt font-semibold" required />
+        </div>
+        <div class="md:col-span-1 text-center">
+          <button type="button" onclick="this.closest('.expense-item-row').remove(); calculateExpenseTotal();" class="p-1.5 text-slate-400 hover:text-rose-400 transition" title="Delete Row">
+            <i data-lucide="trash-2" class="w-4 h-4 mx-auto"></i>
           </button>
         </div>
       `;
@@ -1397,8 +1397,6 @@
       document.getElementById("voucher-form-mode-title").innerText = "Create GDCDA Expense Reimbursement Voucher";
       document.getElementById("btn-save-voucher-text").innerText = "Save Voucher to Ledger";
       document.getElementById("exp-date").valueAsDate = new Date();
-      document.getElementById("exp-pay-type").value = "UPI";
-      document.getElementById("exp-pay-ref").value = "";
       document.getElementById("exp-remarks").value = "";
 
       const container = document.getElementById("expense-items-container");
@@ -1413,8 +1411,6 @@
       document.getElementById("btn-save-voucher-text").innerText = "Update Voucher";
       document.getElementById("exp-ec-member").value = voucher.payer;
       document.getElementById("exp-date").value = voucher.date;
-      document.getElementById("exp-pay-type").value = voucher.paymentType || "UPI";
-      document.getElementById("exp-pay-ref").value = voucher.paymentRef || "";
       document.getElementById("exp-remarks").value = voucher.remarks || "";
 
       const container = document.getElementById("expense-items-container");
@@ -1424,19 +1420,22 @@
       } else {
         addExpenseItemRow();
       }
+      calculateExpenseTotal();
     }
 
     function saveVoucherRecord() {
       const vId = document.getElementById("exp-voucher-id").value;
       const payer = document.getElementById("exp-ec-member").value;
       const date = document.getElementById("exp-date").value || new Date().toISOString().slice(0, 10);
-      const paymentType = document.getElementById("exp-pay-type").value;
-      const paymentRef = document.getElementById("exp-pay-ref").value.trim();
       const remarks = document.getElementById("exp-remarks").value.trim();
 
       if (!remarks) {
-        alert("Please enter General Purpose / Remarks for this expense voucher.");
+        const remInput = document.getElementById("exp-remarks");
+        remInput.focus();
+        remInput.classList.add("border-rose-500");
         return;
+      } else {
+        document.getElementById("exp-remarks").classList.remove("border-rose-500");
       }
 
       const rows = document.querySelectorAll(".expense-item-row");
@@ -1444,45 +1443,41 @@
       rows.forEach(r => {
         const desc = r.querySelector(".exp-item-desc").value.trim();
         const itDate = r.querySelector(".exp-item-date").value || date;
-        const itMode = r.querySelector(".exp-item-mode").value || paymentType;
+        const itMode = r.querySelector(".exp-item-mode").value || "UPI";
+        const itRef = r.querySelector(".exp-item-ref").value.trim();
         const amt = parseFloat(r.querySelector(".exp-item-amt").value) || 0;
         if (desc && amt > 0) {
-          items.push({ desc, date: itDate, mode: itMode, amt });
+          items.push({ desc, date: itDate, mode: itMode, ref: itRef, amt });
         }
       });
 
       if (items.length === 0) {
-        alert("Please add at least one line item with description and amount.");
+        addExpenseItemRow();
         return;
       }
 
       const total = calculateExpenseTotal();
 
       if (vId) {
-        // Edit existing
+        // Update existing voucher
         const idx = appState.vouchers.findIndex(v => v.id === vId);
         if (idx > -1) {
           appState.vouchers[idx] = {
             ...appState.vouchers[idx],
             payer,
             date,
-            paymentType,
-            paymentRef,
             remarks,
             items,
             total
           };
-          alert("Voucher updated successfully!");
         }
       } else {
-        // Create new
+        // Create new voucher
         const newVoucher = {
           id: "vch-" + Date.now(),
           voucherNo: `GDCDA-VCH-${Math.floor(1000 + Math.random() * 9000)}`,
           payer,
           date,
-          paymentType,
-          paymentRef,
           remarks,
           items,
           total
@@ -1491,13 +1486,23 @@
         document.getElementById("exp-voucher-id").value = newVoucher.id;
         document.getElementById("voucher-form-mode-title").innerText = `Edit Voucher: ${newVoucher.voucherNo}`;
         document.getElementById("btn-save-voucher-text").innerText = "Update Voucher";
-        alert(`Voucher ${newVoucher.voucherNo} saved successfully!`);
       }
 
       persistLocal();
       updateStats();
       renderSavedVouchersTable();
       pushToCloud();
+
+      // UI Confirmation feedback on button
+      const btn = document.getElementById("btn-save-voucher");
+      const btnText = document.getElementById("btn-save-voucher-text");
+      const orig = btnText.innerText;
+      btnText.innerText = "✓ Saved Successfully!";
+      btn.classList.add("bg-emerald-700");
+      setTimeout(() => {
+        btnText.innerText = orig;
+        btn.classList.remove("bg-emerald-700");
+      }, 1500);
     }
 
     function renderSavedVouchersTable() {
@@ -1510,26 +1515,23 @@
         tr.className = "hover:bg-slate-800/40 border-b border-slate-800/60";
         tr.innerHTML = `
           <td class="p-3 font-mono font-bold text-teal-400">${escapeHtml(v.voucherNo)}</td>
-          <td class="p-3 text-slate-300">${v.date}</td>
+          <td class="p-3 text-slate-300 whitespace-nowrap">${v.date}</td>
           <td class="p-3">
             <div class="font-semibold text-white">${escapeHtml(v.payer)}</div>
             <div class="text-[11px] text-indigo-300 font-medium">${escapeHtml(v.remarks)}</div>
           </td>
-          <td class="p-3">
-            <span class="px-2 py-0.5 rounded bg-slate-800 border border-slate-700 text-[10px] text-slate-300 font-semibold">${v.paymentType}</span>
-            ${v.paymentRef ? `<div class="text-[10px] text-slate-400 mt-0.5">${escapeHtml(v.paymentRef)}</div>` : ''}
-          </td>
-          <td class="p-3 font-bold mono text-emerald-400">₹ ${v.total.toFixed(2)}</td>
-          <td class="p-3 text-right">
-            <div class="flex items-center justify-end gap-1">
-              <button onclick="printSavedVoucher('${v.id}')" class="px-2.5 py-1 bg-indigo-600/30 hover:bg-indigo-600/60 text-indigo-300 rounded text-xs flex items-center gap-1 font-semibold" title="Print Voucher">
+          <td class="p-3 text-slate-400 font-mono">${(v.items || []).length} items</td>
+          <td class="p-3 font-bold mono text-emerald-400 whitespace-nowrap">₹ ${v.total.toFixed(2)}</td>
+          <td class="p-3 text-right whitespace-nowrap">
+            <div class="flex items-center justify-end gap-1.5">
+              <button onclick="printSavedVoucher('${v.id}')" class="px-2.5 py-1 bg-indigo-600/30 hover:bg-indigo-600/60 text-indigo-300 rounded text-xs flex items-center gap-1 font-semibold transition" title="Print A6 Voucher">
                 <i data-lucide="printer" class="w-3.5 h-3.5"></i>
                 <span>Print</span>
               </button>
-              <button onclick="editSavedVoucher('${v.id}')" class="p-1 hover:bg-slate-800 rounded text-slate-400 hover:text-slate-200" title="Edit">
+              <button onclick="editSavedVoucher('${v.id}')" class="p-1 hover:bg-slate-800 rounded text-slate-400 hover:text-slate-200 transition" title="Edit">
                 <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
               </button>
-              <button onclick="deleteSavedVoucher('${v.id}')" class="p-1 hover:bg-rose-950/60 rounded text-slate-400 hover:text-rose-400" title="Delete">
+              <button onclick="deleteSavedVoucher('${v.id}')" class="p-1 hover:bg-rose-950/60 rounded text-slate-400 hover:text-rose-400 transition" title="Delete">
                 <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
               </button>
             </div>
@@ -1549,8 +1551,11 @@
     }
 
     function deleteSavedVoucher(id) {
-      if (confirm("Delete this saved voucher permanently?")) {
+      if (confirm("Delete this saved voucher permanently from ledger?")) {
         appState.vouchers = appState.vouchers.filter(x => x.id !== id);
+        if (document.getElementById("exp-voucher-id").value === id) {
+          resetVoucherForm();
+        }
         persistLocal();
         updateStats();
         renderSavedVouchersTable();
@@ -1561,8 +1566,6 @@
     function printCurrentVoucher() {
       const payer = document.getElementById("exp-ec-member").value;
       const date = document.getElementById("exp-date").value || new Date().toISOString().slice(0, 10);
-      const paymentType = document.getElementById("exp-pay-type").value;
-      const paymentRef = document.getElementById("exp-pay-ref").value.trim();
       const remarks = document.getElementById("exp-remarks").value.trim() || "Association Expense Reimbursement";
 
       const rows = document.querySelectorAll(".expense-item-row");
@@ -1570,15 +1573,16 @@
       rows.forEach(r => {
         const desc = r.querySelector(".exp-item-desc").value.trim();
         const itDate = r.querySelector(".exp-item-date").value || date;
-        const itMode = r.querySelector(".exp-item-mode").value || paymentType;
+        const itMode = r.querySelector(".exp-item-mode").value || "UPI";
+        const itRef = r.querySelector(".exp-item-ref").value.trim();
         const amt = parseFloat(r.querySelector(".exp-item-amt").value) || 0;
         if (desc && amt > 0) {
-          items.push({ desc, date: itDate, mode: itMode, amt });
+          items.push({ desc, date: itDate, mode: itMode, ref: itRef, amt });
         }
       });
 
       if (items.length === 0) {
-        alert("Please add at least one line item to print.");
+        addExpenseItemRow();
         return;
       }
 
@@ -1591,38 +1595,35 @@
         voucherNo,
         date,
         payer,
-        paymentType,
-        paymentRef,
         remarks,
         items,
         total
       };
 
-      triggerIframePrint(voucherData);
+      renderAndPrintVoucherWindow(voucherData);
     }
 
     function printSavedVoucher(id) {
       const v = appState.vouchers.find(x => x.id === id);
       if (v) {
-        triggerIframePrint(v);
+        renderAndPrintVoucherWindow(v);
       }
     }
 
-    // Isolated Clean Print to fix Canon / Standard Blank Paper Bug
-    function triggerIframePrint(v) {
-      const iframe = document.getElementById("printIframe");
-      const doc = iframe.contentWindow.document;
-
-      let itemsRowsHtml = "";
-      v.items.forEach((it, index) => {
-        itemsRowsHtml += `
-          <tr style="border-bottom: 1px solid #d1d5db;">
-            <td style="padding: 4px; text-align: center; border-right: 1px solid #000; font-size: 8.5px;">${index + 1}</td>
-            <td style="padding: 4px; border-right: 1px solid #000; font-size: 8.5px;">
-              <strong>${escapeHtml(it.desc)}</strong>
-              <div style="font-size: 7.5px; color: #4b5563;">Date: ${it.date} | Mode: ${it.mode}</div>
+    // Opens a pristine dedicated print window to completely avoid Chrome/Canon blank preview issues
+    function renderAndPrintVoucherWindow(v) {
+      let rowsHtml = "";
+      v.items.forEach((it, idx) => {
+        rowsHtml += `
+          <tr style="border-bottom: 1px solid #e2e8f0;">
+            <td style="padding: 3px 2px; text-align: center; border-right: 1px solid #1e293b; font-size: 8px;">${idx + 1}</td>
+            <td style="padding: 3px 4px; border-right: 1px solid #1e293b; font-size: 8px;">
+              <strong style="display:block; line-height: 1.1;">${escapeHtml(it.desc)}</strong>
+              ${it.ref ? `<span style="font-size:7px; color:#475569;">Ref: ${escapeHtml(it.ref)}</span>` : ''}
             </td>
-            <td style="padding: 4px; text-align: right; font-size: 8.5px; font-family: monospace;">₹ ${it.amt.toFixed(2)}</td>
+            <td style="padding: 3px 2px; text-align: center; border-right: 1px solid #1e293b; font-size: 7.5px;">${it.date || v.date}</td>
+            <td style="padding: 3px 2px; text-align: center; border-right: 1px solid #1e293b; font-size: 7.5px; font-weight: bold;">${it.mode || 'UPI'}</td>
+            <td style="padding: 3px 4px; text-align: right; font-size: 8px; font-family: monospace; font-weight: bold;">₹ ${it.amt.toFixed(2)}</td>
           </tr>
         `;
       });
@@ -1631,106 +1632,109 @@
         <!DOCTYPE html>
         <html>
         <head>
-          <title>GDCDA Voucher - ${v.voucherNo}</title>
+          <meta charset="UTF-8">
+          <title>GDCDA Voucher ${v.voucherNo}</title>
           <style>
             @page {
               size: 105mm 148mm portrait;
               margin: 4mm;
             }
-            body {
-              font-family: Arial, sans-serif;
-              margin: 0;
-              padding: 4mm;
-              color: #000000;
-              background: #ffffff;
+            * {
               box-sizing: border-box;
             }
-            .header-box {
+            body {
+              font-family: Arial, sans-serif;
+              color: #000000;
+              background: #ffffff;
+              margin: 0;
+              padding: 2mm;
+              font-size: 8.5px;
+              line-height: 1.2;
+            }
+            .header {
               text-align: center;
               border-bottom: 2px solid #000;
               padding-bottom: 4px;
-              margin-bottom: 6px;
+              margin-bottom: 5px;
             }
-            .title {
-              font-size: 12px;
+            .header h1 {
+              font-size: 11px;
               font-weight: 900;
               text-transform: uppercase;
               margin: 0;
+              letter-spacing: 0.2px;
             }
-            .sub-title {
-              font-size: 8px;
-              margin: 1px 0;
+            .header p {
+              font-size: 7.5px;
               font-weight: 600;
-              color: #374151;
+              color: #334155;
+              margin: 1px 0;
             }
-            .tag {
+            .badge {
               display: inline-block;
               border: 1px solid #000;
-              padding: 2px 8px;
-              margin-top: 3px;
+              padding: 2px 6px;
+              margin-top: 2px;
               font-weight: 800;
-              font-size: 9px;
+              font-size: 8px;
               text-transform: uppercase;
-              background-color: #f3f4f6;
+              background-color: #f1f5f9;
             }
             .meta-table {
               width: 100%;
               border-collapse: collapse;
-              font-size: 8.5px;
-              margin-bottom: 6px;
+              margin-bottom: 5px;
+              font-size: 8px;
             }
             .meta-table td {
-              padding: 2px 0;
+              padding: 1.5px 0;
             }
             .items-table {
               width: 100%;
               border-collapse: collapse;
-              border: 1px solid #000;
-              margin-bottom: 6px;
+              border: 1.5px solid #000;
+              margin-bottom: 5px;
             }
             .items-table th {
-              background-color: #f3f4f6;
+              background: #f1f5f9;
               border-bottom: 1.5px solid #000;
-              padding: 3px;
-              font-size: 8.5px;
-              text-align: left;
+              padding: 3px 2px;
+              font-size: 7.5px;
+              text-transform: uppercase;
+              font-weight: 800;
             }
             .signatures {
               display: flex;
               justify-content: space-between;
-              margin-top: 25px;
-              padding-top: 5px;
+              margin-top: 24px;
+              padding-top: 4px;
             }
-            .sign-box {
+            .sig-col {
               width: 30%;
               text-align: center;
             }
-            .sign-line {
+            .sig-line {
               border-top: 1px dashed #000;
-              padding-top: 3px;
-              font-size: 8px;
-              font-weight: 600;
+              padding-top: 2px;
+              font-size: 7.5px;
+              font-weight: 700;
             }
           </style>
         </head>
         <body>
-          <div class="header-box">
-            <div class="title">Gondia District Chemist &amp; Druggist Association</div>
-            <div class="sub-title">(Affiliated to MSCDA) - Gondia, Maharashtra</div>
-            <div class="tag">GDCDA Expense Reimbursement Voucher</div>
+          <div class="header">
+            <h1>Gondia District Chemist &amp; Druggist Association</h1>
+            <p>(Affiliated to MSCDA) - Gondia, Maharashtra</p>
+            <div class="badge">GDCDA Expense Reimbursement Voucher</div>
           </div>
 
           <table class="meta-table">
             <tr>
-              <td><strong>Voucher No:</strong> <span style="font-family: monospace;">${v.voucherNo}</span></td>
+              <td><strong>Voucher No:</strong> <span style="font-family: monospace; font-weight:bold;">${v.voucherNo}</span></td>
               <td style="text-align: right;"><strong>Date:</strong> ${v.date}</td>
             </tr>
             <tr>
-              <td><strong>Paid By:</strong> ${escapeHtml(v.payer)}</td>
-              <td style="text-align: right;"><strong>Mode:</strong> ${v.paymentType}</td>
-            </tr>
-            <tr>
-              <td colspan="2"><strong>Ref / Details:</strong> ${escapeHtml(v.paymentRef || 'N/A')}</td>
+              <td colspan="2"><strong>Paid By:</strong> ${escapeHtml(v.payer)}</td>
             </tr>
             <tr>
               <td colspan="2"><strong>Purpose:</strong> <u>${escapeHtml(v.remarks)}</u></td>
@@ -1740,52 +1744,60 @@
           <table class="items-table">
             <thead>
               <tr>
-                <th style="width: 20px; text-align: center; border-right: 1px solid #000;">#</th>
-                <th style="border-right: 1px solid #000;">Particulars / Description</th>
-                <th style="width: 70px; text-align: right;">Amount (₹)</th>
+                <th style="width: 16px; border-right: 1px solid #1e293b;">#</th>
+                <th style="border-right: 1px solid #1e293b; text-align: left; padding-left: 4px;">Particulars</th>
+                <th style="width: 48px; border-right: 1px solid #1e293b; text-align: center;">Date</th>
+                <th style="width: 32px; border-right: 1px solid #1e293b; text-align: center;">Mode</th>
+                <th style="width: 55px; text-align: right; padding-right: 4px;">Amount (₹)</th>
               </tr>
             </thead>
             <tbody>
-              ${itemsRowsHtml}
+              ${rowsHtml}
             </tbody>
             <tfoot>
-              <tr style="border-top: 1.5px solid #000; background: #f9fafb; font-weight: bold;">
-                <td colspan="2" style="padding: 4px; text-align: right; border-right: 1px solid #000; font-size: 9px;">Total Reimbursed:</td>
-                <td style="padding: 4px; text-align: right; font-size: 9px; font-family: monospace;">₹ ${v.total.toFixed(2)}</td>
+              <tr style="border-top: 1.5px solid #000; background: #f8fafc; font-weight: bold;">
+                <td colspan="4" style="padding: 4px; text-align: right; border-right: 1px solid #1e293b; font-size: 8.5px;">Grand Total:</td>
+                <td style="padding: 4px; text-align: right; font-size: 8.5px; font-family: monospace;">₹ ${v.total.toFixed(2)}</td>
               </tr>
             </tfoot>
           </table>
 
-          <div style="font-size: 8px; margin-top: 4px;">
-            <strong>Verification Note:</strong> Approved by Executive Committee for immediate reimbursement.
+          <div style="font-size: 7.5px; margin-top: 3px;">
+            <strong>Verification Note:</strong> Certified that all expenses logged above are bonafide association disbursements.
           </div>
 
           <div class="signatures">
-            <div class="sign-box">
-              <div class="sign-line">Claimant Signature</div>
+            <div class="sig-col">
+              <div class="sig-line">Claimant Signature</div>
             </div>
-            <div class="sign-box">
-              <div class="sign-line">Hon. Treasurer</div>
+            <div class="sig-col">
+              <div class="sig-line">Hon. Treasurer</div>
             </div>
-            <div class="sign-box">
-              <div class="sign-line">President / Gen. Sec.</div>
+            <div class="sig-col">
+              <div class="sig-line">President / Gen. Sec.</div>
             </div>
           </div>
         </body>
         </html>
       `;
 
-      doc.open();
-      doc.write(printHtml);
-      doc.close();
+      const printWin = window.open('', '_blank', 'width=650,height=800');
+      if (!printWin) {
+        alert("Please enable pop-ups in your browser to print the voucher.");
+        return;
+      }
+      printWin.document.open();
+      printWin.document.write(printHtml);
+      printWin.document.close();
 
-      setTimeout(() => {
-        iframe.contentWindow.focus();
-        iframe.contentWindow.print();
-      }, 250);
+      printWin.onload = function() {
+        printWin.focus();
+        setTimeout(() => {
+          printWin.print();
+        }, 150);
+      };
     }
 
-    // --- MODAL UTILITIES ---
     function openModal(id) {
       document.getElementById(id).classList.remove("hidden");
       document.getElementById(id).classList.add("flex");
@@ -1803,7 +1815,7 @@
     }
 
     window.addEventListener("keydown", (e) => {
-      // Focus Search: /
+      // Search: /
       if (e.key === "/" && document.activeElement.tagName !== "INPUT" && document.activeElement.tagName !== "TEXTAREA") {
         e.preventDefault();
         document.getElementById("search-input").focus();
@@ -1828,7 +1840,7 @@
         e.preventDefault();
         exportToCSV();
       }
-      // Escape: Close active modals
+      // Close Modals: Esc
       if (e.key === "Escape") {
         ["modal-member", "modal-settings", "modal-meeting", "modal-ec-login", "modal-ec-portal"].forEach(closeModal);
       }
