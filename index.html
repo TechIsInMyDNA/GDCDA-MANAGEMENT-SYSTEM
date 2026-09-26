@@ -73,6 +73,20 @@
     </div>
   </header>
 
+  <!-- OPERATOR BANNER (ACTIVE EC MEMBER LOGGED IN) -->
+  <div id="operator-banner" class="bg-indigo-950/60 border-b border-indigo-900/60 px-4 py-1.5 hidden">
+    <div class="max-w-7xl mx-auto flex items-center justify-between text-xs">
+      <div class="flex items-center gap-2 text-indigo-200">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        <span>Active Operator: <strong class="text-white" id="current-operator-name">EC Admin</strong></span>
+        <span class="text-indigo-400 text-[11px]" id="current-operator-role">(Administrator)</span>
+      </div>
+      <button onclick="lockAndCloseEcPortal()" class="text-rose-400 hover:text-rose-300 text-[11px] font-semibold flex items-center gap-1">
+        <i data-lucide="log-out" class="w-3 h-3"></i> Switch / Exit Session
+      </button>
+    </div>
+  </div>
+
   <!-- STATS BAR -->
   <section class="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 pt-5 pb-2">
     <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -244,7 +258,7 @@
   </div>
 
   <!-- ============================================================== -->
-  <!-- MODAL: ADD / EDIT CHEMIST MEMBER (WITH REGULATORY & MULTI-PHARMA)-->
+  <!-- MODAL: ADD / EDIT CHEMIST MEMBER                               -->
   <!-- ============================================================== -->
   <div id="member-form-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md hidden flex items-center justify-center p-4">
     <div class="w-full max-w-lg bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl p-5 space-y-4 max-h-[90vh] overflow-y-auto custom-scrollbar">
@@ -257,7 +271,6 @@
 
       <div class="space-y-3 text-xs">
         <input type="hidden" id="mem-in-id">
-        
         <div>
           <label class="block text-slate-400 mb-0.5">Chemist / Firm Name *</label>
           <input type="text" id="mem-in-firm" placeholder="e.g. SHREE GANESH MEDICALS" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-100 uppercase">
@@ -274,7 +287,7 @@
           </div>
         </div>
 
-        <!-- QUALIFIED PHARMACISTS (DYNAMIC MULTI-INPUT) -->
+        <!-- Pharmacists Rows -->
         <div class="p-3 rounded-xl border border-slate-800 bg-slate-950/70 space-y-2">
           <div class="flex items-center justify-between">
             <label class="font-semibold text-slate-300 flex items-center gap-1.5">
@@ -284,12 +297,10 @@
               <i data-lucide="plus" class="w-3 h-3"></i> Add Pharmacist
             </button>
           </div>
-          <div id="pharmacist-rows-container" class="space-y-1.5">
-            <!-- Row inputs -->
-          </div>
+          <div id="pharmacist-rows-container" class="space-y-1.5"></div>
         </div>
 
-        <!-- DRUG LICENSE DETAILS -->
+        <!-- Drug License & FSSAI -->
         <div class="grid grid-cols-2 gap-2">
           <div>
             <label class="block text-slate-400 mb-0.5">Drug License No (DL No)</label>
@@ -301,7 +312,6 @@
           </div>
         </div>
 
-        <!-- FSSAI DETAILS -->
         <div class="grid grid-cols-2 gap-2">
           <div>
             <label class="block text-slate-400 mb-0.5">FSSAI License No</label>
@@ -356,7 +366,7 @@
   </div>
 
   <!-- ============================================================== -->
-  <!-- MODAL: PIN VERIFICATION (PIN: 1441 FOR EDIT / DELETE)          -->
+  <!-- MODAL: PIN VERIFICATION (PIN: 1441)                           -->
   <!-- ============================================================== -->
   <div id="pin-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md hidden flex items-center justify-center p-4">
     <div class="w-full max-w-xs bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl p-5 space-y-4">
@@ -381,7 +391,49 @@
   </div>
 
   <!-- ============================================================== -->
-  <!-- MODAL: DETAILED FEE INFLOW AUDIT LOG (KAB, KISNE, KYA DIYA)    -->
+  <!-- MODAL: EC MEMBER FORM (ADD / EDIT - PIN 1441 PROTECTED)       -->
+  <!-- ============================================================== -->
+  <div id="ec-member-form-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <div class="w-full max-w-md bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl p-5 space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <h3 class="text-sm font-bold text-white flex items-center gap-2" id="ec-member-modal-title">
+          <i data-lucide="user-check" class="w-4 h-4 text-indigo-400"></i> EC Team Member Account
+        </h3>
+        <button onclick="closeEcMemberFormModal()" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-4 h-4"></i></button>
+      </div>
+
+      <div class="space-y-3 text-xs">
+        <input type="hidden" id="ec-mem-in-id">
+        <div>
+          <label class="block text-slate-400 mb-0.5">Full Name *</label>
+          <input type="text" id="ec-mem-in-name" placeholder="e.g. Shubham Agrawal" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-100">
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-slate-400 mb-0.5">Role / Designation *</label>
+            <input type="text" id="ec-mem-in-role" placeholder="e.g. In-Charge / President" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-100">
+          </div>
+          <div>
+            <label class="block text-slate-400 mb-0.5">Mobile Contact</label>
+            <input type="text" id="ec-mem-in-mobile" placeholder="Mobile Number" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-100 font-mono">
+          </div>
+        </div>
+        <div>
+          <label class="block text-slate-400 mb-0.5">Dedicated Password / Passphrase *</label>
+          <input type="text" id="ec-mem-in-password" placeholder="Set member's secret password" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-100 font-mono">
+          <p class="text-[10px] text-slate-500 mt-0.5">Is password se yeh member EC Dashboard me login karega aur unka naam har change ke sath log hoga.</p>
+        </div>
+      </div>
+
+      <div class="flex gap-2 pt-2">
+        <button onclick="closeEcMemberFormModal()" class="flex-1 py-2 rounded-lg bg-slate-800 text-xs font-semibold text-slate-300">Cancel</button>
+        <button onclick="saveEcMemberRecord()" class="flex-1 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-xs font-semibold text-white shadow-md shadow-indigo-600/20">Save EC Member</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- MODAL: DETAILED FEE INFLOW AUDIT LOG                           -->
   <!-- ============================================================== -->
   <div id="fee-history-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md hidden flex items-center justify-center p-4">
     <div class="w-full max-w-md bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl p-5 space-y-4">
@@ -392,13 +444,9 @@
           </h3>
           <p class="text-xs text-slate-400 font-semibold" id="fee-history-firm-name">Firm Name</p>
         </div>
-        <button onclick="closeFeeHistoryModal()" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+        <button onclick="closeFeeHistoryModal()" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-4 h-4"></i></button>
       </div>
-
-      <div class="space-y-2 max-h-72 overflow-y-auto custom-scrollbar" id="fee-history-container">
-        <!-- Injected history logs -->
-      </div>
-
+      <div class="space-y-2 max-h-72 overflow-y-auto custom-scrollbar" id="fee-history-container"></div>
       <div class="pt-2 border-t border-slate-800 flex justify-end">
         <button onclick="closeFeeHistoryModal()" class="px-4 py-1.5 rounded-lg bg-slate-800 text-xs font-semibold text-slate-300">Close</button>
       </div>
@@ -420,12 +468,12 @@
           <div>
             <h2 class="text-base sm:text-lg font-bold text-white flex items-center gap-2">
               GDCDA Executive Committee (EC) Portal
-              <span class="text-[10px] px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 font-mono">Authenticated</span>
+              <span class="text-[10px] px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 font-mono" id="ec-session-operator-tag">Logged: EC Admin</span>
             </h2>
-            <p class="text-xs text-slate-400">Expense reimbursement, Running Fees Ledger, Meeting Check-In & Creation</p>
+            <p class="text-xs text-slate-400">Expense reimbursement, Running Fees Ledger, EC Members & Audit Logs</p>
           </div>
         </div>
-        <!-- CLOSING AUTOMATICALLY LOCKS EC PORTAL AS REQUESTED -->
+        <!-- CLOSING AUTOMATICALLY LOCKS EC PORTAL -->
         <div class="flex items-center gap-2">
           <button onclick="lockAndCloseEcPortal()" class="px-2.5 py-1.5 rounded-lg border border-slate-700 bg-slate-800 hover:bg-slate-700 text-xs text-slate-300 flex items-center gap-1.5">
             <i data-lucide="lock" class="w-3.5 h-3.5"></i> Lock & Exit
@@ -453,12 +501,19 @@
         <button onclick="switchEcTab('settlements')" id="tab-btn-settlements" class="py-3 px-3 text-slate-400 hover:text-slate-200 border-b-2 border-transparent flex items-center gap-1.5 whitespace-nowrap">
           <i data-lucide="credit-card" class="w-4 h-4"></i> Reimbursements & Settlements
         </button>
+        <!-- NEW TABS FOR EC MEMBERS & AUDIT LOGS -->
+        <button onclick="switchEcTab('team')" id="tab-btn-team" class="py-3 px-3 text-slate-400 hover:text-slate-200 border-b-2 border-transparent flex items-center gap-1.5 whitespace-nowrap">
+          <i data-lucide="users" class="w-4 h-4"></i> EC Team & Access (PIN 1441)
+        </button>
+        <button onclick="switchEcTab('logs')" id="tab-btn-logs" class="py-3 px-3 text-slate-400 hover:text-slate-200 border-b-2 border-transparent flex items-center gap-1.5 whitespace-nowrap">
+          <i data-lucide="file-clock" class="w-4 h-4"></i> Audit Logs
+        </button>
       </div>
 
       <!-- Tab Content Area -->
       <div class="flex-1 overflow-y-auto p-4 sm:p-6 custom-scrollbar bg-slate-900/40">
 
-        <!-- TAB: MEMBER FEES RUNNING LEDGER (POORA DATA) -->
+        <!-- TAB: MEMBER FEES RUNNING LEDGER -->
         <div id="ec-tab-fees" class="space-y-4">
           <div class="flex flex-col sm:flex-row items-center justify-between gap-3 pb-3 border-b border-slate-800">
             <div>
@@ -479,9 +534,7 @@
                   <th class="py-2.5 px-3 text-right">Action</th>
                 </tr>
               </thead>
-              <tbody id="ec-fees-tbody" class="divide-y divide-slate-800/60">
-                <!-- Dynamically Populated -->
-              </tbody>
+              <tbody id="ec-fees-tbody" class="divide-y divide-slate-800/60"></tbody>
             </table>
           </div>
         </div>
@@ -529,9 +582,7 @@
                     <th class="py-2.5 px-3 text-right">EC Check-In Action</th>
                   </tr>
                 </thead>
-                <tbody id="ec-checkin-tbody" class="divide-y divide-slate-800/60">
-                  <!-- Dynamically populated -->
-                </tbody>
+                <tbody id="ec-checkin-tbody" class="divide-y divide-slate-800/60"></tbody>
               </table>
             </div>
           </div>
@@ -552,16 +603,7 @@
             <div>
               <label class="block text-[11px] font-medium text-slate-400 mb-1">Paid By (EC Member) *</label>
               <select id="v-payer" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-teal-500">
-                <option value="Shubham Agrawal - Volunteer [Gondia City]">Shubham Agrawal - Volunteer [Gondia City]</option>
-                <option value="Deepak Agrawal - Gondia City In-Charge">Deepak Agrawal - Gondia City In-Charge</option>
-                <option value="Kamlesh Shukla - Gondia Rural In-Charge">Kamlesh Shukla - Gondia Rural In-Charge</option>
-                <option value="Krushnakumar Raut - Tirora In-Charge">Krushnakumar Raut - Tirora In-Charge</option>
-                <option value="Narendra Bahetwar - Amgaon In-Charge">Narendra Bahetwar - Amgaon In-Charge</option>
-                <option value="Chandrashekhar Baghele - Goregaon In-Charge">Chandrashekhar Baghele - Goregaon In-Charge</option>
-                <option value="Narendra Tandekar - Deori In-Charge">Narendra Tandekar - Deori In-Charge</option>
-                <option value="Vishwanath Mendhe - Salekasa In-Charge">Vishwanath Mendhe - Salekasa In-Charge</option>
-                <option value="Nilesh Dongarwar - Morgaon Arjuni In-Charge">Nilesh Dongarwar - Morgaon Arjuni In-Charge</option>
-                <option value="Chhagan Kapgate - Sadak Arjuni In-Charge">Chhagan Kapgate - Sadak Arjuni In-Charge</option>
+                <!-- Dynamically populated from ecMembers -->
               </select>
             </div>
             <div>
@@ -591,9 +633,7 @@
                 <div class="col-span-1 text-right">Amount (₹)</div>
                 <div class="col-span-1 text-center">Action</div>
               </div>
-              <div id="voucher-rows-container" class="divide-y divide-slate-800/60">
-                <!-- Rows injected via JS -->
-              </div>
+              <div id="voucher-rows-container" class="divide-y divide-slate-800/60"></div>
             </div>
           </div>
 
@@ -630,9 +670,7 @@
                   <th class="py-2.5 px-3 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody id="vouchers-ledger-body" class="divide-y divide-slate-800/60">
-                <!-- Dynamically rendered -->
-              </tbody>
+              <tbody id="vouchers-ledger-body" class="divide-y divide-slate-800/60"></tbody>
             </table>
           </div>
         </div>
@@ -668,10 +706,51 @@
                   <th class="py-2.5 px-3 text-right">Action</th>
                 </tr>
               </thead>
-              <tbody id="settlements-ledger-body" class="divide-y divide-slate-800/60">
-                <!-- Dynamically rendered -->
-              </tbody>
+              <tbody id="settlements-ledger-body" class="divide-y divide-slate-800/60"></tbody>
             </table>
+          </div>
+        </div>
+
+        <!-- NEW TAB: EC TEAM & DEDICATED ACCESS (PIN 1441) -->
+        <div id="ec-tab-team" class="space-y-4 hidden">
+          <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+            <div>
+              <h3 class="text-sm font-semibold text-white">Executive Committee Members Directory</h3>
+              <p class="text-xs text-slate-400">Har EC member ka apna password hai. Actions unke naam se log honge.</p>
+            </div>
+            <button onclick="triggerProtectedAction('ADD_EC_MEMBER', null)" class="px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs shadow-md flex items-center gap-1.5">
+              <i data-lucide="user-plus" class="w-3.5 h-3.5"></i> Add EC Member (PIN 1441)
+            </button>
+          </div>
+
+          <div class="border border-slate-800 rounded-xl overflow-hidden bg-slate-950/60 max-h-[50vh] overflow-y-auto custom-scrollbar">
+            <table class="w-full text-left text-xs">
+              <thead class="sticky top-0 bg-slate-900 border-b border-slate-800 text-slate-400 uppercase text-[11px]">
+                <tr>
+                  <th class="py-2.5 px-3">Name</th>
+                  <th class="py-2.5 px-3">Designation / Role</th>
+                  <th class="py-2.5 px-3">Mobile Contact</th>
+                  <th class="py-2.5 px-3">Access Password</th>
+                  <th class="py-2.5 px-3 text-right">Action (PIN 1441)</th>
+                </tr>
+              </thead>
+              <tbody id="ec-team-tbody" class="divide-y divide-slate-800/60"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- NEW TAB: AUDIT LOGS (WHO DID WHAT) -->
+        <div id="ec-tab-logs" class="space-y-4 hidden">
+          <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+            <div>
+              <h3 class="text-sm font-semibold text-white">System Activity & Audit Trail</h3>
+              <p class="text-xs text-slate-400">Every change is tracked with timestamp and the logged-in EC member's name.</p>
+            </div>
+            <button onclick="clearAuditLogs()" class="px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-rose-400 text-xs font-semibold">Clear Logs</button>
+          </div>
+
+          <div class="border border-slate-800 rounded-xl overflow-hidden bg-slate-950/60 max-h-[50vh] overflow-y-auto custom-scrollbar">
+            <div id="audit-logs-container" class="divide-y divide-slate-800/60"></div>
           </div>
         </div>
 
@@ -681,7 +760,7 @@
   </div>
 
   <!-- ============================================================== -->
-  <!-- MODAL: EC AUTHENTICATION GATE (PASSWORD: GDCDARocks@144EC)     -->
+  <!-- MODAL: EC LOGIN (ACCEPTS MASTER PWD OR INDIVIDUAL EC PASSWORD) -->
   <!-- ============================================================== -->
   <div id="ec-login-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md hidden flex items-center justify-center p-4">
     <div class="w-full max-w-sm bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl p-6 space-y-4">
@@ -690,14 +769,14 @@
           <i data-lucide="lock" class="w-6 h-6"></i>
         </div>
         <h3 class="text-base font-bold text-white">EC Portal Authentication</h3>
-        <p class="text-xs text-slate-400">Enter master Executive Committee key to unlock.</p>
+        <p class="text-xs text-slate-400">Master passphrase ya apna personal EC password enter karein.</p>
       </div>
 
       <div class="space-y-2">
-        <label class="block text-xs font-medium text-slate-300">Master Passphrase</label>
+        <label class="block text-xs font-medium text-slate-300">EC Passphrase / Member Password</label>
         <input type="password" id="ec-password-input" placeholder="Enter password..." class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-indigo-500">
         <p id="ec-login-error" class="text-xs text-rose-400 hidden flex items-center gap-1">
-          <i data-lucide="alert-circle" class="w-3.5 h-3.5"></i> Invalid Passphrase!
+          <i data-lucide="alert-circle" class="w-3.5 h-3.5"></i> Invalid Password!
         </p>
       </div>
 
@@ -785,6 +864,20 @@
       settlements: []
     };
 
+    // Default EC Member Roster with Dedicated Access
+    const DEFAULT_EC_MEMBERS = [
+      { id: "ec-01", name: "Shubham Agrawal", role: "Volunteer [Gondia City]", mobile: "", password: "shubham@gdcda" },
+      { id: "ec-02", name: "Deepak Agrawal", role: "Gondia City In-Charge", mobile: "", password: "deepak@gdcda" },
+      { id: "ec-03", name: "Kamlesh Shukla", role: "Gondia Rural In-Charge", mobile: "", password: "kamlesh@gdcda" },
+      { id: "ec-04", name: "Krushnakumar Raut", role: "Tirora In-Charge", mobile: "", password: "raut@gdcda" },
+      { id: "ec-05", name: "Narendra Bahetwar", role: "Amgaon In-Charge", mobile: "", password: "bahetwar@gdcda" },
+      { id: "ec-06", name: "Chandrashekhar Baghele", role: "Goregaon In-Charge", mobile: "", password: "baghele@gdcda" },
+      { id: "ec-07", name: "Narendra Tandekar", role: "Deori In-Charge", mobile: "", password: "tandekar@gdcda" },
+      { id: "ec-08", name: "Vishwanath Mendhe", role: "Salekasa In-Charge", mobile: "", password: "mendhe@gdcda" },
+      { id: "ec-09", name: "Nilesh Dongarwar", role: "Morgaon Arjuni In-Charge", mobile: "", password: "dongarwar@gdcda" },
+      { id: "ec-10", name: "Chhagan Kapgate", role: "Sadak Arjuni In-Charge", mobile: "", password: "kapgate@gdcda" }
+    ];
+
     let appState = {
       members: [],
       vouchers: [DEFAULT_SHUBHAM_VOUCHER],
@@ -792,6 +885,9 @@
         { id: "meet-001", title: "General Body Meeting - Pharmacist Day 2026", date: "2026-09-24", venue: "Gondia", attendance: {} }
       ],
       activeMeetingId: "meet-001",
+      ecMembers: DEFAULT_EC_MEMBERS,
+      auditLogs: [],
+      currentOperator: { name: "System Admin", role: "Admin" },
       isEcAuthenticated: false,
       cloudConfig: {
         token: "",
@@ -803,7 +899,7 @@
       }
     };
 
-    let pendingAction = null; // { type: 'EDIT'|'DELETE', id: '...' }
+    let pendingAction = null; // for PIN 1441 actions
 
     function initSystem() {
       const localVault = localStorage.getItem("GDCDA_APP_VAULT");
@@ -814,6 +910,8 @@
           if (parsed.vouchers && parsed.vouchers.length > 0) appState.vouchers = parsed.vouchers;
           if (parsed.meetings && parsed.meetings.length > 0) appState.meetings = parsed.meetings;
           if (parsed.activeMeetingId) appState.activeMeetingId = parsed.activeMeetingId;
+          if (parsed.ecMembers && parsed.ecMembers.length > 0) appState.ecMembers = parsed.ecMembers;
+          if (parsed.auditLogs) appState.auditLogs = parsed.auditLogs;
           if (parsed.cloudConfig) appState.cloudConfig = Object.assign(appState.cloudConfig, parsed.cloudConfig);
         } catch (e) {
           console.error("Vault restore error:", e);
@@ -825,7 +923,6 @@
         try { appState.cloudConfig = Object.assign(appState.cloudConfig, JSON.parse(savedConfig)); } catch(e){}
       }
 
-      // EC Auth is always locked on start or after closing dashboard
       appState.isEcAuthenticated = false;
       sessionStorage.removeItem("GDCDA_EC_AUTH");
       updateEcAuthUI();
@@ -837,6 +934,9 @@
       renderSettlementsLedger();
       renderEcFeesTable();
       renderEcMeetingCheckinTable();
+      renderEcTeamTable();
+      renderAuditLogs();
+      updatePayerDropdown();
       lucide.createIcons();
 
       if (appState.cloudConfig.token && appState.cloudConfig.passphrase) {
@@ -850,9 +950,57 @@
         vouchers: appState.vouchers,
         meetings: appState.meetings,
         activeMeetingId: appState.activeMeetingId,
+        ecMembers: appState.ecMembers,
+        auditLogs: appState.auditLogs,
         cloudConfig: appState.cloudConfig,
         lastUpdated: new Date().toISOString()
       }));
+    }
+
+    // Log Activity Function
+    function logActivity(actionDesc) {
+      const operatorName = appState.currentOperator ? appState.currentOperator.name : "Admin";
+      const logEntry = {
+        id: "log-" + Date.now(),
+        timestamp: new Date().toLocaleString(),
+        action: actionDesc,
+        operator: operatorName
+      };
+      if (!appState.auditLogs) appState.auditLogs = [];
+      appState.auditLogs.unshift(logEntry);
+      if (appState.auditLogs.length > 250) appState.auditLogs.pop(); // keep latest 250
+      renderAuditLogs();
+    }
+
+    function renderAuditLogs() {
+      const container = document.getElementById("audit-logs-container");
+      if (!container) return;
+      if (!appState.auditLogs || appState.auditLogs.length === 0) {
+        container.innerHTML = `<div class="p-6 text-center text-slate-500 text-xs">No activity logged yet.</div>`;
+        return;
+      }
+      container.innerHTML = appState.auditLogs.map(l => `
+        <div class="p-3 text-xs flex items-center justify-between hover:bg-slate-900/80 transition">
+          <div class="space-y-0.5">
+            <div class="font-medium text-slate-200">${escapeHtml(l.action)}</div>
+            <div class="text-[10px] text-slate-500 font-mono">${l.timestamp}</div>
+          </div>
+          <div class="text-right">
+            <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-500/10 text-indigo-300 border border-indigo-500/30">
+              Done By: ${escapeHtml(l.operator)}
+            </span>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function clearAuditLogs() {
+      if (confirm("Clear all audit activity history?")) {
+        appState.auditLogs = [];
+        persistLocal();
+        renderAuditLogs();
+        showToast("Audit logs cleared.");
+      }
     }
 
     // --- AUTOMATIC LIVE SYNC ---
@@ -880,6 +1028,7 @@
       persistLocal();
       closeCloudConfigModal();
       showToast("Credentials Saved. Starting Live Auto-Sync...");
+      logActivity("Cloud credentials updated & live sync initiated");
       await autoSilentLiveSync();
     }
 
@@ -926,6 +1075,8 @@
           vouchers: appState.vouchers,
           meetings: appState.meetings,
           activeMeetingId: appState.activeMeetingId,
+          ecMembers: appState.ecMembers,
+          auditLogs: appState.auditLogs,
           timestamp: new Date().toISOString()
         };
 
@@ -962,21 +1113,19 @@
 
         if (putRes.ok) {
           statusText.textContent = "Synced Live";
-          showToast("Live Auto-Synced to GitHub data.json!");
         } else {
           statusText.textContent = "Sync Offline";
         }
       } catch (err) {
-        console.warn("Silent sync notice:", err);
         statusText.textContent = "Local Vault";
       } finally {
         gear.classList.remove("animate-spin");
       }
     }
 
-    // --- PIN GATEWAY (1441) FOR EDIT / DELETE ---
-    function triggerProtectedAction(actionType, memberId) {
-      pendingAction = { type: actionType, id: memberId };
+    // --- PIN GATEWAY (1441) ---
+    function triggerProtectedAction(actionType, targetId) {
+      pendingAction = { type: actionType, id: targetId };
       document.getElementById("pin-input").value = "";
       document.getElementById("pin-error").classList.add("hidden");
       document.getElementById("pin-modal").classList.remove("hidden");
@@ -997,18 +1146,136 @@
           executeMemberEdit(action.id);
         } else if (action.type === "DELETE") {
           executeMemberDelete(action.id);
+        } else if (action.type === "ADD_EC_MEMBER") {
+          openEcMemberForm(null);
+        } else if (action.type === "EDIT_EC_MEMBER") {
+          openEcMemberForm(action.id);
+        } else if (action.type === "DELETE_EC_MEMBER") {
+          executeDeleteEcMember(action.id);
         }
       } else {
         document.getElementById("pin-error").classList.remove("hidden");
       }
     }
 
+    // --- EC MEMBERS MANAGEMENT (ADD / EDIT / DELETE) ---
+    function openEcMemberForm(ecId) {
+      const title = document.getElementById("ec-member-modal-title");
+      if (ecId) {
+        const m = appState.ecMembers.find(x => x.id === ecId);
+        if (!m) return;
+        document.getElementById("ec-mem-in-id").value = m.id;
+        document.getElementById("ec-mem-in-name").value = m.name || "";
+        document.getElementById("ec-mem-in-role").value = m.role || "";
+        document.getElementById("ec-mem-in-mobile").value = m.mobile || "";
+        document.getElementById("ec-mem-in-password").value = m.password || "";
+        title.innerHTML = `<i data-lucide="user-check" class="w-4 h-4 text-indigo-400"></i> Edit EC Member`;
+      } else {
+        document.getElementById("ec-mem-in-id").value = "";
+        document.getElementById("ec-mem-in-name").value = "";
+        document.getElementById("ec-mem-in-role").value = "";
+        document.getElementById("ec-mem-in-mobile").value = "";
+        document.getElementById("ec-mem-in-password").value = "";
+        title.innerHTML = `<i data-lucide="user-plus" class="w-4 h-4 text-indigo-400"></i> Add New EC Member`;
+      }
+      document.getElementById("ec-member-form-modal").classList.remove("hidden");
+      lucide.createIcons();
+    }
+
+    function closeEcMemberFormModal() {
+      document.getElementById("ec-member-form-modal").classList.add("hidden");
+    }
+
+    function saveEcMemberRecord() {
+      const id = document.getElementById("ec-mem-in-id").value;
+      const name = document.getElementById("ec-mem-in-name").value.trim();
+      const role = document.getElementById("ec-mem-in-role").value.trim();
+      const mobile = document.getElementById("ec-mem-in-mobile").value.trim();
+      const password = document.getElementById("ec-mem-in-password").value.trim();
+
+      if (!name || !password) {
+        alert("Name and Password are required for EC Members!");
+        return;
+      }
+
+      if (id) {
+        const m = appState.ecMembers.find(x => x.id === id);
+        if (m) {
+          m.name = name;
+          m.role = role;
+          m.mobile = mobile;
+          m.password = password;
+          logActivity(`Updated EC Member details: ${name} (${role})`);
+          showToast(`EC Member Updated: ${name}`);
+        }
+      } else {
+        const newEc = {
+          id: "ec-" + Date.now(),
+          name: name,
+          role: role,
+          mobile: mobile,
+          password: password
+        };
+        appState.ecMembers.push(newEc);
+        logActivity(`Created New EC Member account: ${name} (${role})`);
+        showToast(`EC Member Added: ${name}`);
+      }
+
+      persistLocal();
+      closeEcMemberFormModal();
+      renderEcTeamTable();
+      updatePayerDropdown();
+      autoSilentLiveSync();
+    }
+
+    function executeDeleteEcMember(ecId) {
+      const m = appState.ecMembers.find(x => x.id === ecId);
+      if (!m) return;
+      if (confirm(`Remove EC Member "${m.name}" from committee access?`)) {
+        appState.ecMembers = appState.ecMembers.filter(x => x.id !== ecId);
+        logActivity(`Deleted EC Member: ${m.name}`);
+        persistLocal();
+        renderEcTeamTable();
+        updatePayerDropdown();
+        showToast(`Removed EC Member: ${m.name}`);
+        autoSilentLiveSync();
+      }
+    }
+
+    function renderEcTeamTable() {
+      const tbody = document.getElementById("ec-team-tbody");
+      if (!tbody) return;
+      tbody.innerHTML = appState.ecMembers.map(m => `
+        <tr class="hover:bg-slate-900/80 transition">
+          <td class="py-2.5 px-3 font-semibold text-slate-200">${escapeHtml(m.name)}</td>
+          <td class="py-2.5 px-3 text-slate-300 font-medium">${escapeHtml(m.role)}</td>
+          <td class="py-2.5 px-3 font-mono text-slate-400">${m.mobile || "N/A"}</td>
+          <td class="py-2.5 px-3 font-mono text-teal-400 font-bold">••••••••</td>
+          <td class="py-2.5 px-3 text-right space-x-1">
+            <button onclick="triggerProtectedAction('EDIT_EC_MEMBER', '${m.id}')" title="Edit (PIN 1441)" class="p-1 rounded bg-slate-800 hover:bg-slate-700 text-amber-400">
+              <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
+            </button>
+            <button onclick="triggerProtectedAction('DELETE_EC_MEMBER', '${m.id}')" title="Delete (PIN 1441)" class="p-1 rounded bg-slate-800 hover:bg-slate-700 text-rose-400">
+              <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+            </button>
+          </td>
+        </tr>
+      `).join("");
+      lucide.createIcons();
+    }
+
+    function updatePayerDropdown() {
+      const payerSelect = document.getElementById("v-payer");
+      if (!payerSelect) return;
+      payerSelect.innerHTML = appState.ecMembers.map(m => `
+        <option value="${escapeHtml(m.name)} - ${escapeHtml(m.role)}">${escapeHtml(m.name)} - ${escapeHtml(m.role)}</option>
+      `).join("");
+    }
+
     // Dynamic Pharmacist Inputs Helper
     function renderPharmacistInputs(pharmacistsArray) {
       const container = document.getElementById("pharmacist-rows-container");
-      if (!pharmacistsArray || pharmacistsArray.length === 0) {
-        pharmacistsArray = [""];
-      }
+      if (!pharmacistsArray || pharmacistsArray.length === 0) pharmacistsArray = [""];
       container.innerHTML = pharmacistsArray.map((ph, idx) => `
         <div class="flex items-center gap-1.5 pharmacist-row">
           <input type="text" value="${escapeHtml(ph)}" placeholder="Qualified Pharmacist Name ${idx + 1}" class="pharma-input flex-1 bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-slate-100 text-xs">
@@ -1053,11 +1320,8 @@
       document.getElementById("mem-in-fee-amt").value = m.feeAmount || 0;
 
       let pharmList = [];
-      if (Array.isArray(m.pharmacists) && m.pharmacists.length > 0) {
-        pharmList = m.pharmacists;
-      } else if (m.pharmacist) {
-        pharmList = [m.pharmacist];
-      }
+      if (Array.isArray(m.pharmacists) && m.pharmacists.length > 0) pharmList = m.pharmacists;
+      else if (m.pharmacist) pharmList = [m.pharmacist];
       renderPharmacistInputs(pharmList);
 
       document.getElementById("member-modal-title").innerHTML = `<i data-lucide="edit-3" class="w-4 h-4 text-teal-400"></i> Edit Chemist Member`;
@@ -1070,6 +1334,7 @@
       if (!m) return;
       if (confirm(`Are you sure you want to delete "${m.firm}" permanently?`)) {
         appState.members = appState.members.filter(x => x.id !== memberId);
+        logActivity(`Deleted Chemist Store: "${m.firm}" (${m.area})`);
         persistLocal();
         updateStats();
         renderMembersTable();
@@ -1079,7 +1344,6 @@
       }
     }
 
-    // --- ADD MEMBER FORM ---
     function openAddMemberModal() {
       document.getElementById("mem-in-id").value = "";
       document.getElementById("mem-in-firm").value = "";
@@ -1113,7 +1377,6 @@
       const fssaiNo = document.getElementById("mem-in-fssai").value.trim();
       const fssaiExpiry = document.getElementById("mem-in-fssai-expiry").value;
 
-      // Collect all dynamic pharmacists
       const phInputs = document.querySelectorAll(".pharma-input");
       const pharmacists = Array.from(phInputs).map(i => i.value.trim()).filter(v => v !== "");
       const primaryPharmacist = pharmacists.length > 0 ? pharmacists[0] : "";
@@ -1141,6 +1404,7 @@
           m.feeStatus = feeStatus;
           m.feeAmount = feeAmt;
           m.feeNote = feeAmt > 0 ? `₹${feeAmt} (2025-26 Fees)` : "Fees Due 2025-26";
+          logActivity(`Updated details for "${firm}"`);
           showToast(`Updated: ${firm}`);
         }
       } else {
@@ -1161,9 +1425,10 @@
           feeStatus: feeStatus,
           feeAmount: feeAmt,
           feeNote: feeAmt > 0 ? `₹${feeAmt} (2025-26 Fees)` : "Fees Due 2025-26",
-          feeHistory: feeAmt > 0 ? [{ receiptNo: "REC-NEW", date: new Date().toISOString().split("T")[0], amount: feeAmt, mode: "CASH", ref: "Registration", collector: "Admin", year: "2025-26" }] : []
+          feeHistory: feeAmt > 0 ? [{ receiptNo: "REC-NEW", date: new Date().toISOString().split("T")[0], amount: feeAmt, mode: "CASH", ref: "Registration", collector: appState.currentOperator.name, year: "2025-26" }] : []
         };
         appState.members.unshift(newM);
+        logActivity(`Registered new Chemist Store: "${firm}"`);
         showToast(`Registered: ${firm}`);
       }
 
@@ -1175,9 +1440,8 @@
       autoSilentLiveSync();
     }
 
-    // --- REQUIREMENT 1: EC AUTHENTICATION & AUTO-LOCK ON CLOSE ---
+    // --- EC AUTHENTICATION & LOGIN (INDIVIDUAL PASSWORD MATCHING) ---
     function openEcPortalAuth() {
-      // Always prompt password on click
       document.getElementById("ec-password-input").value = "";
       document.getElementById("ec-login-error").classList.add("hidden");
       document.getElementById("ec-login-modal").classList.remove("hidden");
@@ -1189,23 +1453,45 @@
     }
 
     function verifyEcLogin() {
-      const pwd = document.getElementById("ec-password-input").value.trim();
-      // EXACT PASSWORD AS SPECIFIED
-      if (pwd === "GDCDARocks@144EC") {
+      const enteredPwd = document.getElementById("ec-password-input").value.trim();
+
+      // Check Master Key
+      if (enteredPwd === "GDCDARocks@144EC" || enteredPwd === "GDCDA-Rocks@144EC") {
         appState.isEcAuthenticated = true;
+        appState.currentOperator = { name: "Master Admin", role: "Executive Council" };
         sessionStorage.setItem("GDCDA_EC_AUTH", "TRUE");
         closeEcLoginModal();
         updateEcAuthUI();
         openEcPortalModal();
-        showToast("EC Authentication Granted!");
+        logActivity("Logged in via Master EC Passphrase");
+        showToast("Authenticated as Master Admin!");
+        return;
+      }
+
+      // Check Individual EC Member Password
+      const matchedEc = appState.ecMembers.find(m => m.password === enteredPwd);
+      if (matchedEc) {
+        appState.isEcAuthenticated = true;
+        appState.currentOperator = { name: mName(matchedEc.name), role: matchedEc.role };
+        sessionStorage.setItem("GDCDA_EC_AUTH", "TRUE");
+        closeEcLoginModal();
+        updateEcAuthUI();
+        openEcPortalModal();
+        logActivity(`Logged into EC Dashboard: ${matchedEc.name}`);
+        showToast(`Welcome ${matchedEc.name}!`);
       } else {
         document.getElementById("ec-login-error").classList.remove("hidden");
       }
     }
 
-    // MANDATORY REQUIREMENT: CROSS / CLOSE PAR AUTO LOCK
+    function mName(n) { return n ? n.trim() : "EC Member"; }
+
     function lockAndCloseEcPortal() {
+      if (appState.isEcAuthenticated) {
+        logActivity(`Logged out & locked session`);
+      }
       appState.isEcAuthenticated = false;
+      appState.currentOperator = { name: "Guest / Visitor", role: "Public" };
       sessionStorage.removeItem("GDCDA_EC_AUTH");
       updateEcAuthUI();
       closeEcPortalModal();
@@ -1215,19 +1501,32 @@
     function updateEcAuthUI() {
       const label = document.getElementById("ec-auth-label");
       const shield = document.getElementById("ec-shield-icon");
+      const banner = document.getElementById("operator-banner");
+      const opName = document.getElementById("current-operator-name");
+      const opRole = document.getElementById("current-operator-role");
+      const tag = document.getElementById("ec-session-operator-tag");
+
       if (appState.isEcAuthenticated) {
         label.textContent = "EC Dashboard (Active)";
         shield.classList.replace("text-indigo-400", "text-emerald-400");
+        banner.classList.remove("hidden");
+        opName.textContent = appState.currentOperator.name;
+        opRole.textContent = `(${appState.currentOperator.role})`;
+        if (tag) tag.textContent = `Active: ${appState.currentOperator.name}`;
       } else {
         label.textContent = "EC Portal (Alt+X)";
         shield.classList.replace("text-emerald-400", "text-indigo-400");
+        banner.classList.add("hidden");
       }
+      lucide.createIcons();
     }
 
     function openEcPortalModal() {
       document.getElementById("ec-portal-modal").classList.remove("hidden");
       renderEcFeesTable();
       renderEcMeetingCheckinTable();
+      renderEcTeamTable();
+      renderAuditLogs();
       renderVouchersLedger();
       renderSettlementsLedger();
       lucide.createIcons();
@@ -1238,7 +1537,7 @@
     }
 
     function switchEcTab(tabName) {
-      const tabs = ["fees", "meetings", "creator", "vouchers", "settlements"];
+      const tabs = ["fees", "meetings", "creator", "vouchers", "settlements", "team", "logs"];
       tabs.forEach(t => {
         const btn = document.getElementById(`tab-btn-${t}`);
         const content = document.getElementById(`ec-tab-${t}`);
@@ -1252,17 +1551,17 @@
       });
       if (tabName === "fees") renderEcFeesTable();
       if (tabName === "meetings") renderEcMeetingCheckinTable();
+      if (tabName === "team") renderEcTeamTable();
+      if (tabName === "logs") renderAuditLogs();
       lucide.createIcons();
     }
 
-    // --- REQUIREMENT 2: KAB KISNE KYA PAYMENT DIYA AUDIT LOG ---
+    // --- FEE HISTORY AUDIT MODAL ---
     function showFeeHistoryModal(memberId) {
       const m = appState.members.find(x => x.id === memberId);
       if (!m) return;
-
       document.getElementById("fee-history-firm-name").textContent = `${m.firm} (${m.area || 'Gondia'})`;
       const container = document.getElementById("fee-history-container");
-
       const history = (m.feeHistory && m.feeHistory.length > 0) ? m.feeHistory : [];
       if (history.length === 0) {
         container.innerHTML = `
@@ -1282,12 +1581,11 @@
               <div>Date: <strong class="text-slate-200 font-mono">${log.date || "N/A"}</strong></div>
               <div>Receipt: <strong class="text-slate-200 font-mono">${log.receiptNo || "N/A"}</strong></div>
               <div class="col-span-2">Collected By: <strong class="text-slate-200">${log.collector || "Taluka In-charge"}</strong></div>
-              ${log.ref ? `<div class="col-span-2 text-slate-500 italic">Note / Ref: ${escapeHtml(log.ref)}</div>` : ""}
+              ${log.ref ? `<div class="col-span-2 text-slate-500 italic">Note: ${escapeHtml(log.ref)}</div>` : ""}
             </div>
           </div>
         `).join("");
       }
-
       document.getElementById("fee-history-modal").classList.remove("hidden");
       lucide.createIcons();
     }
@@ -1296,7 +1594,6 @@
       document.getElementById("fee-history-modal").classList.add("hidden");
     }
 
-    // --- MEMBERS MASTER RUNNING FEE LEDGER ---
     function renderEcFeesTable() {
       const tbody = document.getElementById("ec-fees-tbody");
       const search = (document.getElementById("ec-fees-search").value || "").toLowerCase().trim();
@@ -1333,14 +1630,14 @@
             </td>
             <td class="py-2.5 px-3 text-slate-400 text-[11px]">
               ${hist ? `
-                <button onclick="showFeeHistoryModal('${m.id}')" title="Click to view full payment log" class="text-left group flex items-center gap-1 hover:text-teal-300">
+                <button onclick="showFeeHistoryModal('${m.id}')" title="View details" class="text-left group flex items-center gap-1 hover:text-teal-300">
                   <span class="font-mono text-slate-300 group-hover:underline">${hist.receiptNo}</span> • <span>${hist.date}</span>
                   <i data-lucide="external-link" class="w-3 h-3 text-teal-400"></i>
                 </button>
               ` : `<span class="italic text-slate-600">Pending</span>`}
             </td>
             <td class="py-2.5 px-3 text-right space-x-1">
-              <button onclick="openFeePaymentModal('${m.id}')" class="px-2 py-1 rounded bg-teal-500/10 hover:bg-teal-500/20 text-teal-300 border border-teal-500/30 text-[11px] font-medium">
+              <button onclick="openFeePaymentModal('${m.id}')" class="px-2.5 py-1 rounded bg-teal-500/10 hover:bg-teal-500/20 text-teal-300 border border-teal-500/30 text-[11px] font-medium">
                 Record Inflow
               </button>
               <button onclick="showFeeHistoryModal('${m.id}')" title="Payment History" class="p-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300">
@@ -1353,7 +1650,6 @@
       lucide.createIcons();
     }
 
-    // --- REQUIREMENT 3: MAIN ROSTER RICH DETAILS TABLE ---
     function renderMembersTable() {
       const tbody = document.getElementById("members-table-body");
       const search = document.getElementById("member-search").value.toLowerCase().trim();
@@ -1411,7 +1707,6 @@
             <td class="py-2.5 px-3">
               <div class="font-bold text-slate-100 text-xs tracking-wide">${escapeHtml(m.firm)}</div>
               
-              <!-- Owner & Pharmacist badges -->
               <div class="flex flex-wrap items-center gap-1.5 mt-0.5 text-[10px]">
                 ${m.owner ? `<span class="text-slate-400">Prop: <strong class="text-slate-300 font-medium">${escapeHtml(m.owner)}</strong></span>` : ""}
                 ${pharmList.map(p => `
@@ -1421,7 +1716,6 @@
                 `).join("")}
               </div>
 
-              <!-- DL & FSSAI Details -->
               ${(m.dlNo || m.fssaiNo) ? `
                 <div class="flex flex-wrap items-center gap-2 mt-1 text-[10px] text-slate-400 font-mono">
                   ${m.dlNo ? `<span title="DL Exp: ${m.dlExpiry || 'N/A'}">DL: <strong class="text-slate-300">${escapeHtml(m.dlNo)}</strong>${m.dlExpiry ? ` (Exp: ${m.dlExpiry})` : ""}</span>` : ""}
@@ -1473,7 +1767,6 @@
       lucide.createIcons();
     }
 
-    // --- MEETING MANAGEMENT & EC CHECKIN TABLE ---
     function createNewMeetingFromEc() {
       const title = document.getElementById("ec-new-meet-title").value.trim();
       const date = document.getElementById("ec-new-meet-date").value;
@@ -1488,6 +1781,7 @@
 
       appState.meetings.unshift(newM);
       appState.activeMeetingId = newM.id;
+      logActivity(`Created & activated meeting: "${title}"`);
       persistLocal();
       updateStats();
       renderMembersTable();
@@ -1498,6 +1792,7 @@
 
     function renderEcMeetingCheckinTable() {
       const tbody = document.getElementById("ec-checkin-tbody");
+      if (!tbody) return;
       const search = (document.getElementById("ec-checkin-search").value || "").toLowerCase().trim();
       const activeM = appState.meetings.find(m => m.id === appState.activeMeetingId) || appState.meetings[0];
       const meetAttendance = (activeM && activeM.attendance) ? activeM.attendance : {};
@@ -1531,23 +1826,19 @@
       const activeM = appState.meetings.find(m => m.id === appState.activeMeetingId) || appState.meetings[0];
       if (!activeM.attendance) activeM.attendance = {};
 
-      activeM.attendance[memberId] = activeM.attendance[memberId] === "PRESENT" ? "ABSENT" : "PRESENT";
+      const currentStatus = activeM.attendance[memberId] === "PRESENT";
+      activeM.attendance[memberId] = currentStatus ? "ABSENT" : "PRESENT";
+      
+      const m = appState.members.find(x => x.id === memberId);
+      logActivity(`Marked ${m ? m.firm : memberId} as ${activeM.attendance[memberId]} in meeting "${activeM.title}"`);
+
       persistLocal();
       updateStats();
       renderMembersTable();
       renderEcMeetingCheckinTable();
     }
 
-    // --- EXPENSE VOUCHER ENGINE ---
-    let activeVoucherRows = [
-      { desc: "HOTEL RIYA IMPERIAL EXECUTIVE ROOM 301 BOOKED", date: "2026-09-23", mode: "UPI", ref: "PAYTM/UJJIVAN/31535", amt: 1800 },
-      { desc: "BALLAL SIR GND TO NGP VIDARBHA 2ND AC TKT", date: "2026-09-23", mode: "UPI", ref: "VIA IRCTC ID", amt: 794 },
-      { desc: "BALLAL SIR MORNING BREAKFAST", date: "2026-09-24", mode: "CASH", ref: "Cash Paid", amt: 155 },
-      { desc: "BALLAL SIR EVENING NASTA+DINNER", date: "2026-09-24", mode: "UPI", ref: "PAYTM/UJJIVAN/31535", amt: 367 },
-      { desc: "AIOCD STRIKE PURANA FOR RIBBON", date: "2026-09-24", mode: "CASH", ref: "Cash Paid", amt: 120 },
-      { desc: "GDCDA PIS SERVICES ONE TIME EXPENSE", date: "2026-09-24", mode: "UPI", ref: "Online portal", amt: 299 }
-    ];
-
+    // --- EXPENSE VOUCHER & SETTLEMENTS ---
     function renderVoucherRows() {
       const container = document.getElementById("voucher-rows-container");
       container.innerHTML = activeVoucherRows.map((item, idx) => `
@@ -1577,7 +1868,6 @@
           </div>
         </div>
       `).join("");
-
       calculateVoucherTotal();
       lucide.createIcons();
     }
@@ -1634,9 +1924,11 @@
         newVoucher.id = appState.vouchers[existingIdx].id;
         newVoucher.settlements = appState.vouchers[existingIdx].settlements || [];
         appState.vouchers[existingIdx] = newVoucher;
+        logActivity(`Updated Voucher: ${purpose} (₹${total}) for ${payer}`);
         showToast("Voucher Updated in Ledger!");
       } else {
         appState.vouchers.unshift(newVoucher);
+        logActivity(`Saved New Expense Voucher: ${purpose} (₹${total}) for ${payer}`);
         showToast("Voucher Saved Successfully!");
       }
 
@@ -1733,6 +2025,7 @@
       if (!v.settlements) v.settlements = [];
       v.settlements.push({ date: new Date().toISOString().split("T")[0], amt: amt, mode: mode, ref: utr });
 
+      logActivity(`Recorded reimbursement settlement: ₹${amt} to ${v.payer} (${mode})`);
       persistLocal();
       renderVouchersLedger();
       renderSettlementsLedger();
@@ -1752,7 +2045,6 @@
       showToast("Voucher loaded into editor!");
     }
 
-    // A6 Isolated Printing
     function printCurrentA6Voucher() {
       const payer = document.getElementById("v-payer").value;
       const date = document.getElementById("v-date").value;
@@ -1862,7 +2154,7 @@
       }, 350);
     }
 
-    // --- RECORD FEE PAYMENT ---
+    // --- FEE PAYMENT RECORD ---
     let activeFeeMemberId = null;
 
     function openFeePaymentModal(memberId) {
@@ -1874,6 +2166,7 @@
       document.getElementById("fee-form-amt").value = mem.feeAmount || 251;
       document.getElementById("fee-form-date").value = new Date().toISOString().split("T")[0];
       document.getElementById("fee-form-ref").value = "REC-2026-" + Math.floor(1000 + Math.random() * 9000);
+      document.getElementById("fee-form-collector").value = appState.currentOperator.name || "Taluka In-charge";
       document.getElementById("fee-payment-modal").classList.remove("hidden");
     }
 
@@ -1890,7 +2183,7 @@
       const mode = document.getElementById("fee-form-mode").value;
       const date = document.getElementById("fee-form-date").value;
       const ref = document.getElementById("fee-form-ref").value.trim() || "N/A";
-      const collector = document.getElementById("fee-form-collector").value.trim() || "EC Collector";
+      const collector = document.getElementById("fee-form-collector").value.trim() || appState.currentOperator.name;
 
       mem.feeStatus = amt > 0 ? "PAID" : "PENDING";
       mem.feeAmount = amt;
@@ -1899,6 +2192,7 @@
       if (!mem.feeHistory) mem.feeHistory = [];
       mem.feeHistory.push({ receiptNo: ref, date: date, amount: amt, mode: mode, ref: ref, collector: collector, year: "2025-26" });
 
+      logActivity(`Recorded fee inflow: ₹${amt} from "${mem.firm}" (Receipt: ${ref}, Mode: ${mode})`);
       persistLocal();
       closeFeePaymentModal();
       updateStats();
@@ -1918,6 +2212,7 @@
       document.body.appendChild(downloadAnchor);
       downloadAnchor.click();
       downloadAnchor.remove();
+      logActivity("Downloaded Full JSON Vault Backup file");
       showToast("Vault Backup Downloaded!");
     }
 
@@ -1934,18 +2229,19 @@
           } else if (Array.isArray(importedData)) {
             appState.members = importedData;
           }
-          if (importedData.vouchers && Array.isArray(importedData.vouchers)) {
-            appState.vouchers = importedData.vouchers;
-          }
-          if (importedData.meetings && Array.isArray(importedData.meetings)) {
-            appState.meetings = importedData.meetings;
-          }
+          if (importedData.vouchers && Array.isArray(importedData.vouchers)) appState.vouchers = importedData.vouchers;
+          if (importedData.meetings && Array.isArray(importedData.meetings)) appState.meetings = importedData.meetings;
+          if (importedData.ecMembers && Array.isArray(importedData.ecMembers)) appState.ecMembers = importedData.ecMembers;
+          if (importedData.auditLogs) appState.auditLogs = importedData.auditLogs;
 
+          logActivity(`Restored vault backup file containing ${appState.members.length} members`);
           persistLocal();
           updateStats();
           renderMembersTable();
           renderEcFeesTable();
           renderEcMeetingCheckinTable();
+          renderEcTeamTable();
+          renderAuditLogs();
           renderVouchersLedger();
           renderSettlementsLedger();
           showToast(`Vault Restored: ${appState.members.length} Members Loaded!`);
@@ -1975,6 +2271,7 @@
       document.body.appendChild(a);
       a.click();
       a.remove();
+      logActivity("Exported Meeting Attendance CSV");
       showToast("Attendance CSV Exported!");
     }
 
@@ -2025,6 +2322,7 @@
       }, 3000);
     }
 
+    // Keyboard Shortcuts
     window.addEventListener("keydown", (e) => {
       if (e.key === "/" && document.activeElement.tagName !== "INPUT" && document.activeElement.tagName !== "TEXTAREA") {
         e.preventDefault();
