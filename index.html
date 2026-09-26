@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>GDCDA Management System & Secure Vault</title>
+  <title>GDCDA Management System & Master Cloud Vault</title>
   <!-- Tailwind CSS & Lucide Icons -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
     body { font-family: 'Inter', sans-serif; }
     .mono { font-family: 'JetBrains+Mono', monospace; }
     
@@ -20,7 +20,6 @@
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col antialiased selection:bg-teal-500 selection:text-white">
 
-  <!-- TOP HEADER & CLOUD SYNC -->
   <header class="border-b border-slate-800 bg-slate-900/90 backdrop-blur sticky top-0 z-40 px-4 lg:px-8 py-3 flex flex-wrap items-center justify-between gap-3">
     <div class="flex items-center gap-3">
       <div class="h-10 w-10 rounded-xl bg-teal-500/20 border border-teal-500/30 flex items-center justify-center text-teal-400 font-bold text-lg shadow-inner">
@@ -48,7 +47,7 @@
         <span id="sync-label">Local Cache</span>
       </div>
 
-      <!-- Sync Button -->
+      <!-- Cloud Sync Button -->
       <button onclick="syncWithCloud()" title="Sync with data.json (Alt+S)" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-semibold text-slate-200 transition active:scale-95">
         <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
         <span>Sync</span>
@@ -58,7 +57,7 @@
       <!-- EC Portal Protected Button -->
       <button onclick="openECPortalModal()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-600/20 hover:bg-indigo-600/30 border border-indigo-500/40 text-xs font-semibold text-indigo-300 transition active:scale-95 shadow-sm">
         <i data-lucide="shield-check" class="w-3.5 h-3.5 text-indigo-400"></i>
-        <span>EC Portal &amp; Ledger</span>
+        <span>EC Portal &amp; Fees Ledger</span>
         <kbd class="text-[9px] bg-indigo-950 px-1 py-0.5 rounded border border-indigo-700 text-indigo-300">Alt+X</kbd>
       </button>
 
@@ -67,6 +66,11 @@
         <i data-lucide="user-plus" class="w-3.5 h-3.5"></i>
         <span>Add Member</span>
         <kbd class="text-[9px] bg-teal-700 px-1 py-0.5 rounded text-teal-100">Alt+N</kbd>
+      </button>
+
+      <!-- Master Importer Button -->
+      <button onclick="openMasterImporterModal()" title="1-Click Master JSON / Excel Data Importer" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-cyan-400 transition" title="Bulk Import Data">
+        <i data-lucide="file-up" class="w-4 h-4"></i>
       </button>
 
       <!-- Settings Button -->
@@ -81,7 +85,6 @@
     </div>
   </header>
 
-  <!-- SHORTCUTS BAR -->
   <section class="bg-slate-900/60 border-b border-slate-800/80 px-4 lg:px-8 py-1.5 text-[11px] text-slate-400 flex flex-wrap items-center justify-between gap-2">
     <div class="flex items-center gap-4 flex-wrap">
       <span class="text-slate-500 font-semibold uppercase text-[10px]">Shortcuts:</span>
@@ -93,12 +96,11 @@
       <span><kbd class="bg-slate-800 border border-slate-700 px-1.5 py-0.5 rounded text-slate-300">Esc</kbd> Close</span>
     </div>
     <div class="text-[11px] text-emerald-400/90 flex items-center gap-1.5">
-      <i data-lucide="lock" class="w-3 h-3"></i>
+      <i data-lucide="shield" class="w-3 h-3"></i>
       <span>Zero-Leak Client-Side Encryption Enabled (data.json Vault)</span>
     </div>
   </section>
 
-  <!-- MAIN CONTAINER -->
   <main class="flex-1 max-w-7xl w-full mx-auto p-4 lg:p-8 space-y-6">
 
     <!-- KPI Statistics -->
@@ -188,8 +190,8 @@
           <thead class="bg-slate-900/90 border-b border-slate-800 text-[11px] uppercase tracking-wider text-slate-400 font-semibold">
             <tr>
               <th class="py-3 px-4">Firm &amp; Chemist Information</th>
-              <th class="py-3 px-4">Contact &amp; Location</th>
-              <th class="py-3 px-4">Membership Fees</th>
+              <th class="py-3 px-4">Contact &amp; Tehsil</th>
+              <th class="py-3 px-4">Membership Fees Ledger</th>
               <th class="py-3 px-4 text-center">Meeting Check-In</th>
               <th class="py-3 px-4 text-right">Actions</th>
             </tr>
@@ -205,9 +207,6 @@
 
   </main>
 
-  <!-- ======================== ALL MODALS ======================== -->
-
-  <!-- 1. ADD / EDIT MEMBER MODAL -->
   <div id="modal-member" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4">
     <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-lg w-full p-6 shadow-2xl relative space-y-4">
       <div class="flex items-center justify-between border-b border-slate-800 pb-3">
@@ -227,7 +226,7 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
           <div>
-            <label class="block text-[11px] font-semibold text-slate-400 mb-1">Owner Name *</label>
+            <label class="block text-[11px] font-semibold text-slate-400 mb-1">Owner / Chemist Name *</label>
             <input id="mem-owner" required type="text" placeholder="e.g. Rajesh Agrawal" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-teal-500" />
           </div>
           <div>
@@ -242,13 +241,13 @@
             <input id="mem-mobile" required pattern="[0-9]{10}" type="tel" placeholder="9823xxxxxx" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-teal-500" />
           </div>
           <div>
-            <label class="block text-[11px] font-semibold text-slate-400 mb-1">Area / Tehsil *</label>
-            <input id="mem-area" required type="text" placeholder="e.g. Gondia, Tirora, Goregaon" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-teal-500" />
+            <label class="block text-[11px] font-semibold text-slate-400 mb-1">Tahasil / Area *</label>
+            <input id="mem-area" required type="text" placeholder="Gondia City, Tirora, Amgaon..." class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-teal-500" />
           </div>
         </div>
 
         <div>
-          <label class="block text-[11px] font-semibold text-slate-400 mb-1">Full Shop Address</label>
+          <label class="block text-[11px] font-semibold text-slate-400 mb-1">Full Shop Address / Location</label>
           <textarea id="mem-address" rows="2" placeholder="Shop No., Market, Landmark, Pin Code..." class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-teal-500"></textarea>
         </div>
 
@@ -274,13 +273,12 @@
     </div>
   </div>
 
-  <!-- 2. CLOUD & VAULT SETTINGS MODAL -->
   <div id="modal-settings" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4">
     <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl relative space-y-4">
       <div class="flex items-center justify-between border-b border-slate-800 pb-3">
         <h3 class="text-sm font-bold text-white flex items-center gap-2">
           <i data-lucide="key" class="w-4 h-4 text-amber-400"></i>
-          <span>Cloud &amp; Vault Credentials</span>
+          <span>Cloud Vault &amp; GitHub Sync</span>
         </h3>
         <button onclick="closeModal('modal-settings')" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-4 h-4"></i></button>
       </div>
@@ -331,7 +329,6 @@
     </div>
   </div>
 
-  <!-- 3. NEW MEETING MODAL -->
   <div id="modal-meeting" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4">
     <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-sm w-full p-6 shadow-2xl space-y-4">
       <div class="flex items-center justify-between border-b border-slate-800 pb-2">
@@ -359,7 +356,6 @@
     </div>
   </div>
 
-  <!-- 4. EC LOGIN MODAL -->
   <div id="modal-ec-login" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden items-center justify-center p-4">
     <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-sm w-full p-6 shadow-2xl space-y-4">
       <div class="flex items-center justify-between border-b border-slate-800 pb-3">
@@ -369,7 +365,7 @@
         </h3>
         <button onclick="closeModal('modal-ec-login')" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-4 h-4"></i></button>
       </div>
-      <p class="text-xs text-slate-400">Enter EC master password to manage committee members, vouchers, settlements, and reports.</p>
+      <p class="text-xs text-slate-400">Enter EC master password to manage committee members, vouchers, settlements, running fees ledger, and reports.</p>
       <form id="ec-login-form" onsubmit="handleECLogin(event)" class="space-y-3">
         <div>
           <label class="block text-[11px] font-semibold text-slate-400 mb-1">Access Password</label>
@@ -383,7 +379,6 @@
     </div>
   </div>
 
-  <!-- 5. EC PORTAL MAIN MODAL (EXPENSES, SAVED VOUCHERS, SETTLEMENT LEDGER, EC DIRECTORY) -->
   <div id="modal-ec-portal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden items-center justify-center p-2 sm:p-4 overflow-y-auto">
     <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-6xl w-full p-5 sm:p-6 shadow-2xl relative space-y-5 my-auto max-h-[94vh] flex flex-col">
       
@@ -394,7 +389,7 @@
             <i data-lucide="shield-check" class="w-5 h-5 text-indigo-400"></i>
             <span>GDCDA Executive Committee (EC) Portal</span>
           </h2>
-          <p class="text-xs text-slate-400">Expense reimbursement creator, automated settlement ledger &amp; A6 portrait printing.</p>
+          <p class="text-xs text-slate-400">Member running fees ledger, reimbursement vouchers, settlements, and EC roster.</p>
         </div>
         <div class="flex items-center gap-2">
           <button onclick="lockECPortal()" class="text-xs px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300">Lock</button>
@@ -404,7 +399,11 @@
 
       <!-- Navigation Tabs -->
       <div class="flex items-center gap-2 border-b border-slate-800 flex-shrink-0 overflow-x-auto">
-        <button onclick="switchECTab('expenses')" id="tab-btn-ec-expenses" class="px-4 py-2 text-xs font-bold border-b-2 border-indigo-500 text-indigo-300">Expense Creator</button>
+        <button onclick="switchECTab('member-fees')" id="tab-btn-ec-fees" class="px-4 py-2 text-xs font-bold border-b-2 border-indigo-500 text-indigo-300 flex items-center gap-1.5">
+          <i data-lucide="credit-card" class="w-3.5 h-3.5 text-emerald-400"></i>
+          <span>Member Fees Running Ledger</span>
+        </button>
+        <button onclick="switchECTab('expenses')" id="tab-btn-ec-expenses" class="px-4 py-2 text-xs font-semibold text-slate-400 hover:text-slate-200">Expense Creator</button>
         <button onclick="switchECTab('saved-vouchers')" id="tab-btn-ec-vouchers" class="px-4 py-2 text-xs font-semibold text-slate-400 hover:text-slate-200">Saved Vouchers (<span id="ec-vouchers-count">0</span>)</button>
         <button onclick="switchECTab('settlement-ledger')" id="tab-btn-ec-settlement" class="px-4 py-2 text-xs font-semibold text-slate-400 hover:text-slate-200 flex items-center gap-1.5">
           <i data-lucide="wallet" class="w-3.5 h-3.5 text-emerald-400"></i>
@@ -415,8 +414,83 @@
 
       <div class="overflow-y-auto flex-1 pr-1 space-y-4">
         
-        <!-- TAB 1: EXPENSE CREATOR -->
-        <div id="ec-tab-expenses" class="space-y-4">
+        <!-- TAB 1: RUNNING MEMBER FEES LEDGER & EC PAYMENT CONTROL -->
+        <div id="ec-tab-member-fees" class="space-y-4">
+          <!-- Tahasil & Financial Summary -->
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+            <div class="bg-slate-800/60 border border-slate-800 p-3 rounded-xl">
+              <span class="text-[10px] uppercase font-bold text-slate-400">Total Members in Ledger</span>
+              <div class="text-lg font-bold text-white mono mt-1" id="ec-fee-stat-total">0</div>
+            </div>
+            <div class="bg-emerald-950/30 border border-emerald-500/30 p-3 rounded-xl">
+              <span class="text-[10px] uppercase font-bold text-emerald-400">Fees Paid Members</span>
+              <div class="text-lg font-bold text-emerald-400 mono mt-1" id="ec-fee-stat-paid">0</div>
+            </div>
+            <div class="bg-amber-950/30 border border-amber-500/30 p-3 rounded-xl">
+              <span class="text-[10px] uppercase font-bold text-amber-400">Fees Pending Members</span>
+              <div class="text-lg font-bold text-amber-400 mono mt-1" id="ec-fee-stat-pending">0</div>
+            </div>
+            <div class="bg-cyan-950/30 border border-cyan-500/30 p-3 rounded-xl">
+              <span class="text-[10px] uppercase font-bold text-cyan-400">Total Collection (₹)</span>
+              <div class="text-lg font-bold text-cyan-400 mono mt-1" id="ec-fee-stat-amount">₹ 0.00</div>
+            </div>
+          </div>
+
+          <!-- Tahasil Filter & Quick Search inside EC Portal -->
+          <div class="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
+            <div class="relative flex-1">
+              <i data-lucide="search" class="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2"></i>
+              <input 
+                id="ec-fee-search" 
+                type="text" 
+                placeholder="Search Chemist / Medical Store / Owner / Mobile in Fees Ledger..." 
+                oninput="renderECFeeLedgerTable()" 
+                class="w-full bg-slate-800 border border-slate-700 rounded-xl pl-9 pr-3 py-2 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-indigo-500"
+              />
+            </div>
+            <div class="flex items-center gap-2">
+              <select id="ec-tahasil-filter" onchange="renderECFeeLedgerTable()" class="bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500">
+                <option value="ALL">All Tahasils / Areas</option>
+                <option value="GONDIA">Gondia City</option>
+                <option value="GONDIA RURAL">Gondia Rural</option>
+                <option value="TIRORA">Tirora</option>
+                <option value="AMGAON">Amgaon</option>
+                <option value="GOREGAON">Goregaon</option>
+                <option value="DEORI">Deori</option>
+                <option value="SALEKASA">Salekasa</option>
+                <option value="ARJUNI MORGAON">Arjuni Morgaon</option>
+                <option value="SADAK ARJUNI">Sadak Arjuni</option>
+              </select>
+              <select id="ec-fee-status-filter" onchange="renderECFeeLedgerTable()" class="bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500">
+                <option value="ALL">All Status</option>
+                <option value="PAID">PAID Only</option>
+                <option value="PENDING">PENDING Only</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Members Fees Ledger Table -->
+          <div class="border border-slate-800 rounded-xl overflow-hidden shadow">
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs text-slate-300">
+                <thead class="bg-slate-800/80 text-[10px] uppercase font-bold text-slate-400">
+                  <tr>
+                    <th class="p-3">Firm / Medical Store</th>
+                    <th class="p-3">Owner / Contact</th>
+                    <th class="p-3">Tahasil / Area</th>
+                    <th class="p-3">Fee Status &amp; Ledger Balance</th>
+                    <th class="p-3 text-right">EC Payment Control</th>
+                  </tr>
+                </thead>
+                <tbody id="ec-fee-ledger-table-body" class="divide-y divide-slate-800">
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 2: EXPENSE CREATOR -->
+        <div id="ec-tab-expenses" class="hidden space-y-4">
           <div class="bg-slate-800/40 border border-slate-800 rounded-xl p-4 space-y-4">
             <div class="flex items-center justify-between border-b border-slate-800 pb-2">
               <h4 class="text-xs font-bold text-indigo-300 uppercase tracking-wider flex items-center gap-1.5">
@@ -494,7 +568,7 @@
           </div>
         </div>
 
-        <!-- TAB 2: SAVED VOUCHERS LIST -->
+        <!-- TAB 3: SAVED VOUCHERS LIST -->
         <div id="ec-tab-saved-vouchers" class="hidden space-y-3">
           <div class="flex items-center justify-between">
             <h4 class="text-xs font-bold uppercase tracking-wider text-slate-300">Expense Reimbursement Vouchers Ledger</h4>
@@ -519,9 +593,8 @@
           </div>
         </div>
 
-        <!-- TAB 3: REIMBURSEMENT SETTLEMENT LEDGER (NEW) -->
+        <!-- TAB 4: REIMBURSEMENT SETTLEMENT LEDGER -->
         <div id="ec-tab-settlement-ledger" class="hidden space-y-4">
-          <!-- Summary Cards -->
           <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
             <div class="bg-slate-800/60 border border-slate-800 p-3.5 rounded-xl">
               <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Total Claims Submitted</span>
@@ -537,7 +610,6 @@
             </div>
           </div>
 
-          <!-- Settlements Table -->
           <div class="border border-slate-800 rounded-xl overflow-hidden shadow">
             <table class="w-full text-left text-xs text-slate-300">
               <thead class="bg-slate-800/80 text-[10px] uppercase font-bold text-slate-400">
@@ -557,7 +629,7 @@
           </div>
         </div>
 
-        <!-- TAB 4: EC MEMBERS DIRECTORY -->
+        <!-- TAB 5: EC MEMBERS DIRECTORY -->
         <div id="ec-tab-members" class="hidden space-y-4">
           <div class="flex flex-wrap items-center justify-between gap-3">
             <h4 class="text-xs font-bold uppercase tracking-wider text-slate-300">Official Committee Members</h4>
@@ -593,7 +665,6 @@
             </form>
           </div>
 
-          <!-- Table -->
           <div class="border border-slate-800 rounded-xl overflow-hidden">
             <table class="w-full text-left text-xs text-slate-300">
               <thead class="bg-slate-800/80 text-[10px] uppercase font-bold text-slate-400">
@@ -615,7 +686,83 @@
     </div>
   </div>
 
-  <!-- 6. RECORD SETTLEMENT / PAYMENT MODAL -->
+  <div id="modal-collect-fee" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <h3 class="text-sm font-bold text-white flex items-center gap-2">
+          <i data-lucide="badge-indian-rupee" class="w-4 h-4 text-emerald-400"></i>
+          <span>Record Member Membership Fee Payment</span>
+        </h3>
+        <button onclick="closeModal('modal-collect-fee')" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-4 h-4"></i></button>
+      </div>
+
+      <div class="bg-slate-800/60 p-3 rounded-xl border border-slate-700/80 text-xs space-y-1">
+        <div class="flex justify-between">
+          <span class="text-slate-400">Medical Store:</span>
+          <span id="fee-pay-firm" class="font-bold text-white"></span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-slate-400">Owner:</span>
+          <span id="fee-pay-owner" class="text-slate-200"></span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-slate-400">Tahasil:</span>
+          <span id="fee-pay-area" class="text-cyan-400"></span>
+        </div>
+      </div>
+
+      <form id="collect-fee-form" onsubmit="submitMemberFeePayment(event)" class="space-y-3">
+        <input type="hidden" id="fee-pay-member-id" />
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-400 mb-1">Fee Amount Received (₹) *</label>
+            <input id="fee-pay-amount" required type="number" step="50" min="1" value="1500" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white mono font-bold focus:outline-none focus:border-emerald-500" />
+          </div>
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-400 mb-1">Payment Date *</label>
+            <input id="fee-pay-date" required type="date" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-400 mb-1">Payment Mode *</label>
+            <select id="fee-pay-mode" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500">
+              <option value="UPI">UPI / QR Code</option>
+              <option value="CASH">CASH</option>
+              <option value="CHEQUE">Cheque</option>
+              <option value="NEFT">Bank Transfer (NEFT/RTGS)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-[11px] font-semibold text-slate-400 mb-1">Receipt / Ref No *</label>
+            <input id="fee-pay-receipt" required type="text" placeholder="e.g. REC-2026-081" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500" />
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-[11px] font-semibold text-slate-400 mb-1">Collected / Updated By (EC Member) *</label>
+          <select id="fee-pay-collector" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500">
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-[11px] font-semibold text-slate-400 mb-1">Notes / Remarks</label>
+          <input id="fee-pay-remarks" type="text" placeholder="e.g. Annual Membership 2026-27" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500" />
+        </div>
+
+        <div class="flex justify-end gap-2 pt-2 border-t border-slate-800">
+          <button type="button" onclick="closeModal('modal-collect-fee')" class="px-3 py-1.5 rounded-lg bg-slate-800 text-xs text-slate-300">Cancel</button>
+          <button type="submit" class="px-4 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-xs text-white font-semibold flex items-center gap-1.5">
+            <i data-lucide="check" class="w-3.5 h-3.5"></i>
+            <span>Update Fee Ledger &amp; Issue Receipt</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <div id="modal-settle-payment" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden items-center justify-center p-4">
     <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
       <div class="flex items-center justify-between border-b border-slate-800 pb-3">
@@ -690,10 +837,40 @@
     </div>
   </div>
 
+  <div id="modal-importer" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-xl w-full p-6 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <h3 class="text-sm font-bold text-white flex items-center gap-2">
+          <i data-lucide="file-up" class="w-4 h-4 text-cyan-400"></i>
+          <span>1-Click Master JSON / Excel Data Importer</span>
+        </h3>
+        <button onclick="closeModal('modal-importer')" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-4 h-4"></i></button>
+      </div>
+
+      <p class="text-xs text-slate-300">
+        Paste structured JSON array generated from your master Excel sheets (<code>GDCDA GEN LIST GON AND OTHER TAHASIL NEW.xlsx</code> &amp; <code>MEMBER FEE2026.xlsx</code>).
+      </p>
+
+      <div class="space-y-2">
+        <textarea id="import-json-text" rows="8" placeholder='[ {"firm": "MAHAVIR MEDICAL STORES", "owner": "Rajesh Agrawal", "mobile": "9823145678", "area": "Gondia City", "feeStatus": "PAID", "feeNote": "₹1500 (REC-2026-001)"} ]' class="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-xs text-white font-mono focus:outline-none focus:border-cyan-500"></textarea>
+      </div>
+
+      <div class="flex items-center justify-between pt-2 border-t border-slate-800">
+        <div class="flex items-center gap-2">
+          <input type="checkbox" id="import-merge-mode" checked class="rounded bg-slate-800 border-slate-700 text-teal-500" />
+          <label for="import-merge-mode" class="text-xs text-slate-400">Merge with existing records (prevent duplicates)</label>
+        </div>
+        <div class="flex items-center gap-2">
+          <button type="button" onclick="closeModal('modal-importer')" class="px-3 py-1.5 rounded-lg bg-slate-800 text-xs text-slate-300">Cancel</button>
+          <button type="button" onclick="executeMasterImport()" class="px-4 py-1.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-xs font-semibold text-white">Import &amp; Encrypt</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Hidden Print Frame to guarantee 0% blank pages -->
   <iframe id="printIframe" style="position: absolute; width: 0; height: 0; border: none; visibility: hidden;"></iframe>
 
-  <!-- SCRIPT ENGINE -->
   <script>
     const EC_MASTER_HASH = "GDCDARocks@144EC";
 
@@ -787,7 +964,6 @@
       return JSON.parse(dec.decode(decrypted));
     }
 
-    // --- INITIALIZATION ---
     function initializeData() {
       const savedConfig = localStorage.getItem("gdcda_cloud_cfg");
       if (savedConfig) {
@@ -803,7 +979,7 @@
         }
       }
 
-      // Ensure Shubham Agrawal is present
+      // Ensure Shubham Agrawal is present in EC roster
       if (!appState.ecMembers.some(ec => ec.name.includes("Shubham Agrawal"))) {
         appState.ecMembers.unshift({
           id: "ec-shubham",
@@ -825,7 +1001,7 @@
           payer: "Shubham Agrawal - Volunteer [Gondia City]",
           remarks: "WORLD PHARMACIST DAY 2026",
           total: 3535.00,
-          settlements: [], // Array of { id, date, amount, mode, ref, notes }
+          settlements: [],
           items: [
             { desc: "HOTEL RIYA IMPERIAL EXECUTIVE ROOM 301 BOOKED", date: "2026-09-23", mode: "UPI", ref: "PAYTM/UJJIVANICA/31535", amt: 1800 },
             { desc: "BALLAL SIR GND TO NGP VIDARBHA 2ND AC TKT", date: "2026-09-23", mode: "UPI", ref: "VIA IRCTC ID", amt: 794 },
@@ -838,12 +1014,7 @@
         appState.vouchers.unshift(preSavedVoucher);
       }
 
-      // Ensure every voucher has a settlements array
-      appState.vouchers.forEach(v => {
-        if (!v.settlements) v.settlements = [];
-      });
-
-      // Default sample members
+      // Ensure member fee ledger structures exist
       if (!appState.members || appState.members.length === 0) {
         appState.members = [
           {
@@ -852,10 +1023,11 @@
             owner: "Rajesh Kumar Agrawal",
             pharmacist: "Sanjay Deshmukh (D.Pharm)",
             mobile: "9823145678",
-            area: "Gondia",
+            area: "Gondia City",
             address: "Rail Toly, Near Old Bus Stand, Gondia",
             feeStatus: "PAID",
-            feeNote: "₹1500 (#REC-2026-001)"
+            feeNote: "₹1500 (REC-2026-001)",
+            feeLedger: [{ date: "2026-09-01", amount: 1500, mode: "UPI", receipt: "REC-2026-001", collector: "Shubham Agrawal", remarks: "Annual Fee 2026-27" }]
           },
           {
             id: "mem-102",
@@ -866,7 +1038,8 @@
             area: "Tirora",
             address: "Main Market, Tirora",
             feeStatus: "PAID",
-            feeNote: "₹1500 (#REC-2026-002)"
+            feeNote: "₹1500 (REC-2026-002)",
+            feeLedger: [{ date: "2026-09-05", amount: 1500, mode: "CASH", receipt: "REC-2026-002", collector: "Pravin Patel", remarks: "Cash Collected at Meet" }]
           },
           {
             id: "mem-103",
@@ -874,16 +1047,24 @@
             owner: "Mahesh B. Shah",
             pharmacist: "Kishore Lade",
             mobile: "9158334455",
-            area: "Gondia",
+            area: "Gondia City",
             address: "Opp. District Hospital, Gondia",
             feeStatus: "PENDING",
-            feeNote: "Due for 2026-27"
+            feeNote: "Due for 2026-27",
+            feeLedger: []
           }
         ];
         if (!appState.checkins[appState.activeMeeting]) {
           appState.checkins[appState.activeMeeting] = [appState.members[0].id];
         }
       }
+
+      // Backfill ledger array on members if missing
+      appState.members.forEach(m => {
+        if (!m.feeLedger) {
+          m.feeLedger = m.feeStatus === "PAID" ? [{ date: "2026-09-10", amount: 1500, mode: "UPI", receipt: m.feeNote || "REC-2026", collector: "EC Member", remarks: "Migrated" }] : [];
+        }
+      });
 
       persistLocal();
       populateMeetingSelect();
@@ -892,9 +1073,9 @@
       populateECMemberDropdown();
       renderSavedVouchersTable();
       renderSettlementLedgerTable();
+      renderECFeeLedgerTable();
       lucide.createIcons();
 
-      // Preload active voucher into creator form
       if (appState.vouchers.length > 0) {
         loadVoucherIntoForm(appState.vouchers[0]);
       }
@@ -908,7 +1089,6 @@
       localStorage.setItem("gdcda_local_data", JSON.stringify(appState));
     }
 
-    // --- GITHUB CLOUD SYNC ---
     async function syncWithCloud() {
       if (!cloudConfig.token || !cloudConfig.repo || !cloudConfig.owner) {
         setSyncStatus("neutral", "Config Required");
@@ -944,6 +1124,7 @@
                 appState = decrypted;
                 if (!appState.vouchers) appState.vouchers = [];
                 appState.vouchers.forEach(v => { if (!v.settlements) v.settlements = []; });
+                appState.members.forEach(m => { if (!m.feeLedger) m.feeLedger = []; });
                 persistLocal();
                 populateMeetingSelect();
                 renderMembersTable();
@@ -951,6 +1132,7 @@
                 populateECMemberDropdown();
                 renderSavedVouchersTable();
                 renderSettlementLedgerTable();
+                renderECFeeLedgerTable();
                 setSyncStatus("success", "Synced");
                 return;
               }
@@ -1019,7 +1201,6 @@
       }
     }
 
-    // --- MEMBERS DIRECTORY ---
     function renderMembersTable() {
       const tbody = document.getElementById("members-table-body");
       const noRecords = document.getElementById("no-records");
@@ -1073,12 +1254,12 @@
                 <i data-lucide="message-circle" class="w-3.5 h-3.5 inline"></i>
               </a>
             </div>
-            <div class="text-[11px] text-slate-400 truncate max-w-[200px]" title="${escapeHtml(m.address || '')}">
-              ${escapeHtml(m.address || 'Address not listed')}
-            </div>
-            <span class="inline-block mt-0.5 px-1.5 py-0.2 rounded text-[9px] bg-slate-800 border border-slate-700 text-slate-300">
-              ${escapeHtml(m.area)}
+            <span class="inline-block mt-1 px-1.5 py-0.5 rounded text-[9px] bg-slate-800 border border-slate-700 text-cyan-300 font-semibold">
+              ${escapeHtml(m.area || 'Gondia')}
             </span>
+            <div class="text-[10px] text-slate-400 truncate max-w-[190px]" title="${escapeHtml(m.address || '')}">
+              ${escapeHtml(m.address || '')}
+            </div>
           </td>
           <td class="py-3 px-4">
             <button onclick="toggleFeeStatus('${m.id}')" class="px-2.5 py-1 rounded-full text-[10px] font-bold border transition ${
@@ -1088,7 +1269,7 @@
             }">
               ${m.feeStatus === 'PAID' ? '● Paid' : '○ Pending'}
             </button>
-            <div class="text-[10px] text-slate-500 mt-1">${escapeHtml(m.feeNote || '')}</div>
+            <div class="text-[10px] text-slate-400 mt-1">${escapeHtml(m.feeNote || '')}</div>
           </td>
           <td class="py-3 px-4 text-center">
             <button onclick="toggleCheckin('${m.id}')" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition active:scale-95 border ${
@@ -1101,6 +1282,9 @@
           </td>
           <td class="py-3 px-4 text-right">
             <div class="flex items-center justify-end gap-1">
+              <button onclick="openCollectFeeModal('${m.id}')" class="p-1.5 hover:bg-emerald-950/60 text-emerald-400 rounded" title="Record Fee Payment">
+                <i data-lucide="badge-indian-rupee" class="w-3.5 h-3.5"></i>
+              </button>
               <button onclick="editMember('${m.id}')" class="p-1.5 hover:bg-slate-800 rounded text-slate-400 hover:text-slate-200" title="Edit">
                 <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
               </button>
@@ -1167,6 +1351,7 @@
         persistLocal();
         updateStats();
         renderMembersTable();
+        renderECFeeLedgerTable();
         pushToCloud();
       }
     }
@@ -1195,7 +1380,7 @@
       document.getElementById("mem-owner").value = mem ? mem.owner : "";
       document.getElementById("mem-pharmacist").value = mem ? mem.pharmacist || "" : "";
       document.getElementById("mem-mobile").value = mem ? mem.mobile : "";
-      document.getElementById("mem-area").value = mem ? mem.area : "Gondia";
+      document.getElementById("mem-area").value = mem ? mem.area : "Gondia City";
       document.getElementById("mem-address").value = mem ? mem.address || "" : "";
       document.getElementById("mem-fee-status").value = mem ? mem.feeStatus : "PAID";
       document.getElementById("mem-fee-note").value = mem ? mem.feeNote || "" : "₹1500 Annual Fee";
@@ -1217,7 +1402,8 @@
         area: document.getElementById("mem-area").value.trim(),
         address: document.getElementById("mem-address").value.trim(),
         feeStatus: document.getElementById("mem-fee-status").value,
-        feeNote: document.getElementById("mem-fee-note").value.trim()
+        feeNote: document.getElementById("mem-fee-note").value.trim(),
+        feeLedger: id ? (appState.members.find(m => m.id === id)?.feeLedger || []) : []
       };
 
       if (id) {
@@ -1230,6 +1416,7 @@
       persistLocal();
       updateStats();
       renderMembersTable();
+      renderECFeeLedgerTable();
       closeModal("modal-member");
       pushToCloud();
     }
@@ -1245,6 +1432,7 @@
         persistLocal();
         updateStats();
         renderMembersTable();
+        renderECFeeLedgerTable();
         pushToCloud();
       }
     }
@@ -1297,7 +1485,7 @@
 
     function exportToCSV() {
       if (appState.members.length === 0) return alert("No members to export!");
-      let csv = "Firm Name,Owner Name,Additional Pharmacist,Mobile,Area,Address,Fee Status,Receipt Note\n";
+      let csv = "Firm Name,Owner Name,Additional Pharmacist,Mobile,Tahasil,Address,Fee Status,Receipt Note\n";
       appState.members.forEach(m => {
         csv += `"${(m.firm||'').replace(/"/g, '""')}","${(m.owner||'').replace(/"/g, '""')}","${(m.pharmacist||'').replace(/"/g, '""')}","${m.mobile}","${(m.area||'').replace(/"/g, '""')}","${(m.address||'').replace(/"/g, '""')}","${m.feeStatus}","${(m.feeNote||'').replace(/"/g, '""')}"\n`;
       });
@@ -1352,7 +1540,6 @@
       syncWithCloud();
     }
 
-    // --- EC PORTAL LOGIC ---
     let isECAuthenticated = false;
 
     function openECPortalModal() {
@@ -1364,6 +1551,7 @@
         populateECMemberDropdown();
         renderSavedVouchersTable();
         renderSettlementLedgerTable();
+        renderECFeeLedgerTable();
         openModal("modal-ec-portal");
       }
     }
@@ -1386,10 +1574,10 @@
     }
 
     function switchECTab(tab) {
-      const tabs = ["expenses", "saved-vouchers", "settlement-ledger", "members"];
+      const tabs = ["member-fees", "expenses", "saved-vouchers", "settlement-ledger", "members"];
       tabs.forEach(t => {
         const panel = document.getElementById("ec-tab-" + t);
-        const btn = document.getElementById("tab-btn-ec-" + (t === "saved-vouchers" ? "vouchers" : (t === "settlement-ledger" ? "settlement" : t)));
+        const btn = document.getElementById("tab-btn-ec-" + (t === "member-fees" ? "fees" : (t === "saved-vouchers" ? "vouchers" : (t === "settlement-ledger" ? "settlement" : t))));
         if (t === tab) {
           panel.classList.remove("hidden");
           btn.className = "px-4 py-2 text-xs font-bold border-b-2 border-indigo-500 text-indigo-300";
@@ -1399,7 +1587,9 @@
         }
       });
 
-      if (tab === "saved-vouchers") {
+      if (tab === "member-fees") {
+        renderECFeeLedgerTable();
+      } else if (tab === "saved-vouchers") {
         renderSavedVouchersTable();
       } else if (tab === "settlement-ledger") {
         renderSettlementLedgerTable();
@@ -1407,9 +1597,272 @@
       lucide.createIcons();
     }
 
+    function renderECFeeLedgerTable() {
+      const tbody = document.getElementById("ec-fee-ledger-table-body");
+      if (!tbody) return;
+      tbody.innerHTML = "";
+
+      const query = (document.getElementById("ec-fee-search")?.value || "").toLowerCase().trim();
+      const tahasilFilter = (document.getElementById("ec-tahasil-filter")?.value || "ALL").toUpperCase();
+      const statusFilter = (document.getElementById("ec-fee-status-filter")?.value || "ALL").toUpperCase();
+
+      let totalMembers = 0;
+      let totalPaidCount = 0;
+      let totalAmountCollected = 0;
+
+      appState.members.forEach(m => {
+        totalMembers++;
+        const ledgerPayments = m.feeLedger || [];
+        const memberTotalPaid = ledgerPayments.reduce((acc, curr) => acc + (parseFloat(curr.amount) || 0), 0);
+        if (m.feeStatus === "PAID" || memberTotalPaid > 0) {
+          totalPaidCount++;
+          totalAmountCollected += memberTotalPaid > 0 ? memberTotalPaid : 1500;
+        }
+
+        // Tahasil matching
+        if (tahasilFilter !== "ALL") {
+          const areaUpper = (m.area || "").toUpperCase();
+          if (!areaUpper.includes(tahasilFilter)) return;
+        }
+
+        // Status matching
+        if (statusFilter !== "ALL") {
+          if (m.feeStatus !== statusFilter) return;
+        }
+
+        // Search matching
+        if (query) {
+          const match = (m.firm || "").toLowerCase().includes(query) ||
+                        (m.owner || "").toLowerCase().includes(query) ||
+                        (m.mobile || "").includes(query) ||
+                        (m.area || "").toLowerCase().includes(query);
+          if (!match) return;
+        }
+
+        const tr = document.createElement("tr");
+        tr.className = "hover:bg-slate-800/40 border-b border-slate-800/60 align-top";
+
+        let ledgerSummaryHtml = "";
+        if (ledgerPayments.length > 0) {
+          ledgerSummaryHtml = `<div class="mt-1 space-y-1">`;
+          ledgerPayments.forEach(p => {
+            ledgerSummaryHtml += `
+              <div class="text-[10px] bg-slate-900/80 px-2 py-0.5 rounded border border-slate-800 text-slate-300 flex items-center justify-between">
+                <span><strong class="text-emerald-400 mono">₹${p.amount}</strong> via ${p.mode} (${p.date})</span>
+                <span class="text-slate-400 font-mono text-[9px]">${escapeHtml(p.receipt || '')}</span>
+              </div>
+            `;
+          });
+          ledgerSummaryHtml += `</div>`;
+        } else {
+          ledgerSummaryHtml = `<div class="text-[10px] text-slate-500 italic mt-0.5">No digital receipt entries logged</div>`;
+        }
+
+        tr.innerHTML = `
+          <td class="p-3">
+            <div class="font-bold text-white text-xs">${escapeHtml(m.firm)}</div>
+            <div class="text-[11px] text-slate-400">${escapeHtml(m.address || 'Address not listed')}</div>
+          </td>
+          <td class="p-3">
+            <div class="font-medium text-slate-200">${escapeHtml(m.owner)}</div>
+            <div class="font-mono text-xs text-slate-400">${m.mobile}</div>
+          </td>
+          <td class="p-3">
+            <span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-800 border border-slate-700 text-cyan-300">
+              ${escapeHtml(m.area || 'Gondia')}
+            </span>
+          </td>
+          <td class="p-3">
+            <span class="px-2 py-0.5 rounded text-[10px] font-bold border ${
+              m.feeStatus === 'PAID'
+                ? 'bg-emerald-950/60 border-emerald-500/40 text-emerald-400'
+                : 'bg-rose-950/60 border-rose-500/40 text-rose-400'
+            }">
+              ${m.feeStatus}
+            </span>
+            ${ledgerSummaryHtml}
+          </td>
+          <td class="p-3 text-right">
+            <div class="flex items-center justify-end gap-1.5">
+              <button onclick="openCollectFeeModal('${m.id}')" class="px-2.5 py-1 bg-emerald-600/30 hover:bg-emerald-600/50 border border-emerald-500/40 text-emerald-300 rounded text-xs flex items-center gap-1 font-semibold">
+                <i data-lucide="plus-circle" class="w-3.5 h-3.5"></i>
+                <span>Add Payment</span>
+              </button>
+              <button onclick="printMembershipReceipt('${m.id}')" class="p-1 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded" title="Print Fee Receipt">
+                <i data-lucide="printer" class="w-3.5 h-3.5"></i>
+              </button>
+              <a href="https://wa.me/91${m.mobile}?text=${encodeURIComponent('GDCDA Membership Fee Acknowledgement: Dear ' + m.owner + ' (' + m.firm + '), your membership fee status is ' + m.feeStatus + '. Gondia District Chemist & Druggist Association.')}" target="_blank" class="p-1 bg-emerald-950/80 border border-emerald-500/30 text-emerald-400 rounded" title="Send WhatsApp Confirmation">
+                <i data-lucide="message-circle" class="w-3.5 h-3.5"></i>
+              </a>
+            </div>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      document.getElementById("ec-fee-stat-total").innerText = totalMembers;
+      document.getElementById("ec-fee-stat-paid").innerText = totalPaidCount;
+      document.getElementById("ec-fee-stat-pending").innerText = Math.max(0, totalMembers - totalPaidCount);
+      document.getElementById("ec-fee-stat-amount").innerText = `₹ ${totalAmountCollected.toFixed(2)}`;
+      lucide.createIcons();
+    }
+
+    function openCollectFeeModal(memId) {
+      const member = appState.members.find(m => m.id === memId);
+      if (!member) return;
+
+      document.getElementById("fee-pay-member-id").value = member.id;
+      document.getElementById("fee-pay-firm").innerText = member.firm;
+      document.getElementById("fee-pay-owner").innerText = member.owner;
+      document.getElementById("fee-pay-area").innerText = member.area || 'Gondia';
+      document.getElementById("fee-pay-amount").value = 1500;
+      document.getElementById("fee-pay-date").valueAsDate = new Date();
+      document.getElementById("fee-pay-mode").value = "UPI";
+      document.getElementById("fee-pay-receipt").value = `REC-${new Date().getFullYear()}-${Math.floor(100 + Math.random() * 900)}`;
+      document.getElementById("fee-pay-remarks").value = "Annual Membership Fee 2026-27";
+
+      const collectorSel = document.getElementById("fee-pay-collector");
+      collectorSel.innerHTML = "";
+      (appState.ecMembers || []).forEach(ec => {
+        const opt = document.createElement("option");
+        opt.value = `${ec.name} (${ec.role})`;
+        opt.innerText = `${ec.name} - ${ec.role}`;
+        collectorSel.appendChild(opt);
+      });
+
+      openModal("modal-collect-fee");
+    }
+
+    function submitMemberFeePayment(e) {
+      e.preventDefault();
+      const memId = document.getElementById("fee-pay-member-id").value;
+      const member = appState.members.find(m => m.id === memId);
+      if (!member) return;
+
+      const amount = parseFloat(document.getElementById("fee-pay-amount").value) || 1500;
+      const date = document.getElementById("fee-pay-date").value;
+      const mode = document.getElementById("fee-pay-mode").value;
+      const receipt = document.getElementById("fee-pay-receipt").value.trim();
+      const collector = document.getElementById("fee-pay-collector").value;
+      const remarks = document.getElementById("fee-pay-remarks").value.trim();
+
+      if (!member.feeLedger) member.feeLedger = [];
+      member.feeLedger.push({
+        id: "fpay-" + Date.now(),
+        amount,
+        date,
+        mode,
+        receipt,
+        collector,
+        remarks
+      });
+
+      member.feeStatus = "PAID";
+      member.feeNote = `₹${amount} (#${receipt})`;
+
+      persistLocal();
+      updateStats();
+      renderMembersTable();
+      renderECFeeLedgerTable();
+      closeModal("modal-collect-fee");
+      pushToCloud();
+
+      alert(`Payment of ₹${amount} recorded for ${member.firm}!\nReceipt No: ${receipt}`);
+    }
+
+    function printMembershipReceipt(memId) {
+      const member = appState.members.find(m => m.id === memId);
+      if (!member) return;
+
+      const latestPayment = (member.feeLedger && member.feeLedger.length > 0)
+        ? member.feeLedger[member.feeLedger.length - 1]
+        : { amount: 1500, date: new Date().toISOString().slice(0, 10), mode: "CASH", receipt: member.feeNote || "REC-2026", collector: "GDCDA Executive Committee", remarks: "Annual Membership Fee" };
+
+      const iframe = document.getElementById("printIframe");
+      const doc = iframe.contentWindow.document;
+
+      const receiptHtml = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>GDCDA Fee Receipt - ${member.firm}</title>
+          <style>
+            @page { size: 105mm 148mm portrait; margin: 4mm; }
+            body { font-family: Arial, sans-serif; margin: 0; padding: 4mm; color: #000; background: #fff; font-size: 9px; }
+            .header { text-align: center; border-bottom: 2px solid #000; padding-bottom: 4px; margin-bottom: 6px; }
+            .title { font-size: 11.5px; font-weight: 900; text-transform: uppercase; margin: 0; }
+            .sub { font-size: 8px; font-weight: 600; color: #333; margin-top: 1px; }
+            .badge { display: inline-block; border: 1px solid #000; padding: 2px 8px; margin-top: 3px; font-size: 9px; font-weight: bold; background: #f3f4f6; }
+            .table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+            .table td { padding: 3px 0; }
+            .box { border: 1.5px solid #000; padding: 6px; margin-top: 8px; background: #fafafa; }
+            .signatures { display: flex; justify-content: space-between; margin-top: 25px; padding-top: 5px; }
+            .sign { width: 45%; text-align: center; border-top: 1px dashed #000; padding-top: 3px; font-size: 8px; }
+          </style>
+        </head>
+        <body>
+          <div class="header">
+            <div class="title">GONDIA DISTRICT CHEMIST &amp; DRUGGIST ASSOCIATION</div>
+            <div class="sub">(Affiliated to MSCDA) - Gondia, Maharashtra</div>
+            <div class="badge">OFFICIAL MEMBERSHIP FEE RECEIPT</div>
+          </div>
+
+          <table class="table">
+            <tr>
+              <td><strong>Receipt No:</strong> ${escapeHtml(latestPayment.receipt)}</td>
+              <td style="text-align: right;"><strong>Date:</strong> ${latestPayment.date}</td>
+            </tr>
+            <tr>
+              <td colspan="2"><strong>Medical Store:</strong> <span style="font-size: 11px; font-weight: bold;">${escapeHtml(member.firm)}</span></td>
+            </tr>
+            <tr>
+              <td><strong>Owner / Chemist:</strong> ${escapeHtml(member.owner)}</td>
+              <td style="text-align: right;"><strong>Mobile:</strong> ${member.mobile}</td>
+            </tr>
+            <tr>
+              <td colspan="2"><strong>Tahasil / Area:</strong> ${escapeHtml(member.area || 'Gondia')}</td>
+            </tr>
+          </table>
+
+          <div class="box">
+            <div style="display: flex; justify-content: space-between; font-size: 11px; font-weight: bold;">
+              <span>Amount Received:</span>
+              <span style="font-family: monospace;">₹ ${parseFloat(latestPayment.amount).toFixed(2)}</span>
+            </div>
+            <div style="font-size: 8.5px; margin-top: 4px;">
+              <strong>Payment Mode:</strong> ${latestPayment.mode} | <strong>Collected By:</strong> ${escapeHtml(latestPayment.collector || 'EC Committee')}
+            </div>
+            <div style="font-size: 8.5px; margin-top: 2px;">
+              <strong>Particulars:</strong> ${escapeHtml(latestPayment.remarks || 'Annual Membership Fees')}
+            </div>
+          </div>
+
+          <div style="margin-top: 8px; font-size: 8px;">
+            <strong>Amount in Words:</strong> <em>${numberToWordsINR(latestPayment.amount)}</em>
+          </div>
+
+          <div class="signatures">
+            <div class="sign">Authorized EC Collector</div>
+            <div class="sign">Hon. Treasurer / President (GDCDA)</div>
+          </div>
+        </body>
+        </html>
+      `;
+
+      doc.open();
+      doc.write(receiptHtml);
+      doc.close();
+
+      setTimeout(() => {
+        iframe.contentWindow.focus();
+        iframe.contentWindow.print();
+      }, 250);
+    }
+
     // --- EC MEMBERS DIRECTORY ---
     function renderECMembers() {
       const tbody = document.getElementById("ec-members-table-body");
+      if (!tbody) return;
       tbody.innerHTML = "";
       (appState.ecMembers || []).forEach(ec => {
         const tr = document.createElement("tr");
@@ -1700,7 +2153,7 @@
       }
     }
 
-    // --- REIMBURSEMENT SETTLEMENT LEDGER (INFLOWS & PAYOUTS) ---
+    // --- REIMBURSEMENT SETTLEMENT LEDGER ---
     function renderSettlementLedgerTable() {
       const tbody = document.getElementById("settlement-ledger-table-body");
       if (!tbody) return;
@@ -1843,7 +2296,7 @@
       }
     }
 
-    // --- A6 PRINT ENGINE ---
+    // --- EXPENSE A6 PRINT ENGINE ---
     function printCurrentVoucher() {
       const payer = document.getElementById("exp-ec-member").value;
       const date = document.getElementById("exp-date").value || new Date().toISOString().slice(0, 10);
@@ -2081,6 +2534,79 @@
       }, 250);
     }
 
+    function openMasterImporterModal() {
+      document.getElementById("import-json-text").value = "";
+      openModal("modal-importer");
+    }
+
+    function executeMasterImport() {
+      const raw = document.getElementById("import-json-text").value.trim();
+      const mergeMode = document.getElementById("import-merge-mode").checked;
+
+      if (!raw) {
+        alert("Please paste valid JSON data from the Excel sheets.");
+        return;
+      }
+
+      try {
+        const parsed = JSON.parse(raw);
+        if (!Array.isArray(parsed)) {
+          alert("Import failed: JSON must be an array of member objects.");
+          return;
+        }
+
+        let addedCount = 0;
+        let updatedCount = 0;
+
+        parsed.forEach(item => {
+          const firm = (item.firm || item.Firm || item.firm_name || item.name || "").trim();
+          const owner = (item.owner || item.Owner || item.chemist || item.proprietor || "").trim();
+          const mobile = (item.mobile || item.Mobile || item.phone || item.contact || "").toString().replace(/[^0-9]/g, '').slice(-10);
+          const area = (item.area || item.tahasil || item.taluka || item.Area || "Gondia City").trim();
+          const address = (item.address || item.Address || item.location || "").trim();
+          const feeStatus = (item.feeStatus || item.status || "PENDING").toString().toUpperCase().includes("PAID") ? "PAID" : "PENDING";
+          const feeNote = (item.feeNote || item.receipt || (feeStatus === "PAID" ? "₹1500 (REC-2026)" : "Pending")).trim();
+
+          if (!firm && !owner && !mobile) return;
+
+          // Check if exists
+          const existingIdx = appState.members.findIndex(m => (mobile && m.mobile === mobile) || (firm && m.firm.toLowerCase() === firm.toLowerCase()));
+
+          const memberRecord = {
+            id: existingIdx > -1 ? appState.members[existingIdx].id : ("mem-" + Date.now() + "-" + Math.floor(Math.random() * 10000)),
+            firm: firm || "Medical Store",
+            owner: owner || "Chemist",
+            pharmacist: (item.pharmacist || item.Pharmacist || "").trim(),
+            mobile: mobile || "9000000000",
+            area: area || "Gondia",
+            address: address || "",
+            feeStatus: feeStatus,
+            feeNote: feeNote,
+            feeLedger: existingIdx > -1 ? (appState.members[existingIdx].feeLedger || []) : (feeStatus === "PAID" ? [{ date: "2026-09-01", amount: 1500, mode: "EXCEL", receipt: feeNote, collector: "GDCDA Office", remarks: "Imported" }] : [])
+          };
+
+          if (existingIdx > -1 && mergeMode) {
+            appState.members[existingIdx] = { ...appState.members[existingIdx], ...memberRecord };
+            updatedCount++;
+          } else {
+            appState.members.push(memberRecord);
+            addedCount++;
+          }
+        });
+
+        persistLocal();
+        updateStats();
+        renderMembersTable();
+        renderECFeeLedgerTable();
+        closeModal("modal-importer");
+        pushToCloud();
+
+        alert(`Master Data Import Successful!\nAdded: ${addedCount} members\nUpdated: ${updatedCount} members\nTotal Members Now: ${appState.members.length}`);
+      } catch (err) {
+        alert("Invalid JSON format. Please verify the structure and try again: " + err.message);
+      }
+    }
+
     // --- MODAL UTILS ---
     function openModal(id) {
       document.getElementById(id).classList.remove("hidden");
@@ -2098,7 +2624,6 @@
       return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
     }
 
-    // --- SHORTCUTS LISTENER ---
     window.addEventListener("keydown", (e) => {
       if (e.key === "/" && document.activeElement.tagName !== "INPUT" && document.activeElement.tagName !== "TEXTAREA") {
         e.preventDefault();
@@ -2121,7 +2646,7 @@
         exportToCSV();
       }
       if (e.key === "Escape") {
-        ["modal-member", "modal-settings", "modal-meeting", "modal-ec-login", "modal-ec-portal", "modal-settle-payment"].forEach(closeModal);
+        ["modal-member", "modal-settings", "modal-meeting", "modal-ec-login", "modal-ec-portal", "modal-settle-payment", "modal-collect-fee", "modal-importer"].forEach(closeModal);
       }
     });
 
