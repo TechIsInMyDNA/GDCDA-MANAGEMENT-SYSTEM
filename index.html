@@ -93,7 +93,7 @@
       <div class="p-4 rounded-xl border border-slate-800 bg-slate-900/60 shadow-sm flex items-center justify-between">
         <div>
           <p class="text-xs font-medium text-slate-400">Total Chemists</p>
-          <p class="text-2xl font-extrabold text-white tracking-tight mt-0.5" id="stat-total">983</p>
+          <p class="text-2xl font-extrabold text-white tracking-tight mt-0.5" id="stat-total">0</p>
         </div>
         <div class="w-10 h-10 rounded-lg bg-slate-800 flex items-center justify-center text-teal-400">
           <i data-lucide="store" class="w-5 h-5"></i>
@@ -102,7 +102,7 @@
       <div class="p-4 rounded-xl border border-slate-800 bg-slate-900/60 shadow-sm flex items-center justify-between">
         <div>
           <p class="text-xs font-medium text-slate-400">Fees Paid (2025-26)</p>
-          <p class="text-2xl font-extrabold text-emerald-400 tracking-tight mt-0.5" id="stat-paid">633</p>
+          <p class="text-2xl font-extrabold text-emerald-400 tracking-tight mt-0.5" id="stat-paid">0</p>
         </div>
         <div class="w-10 h-10 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
           <i data-lucide="check-circle" class="w-5 h-5"></i>
@@ -111,7 +111,7 @@
       <div class="p-4 rounded-xl border border-slate-800 bg-slate-900/60 shadow-sm flex items-center justify-between">
         <div>
           <p class="text-xs font-medium text-slate-400">Fees Pending / Dues</p>
-          <p class="text-2xl font-extrabold text-amber-400 tracking-tight mt-0.5" id="stat-pending">350</p>
+          <p class="text-2xl font-extrabold text-amber-400 tracking-tight mt-0.5" id="stat-pending">0</p>
         </div>
         <div class="w-10 h-10 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
           <i data-lucide="clock" class="w-5 h-5"></i>
@@ -175,7 +175,7 @@
     <div class="flex-1 border border-slate-800 rounded-xl bg-slate-900/50 backdrop-blur overflow-hidden flex flex-col shadow-xl">
       
       <div class="px-4 py-2.5 border-b border-slate-800 bg-slate-900/80 flex items-center justify-between">
-        <span class="text-xs text-slate-400 font-medium" id="table-results-count">Showing 983 of 983 chemists</span>
+        <span class="text-xs text-slate-400 font-medium" id="table-results-count">Showing 0 of 0 chemists</span>
         <div class="flex items-center gap-3">
           <span class="text-[11px] text-slate-400 flex items-center gap-1.5">
             <i data-lucide="shield-alert" class="w-3.5 h-3.5 text-indigo-400"></i> Meeting Check-In: Managed inside EC Dashboard
@@ -353,7 +353,7 @@
     </div>
   </div>
 
-  <!-- PIN VERIFICATION MODAL (HIDING 1441 TEXT) -->
+  <!-- PIN MODAL (NO VISIBLE TEXT OF 1441) -->
   <div id="pin-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md hidden flex items-center justify-center p-4">
     <div class="w-full max-w-xs bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl p-5 space-y-4">
       <div class="text-center space-y-1">
@@ -376,7 +376,7 @@
     </div>
   </div>
 
-  <!-- EC MEMBER FORM MODAL (WITH ROLE / DESIGNATION & PASSWORD RESET) -->
+  <!-- EC MEMBER FORM MODAL -->
   <div id="ec-member-form-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md hidden flex items-center justify-center p-4">
     <div class="w-full max-w-md bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl p-5 space-y-4">
       <div class="flex items-center justify-between border-b border-slate-800 pb-3">
@@ -683,7 +683,7 @@
           </div>
         </div>
 
-        <!-- TAB: EC TEAM & PASSWORDS (WITH DESIGNATION & PIN 1441) -->
+        <!-- TAB: EC TEAM -->
         <div id="ec-tab-team" class="space-y-4 hidden">
           <div class="flex items-center justify-between pb-3 border-b border-slate-800">
             <div>
@@ -691,7 +691,7 @@
               <p class="text-xs text-slate-400">Add, edit roles or reset passwords for committee members.</p>
             </div>
             <button onclick="triggerProtectedAction('ADD_EC_MEMBER', null)" class="px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs shadow-md flex items-center gap-1.5">
-              <i data-lucide="user-plus" class="w-3.5 h-3.5"></i> Add EC Member (PIN 1441)
+              <i data-lucide="user-plus" class="w-3.5 h-3.5"></i> Add EC Member
             </button>
           </div>
 
@@ -703,7 +703,7 @@
                   <th class="py-2.5 px-3">Role / Designation</th>
                   <th class="py-2.5 px-3">Mobile Contact</th>
                   <th class="py-2.5 px-3">Password / Passphrase</th>
-                  <th class="py-2.5 px-3 text-right">Action (PIN 1441)</th>
+                  <th class="py-2.5 px-3 text-right">Action</th>
                 </tr>
               </thead>
               <tbody id="ec-team-tbody" class="divide-y divide-slate-800/60"></tbody>
@@ -865,7 +865,7 @@
       }
     };
 
-    let pendingAction = null; // { type: 'EDIT'|'DELETE'|'ADD_EC_MEMBER'|'EDIT_EC_MEMBER'|'DELETE_EC_MEMBER', id: '...' }
+    let pendingAction = null;
 
     function initSystem() {
       const localVault = localStorage.getItem("GDCDA_APP_VAULT");
@@ -879,9 +879,7 @@
           if (parsed.ecMembers && parsed.ecMembers.length > 0) appState.ecMembers = parsed.ecMembers;
           if (parsed.auditLogs) appState.auditLogs = parsed.auditLogs;
           if (parsed.cloudConfig) appState.cloudConfig = Object.assign(appState.cloudConfig, parsed.cloudConfig);
-        } catch (e) {
-          console.error("Vault restore error:", e);
-        }
+        } catch (e) { console.error("Vault restore error:", e); }
       }
 
       const savedConfig = localStorage.getItem("GDCDA_CLOUD_CONFIG");
@@ -889,7 +887,6 @@
         try { appState.cloudConfig = Object.assign(appState.cloudConfig, JSON.parse(savedConfig)); } catch(e){}
       }
 
-      // Mandatory: Always start locked
       appState.isEcAuthenticated = false;
       appState.currentOperator = { name: "Guest", role: "Public" };
       sessionStorage.removeItem("GDCDA_EC_AUTH");
@@ -970,7 +967,6 @@
       }
     }
 
-    // --- AUTOMATIC LIVE SYNC ---
     function openCloudConfigModal() {
       const cfg = appState.cloudConfig;
       document.getElementById("cfg-token").value = cfg.token || "";
@@ -980,9 +976,7 @@
       document.getElementById("cloud-config-modal").classList.remove("hidden");
     }
 
-    function closeCloudConfigModal() {
-      document.getElementById("cloud-config-modal").classList.add("hidden");
-    }
+    function closeCloudConfigModal() { document.getElementById("cloud-config-modal").classList.add("hidden"); }
 
     async function saveAndLiveSyncCloud() {
       const cfg = appState.cloudConfig;
@@ -1051,10 +1045,7 @@
         const url = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${cfg.path}`;
 
         const getRes = await fetch(url, {
-          headers: {
-            "Authorization": `token ${cfg.token}`,
-            "Accept": "application/vnd.github.v3+json"
-          }
+          headers: { "Authorization": `token ${cfg.token}`, "Accept": "application/vnd.github.v3+json" }
         });
 
         let sha = null;
@@ -1065,11 +1056,7 @@
 
         const putRes = await fetch(url, {
           method: "PUT",
-          headers: {
-            "Authorization": `token ${cfg.token}`,
-            "Content-Type": "application/json",
-            "Accept": "application/vnd.github.v3+json"
-          },
+          headers: { "Authorization": `token ${cfg.token}`, "Content-Type": "application/json", "Accept": "application/vnd.github.v3+json" },
           body: JSON.stringify({
             message: `Auto Live Sync GDCDA Vault [${new Date().toLocaleString()}]`,
             content: btoa(unescape(encodeURIComponent(fileContent))),
@@ -1078,11 +1065,8 @@
           })
         });
 
-        if (putRes.ok) {
-          statusText.textContent = "Synced Live";
-        } else {
-          statusText.textContent = "Sync Offline";
-        }
+        if (putRes.ok) statusText.textContent = "Synced Live";
+        else statusText.textContent = "Sync Offline";
       } catch (err) {
         statusText.textContent = "Local Vault";
       } finally {
@@ -1099,27 +1083,18 @@
       document.getElementById("pin-input").focus();
     }
 
-    function closePinModal() {
-      document.getElementById("pin-modal").classList.add("hidden");
-      pendingAction = null;
-    }
+    function closePinModal() { document.getElementById("pin-modal").classList.add("hidden"); pendingAction = null; }
 
     function submitPinVerification() {
       const enteredPin = document.getElementById("pin-input").value.trim();
       if (enteredPin === "1441") {
         const action = pendingAction;
         closePinModal();
-        if (action.type === "EDIT") {
-          executeMemberEdit(action.id);
-        } else if (action.type === "DELETE") {
-          executeMemberDelete(action.id);
-        } else if (action.type === "ADD_EC_MEMBER") {
-          openEcMemberForm(null);
-        } else if (action.type === "EDIT_EC_MEMBER") {
-          openEcMemberForm(action.id);
-        } else if (action.type === "DELETE_EC_MEMBER") {
-          executeDeleteEcMember(action.id);
-        }
+        if (action.type === "EDIT") executeMemberEdit(action.id);
+        else if (action.type === "DELETE") executeMemberDelete(action.id);
+        else if (action.type === "ADD_EC_MEMBER") openEcMemberForm(null);
+        else if (action.type === "EDIT_EC_MEMBER") openEcMemberForm(action.id);
+        else if (action.type === "DELETE_EC_MEMBER") executeDeleteEcMember(action.id);
       } else {
         document.getElementById("pin-error").classList.remove("hidden");
       }
@@ -1149,9 +1124,7 @@
       lucide.createIcons();
     }
 
-    function closeEcMemberFormModal() {
-      document.getElementById("ec-member-form-modal").classList.add("hidden");
-    }
+    function closeEcMemberFormModal() { document.getElementById("ec-member-form-modal").classList.add("hidden"); }
 
     function saveEcMemberRecord() {
       const id = document.getElementById("ec-mem-in-id").value;
@@ -1160,29 +1133,17 @@
       const mobile = document.getElementById("ec-mem-in-mobile").value.trim();
       const password = document.getElementById("ec-mem-in-password").value.trim();
 
-      if (!name || !password || !role) {
-        alert("Name, Role and Password are required!");
-        return;
-      }
+      if (!name || !password || !role) { alert("Name, Role and Password are required!"); return; }
 
       if (id) {
         const m = appState.ecMembers.find(x => x.id === id);
         if (m) {
-          m.name = name;
-          m.role = role;
-          m.mobile = mobile;
-          m.password = password;
+          m.name = name; m.role = role; m.mobile = mobile; m.password = password;
           logActivity(`Updated EC Member details & password: ${name} (${role})`);
           showToast(`EC Member Updated: ${name}`);
         }
       } else {
-        const newEc = {
-          id: "ec-" + Date.now(),
-          name: name,
-          role: role,
-          mobile: mobile,
-          password: password
-        };
+        const newEc = { id: "ec-" + Date.now(), name: name, role: role, mobile: mobile, password: password };
         appState.ecMembers.push(newEc);
         logActivity(`Added New EC Member: ${name} (${role})`);
         showToast(`EC Member Added: ${name}`);
@@ -1219,10 +1180,10 @@
           <td class="py-2.5 px-3 font-mono text-slate-400">${m.mobile || "N/A"}</td>
           <td class="py-2.5 px-3 font-mono text-teal-400 font-bold">${escapeHtml(m.password)}</td>
           <td class="py-2.5 px-3 text-right space-x-1">
-            <button onclick="triggerProtectedAction('EDIT_EC_MEMBER', '${m.id}')" title="Edit / Reset Password (PIN 1441)" class="p-1 rounded bg-slate-800 hover:bg-slate-700 text-amber-400">
+            <button onclick="triggerProtectedAction('EDIT_EC_MEMBER', '${m.id}')" title="Edit / Reset Password (PIN Required)" class="p-1 rounded bg-slate-800 hover:bg-slate-700 text-amber-400">
               <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
             </button>
-            <button onclick="triggerProtectedAction('DELETE_EC_MEMBER', '${m.id}')" title="Delete (PIN 1441)" class="p-1 rounded bg-slate-800 hover:bg-slate-700 text-rose-400">
+            <button onclick="triggerProtectedAction('DELETE_EC_MEMBER', '${m.id}')" title="Delete (PIN Required)" class="p-1 rounded bg-slate-800 hover:bg-slate-700 text-rose-400">
               <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
             </button>
           </td>
@@ -1239,16 +1200,13 @@
       `).join("");
     }
 
-    // Pharmacists rows helper
     function renderPharmacistInputs(pharmacistsArray) {
       const container = document.getElementById("pharmacist-rows-container");
       if (!pharmacistsArray || pharmacistsArray.length === 0) pharmacistsArray = [""];
       container.innerHTML = pharmacistsArray.map((ph, idx) => `
         <div class="flex items-center gap-1.5 pharmacist-row">
           <input type="text" value="${escapeHtml(ph)}" placeholder="Qualified Pharmacist Name ${idx + 1}" class="pharma-input flex-1 bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-slate-100 text-xs">
-          ${idx > 0 ? `
-            <button type="button" onclick="removePharmacistInputRow(this)" class="p-1.5 rounded text-rose-400 hover:bg-slate-800"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
-          ` : ""}
+          ${idx > 0 ? `<button type="button" onclick="removePharmacistInputRow(this)" class="p-1.5 rounded text-rose-400 hover:bg-slate-800"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>` : ""}
         </div>
       `).join("");
       lucide.createIcons();
@@ -1258,10 +1216,7 @@
       const container = document.getElementById("pharmacist-rows-container");
       const div = document.createElement("div");
       div.className = "flex items-center gap-1.5 pharmacist-row";
-      div.innerHTML = `
-        <input type="text" placeholder="Qualified Pharmacist Name" class="pharma-input flex-1 bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-slate-100 text-xs">
-        <button type="button" onclick="removePharmacistInputRow(this)" class="p-1.5 rounded text-rose-400 hover:bg-slate-800"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
-      `;
+      div.innerHTML = `<input type="text" placeholder="Qualified Pharmacist Name" class="pharma-input flex-1 bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-slate-100 text-xs"><button type="button" onclick="removePharmacistInputRow(this)" class="p-1.5 rounded text-rose-400 hover:bg-slate-800"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>`;
       container.appendChild(div);
       lucide.createIcons();
     }
@@ -1353,19 +1308,9 @@
       if (id) {
         const m = appState.members.find(x => x.id === id);
         if (m) {
-          m.firm = firm;
-          m.owner = owner;
-          m.pharmacist = primaryPharmacist;
-          m.pharmacists = pharmacists;
-          m.dlNo = dlNo;
-          m.dlExpiry = dlExpiry;
-          m.fssaiNo = fssaiNo;
-          m.fssaiExpiry = fssaiExpiry;
-          m.area = area;
-          m.mobile = mobile;
-          m.address = address;
-          m.feeStatus = feeStatus;
-          m.feeAmount = feeAmt;
+          m.firm = firm; m.owner = owner; m.pharmacist = primaryPharmacist; m.pharmacists = pharmacists;
+          m.dlNo = dlNo; m.dlExpiry = dlExpiry; m.fssaiNo = fssaiNo; m.fssaiExpiry = fssaiExpiry;
+          m.area = area; m.mobile = mobile; m.address = address; m.feeStatus = feeStatus; m.feeAmount = feeAmt;
           m.feeNote = feeAmt > 0 ? `₹${feeAmt} (2025-26 Fees)` : "Fees Due 2025-26";
           logActivity(`Updated details for "${firm}"`);
           showToast(`Updated: ${firm}`);
@@ -1373,20 +1318,10 @@
       } else {
         const newM = {
           id: `mem-gdcda-${String(appState.members.length + 1).padStart(4, '0')}`,
-          firm: firm,
-          owner: owner,
-          pharmacist: primaryPharmacist,
-          pharmacists: pharmacists,
-          dlNo: dlNo,
-          dlExpiry: dlExpiry,
-          fssaiNo: fssaiNo,
-          fssaiExpiry: fssaiExpiry,
-          mobile: mobile,
-          phone: "",
-          area: area,
-          address: address,
-          feeStatus: feeStatus,
-          feeAmount: feeAmt,
+          firm: firm, owner: owner, pharmacist: primaryPharmacist, pharmacists: pharmacists,
+          dlNo: dlNo, dlExpiry: dlExpiry, fssaiNo: fssaiNo, fssaiExpiry: fssaiExpiry,
+          mobile: mobile, phone: "", area: area, address: address,
+          feeStatus: feeStatus, feeAmount: feeAmt,
           feeNote: feeAmt > 0 ? `₹${feeAmt} (2025-26 Fees)` : "Fees Due 2025-26",
           feeHistory: feeAmt > 0 ? [{ receiptNo: "REC-NEW", date: new Date().toISOString().split("T")[0], amount: feeAmt, mode: "CASH", ref: "Registration", collector: appState.currentOperator.name, year: "2025-26" }] : []
         };
@@ -1403,7 +1338,7 @@
       autoSilentLiveSync();
     }
 
-    // --- EC AUTHENTICATION & LOCKING ---
+    // EC Authentication
     function openEcPortalAuth() {
       document.getElementById("ec-password-input").value = "";
       document.getElementById("ec-login-error").classList.add("hidden");
@@ -1444,9 +1379,7 @@
     }
 
     function lockAndCloseEcPortal() {
-      if (appState.isEcAuthenticated) {
-        logActivity("Logged out & locked session");
-      }
+      if (appState.isEcAuthenticated) logActivity("Logged out & locked session");
       appState.isEcAuthenticated = false;
       appState.currentOperator = { name: "Guest", role: "Public" };
       sessionStorage.removeItem("GDCDA_EC_AUTH");
@@ -1519,19 +1452,11 @@
       const container = document.getElementById("fee-history-container");
       const history = (m.feeHistory && m.feeHistory.length > 0) ? m.feeHistory : [];
       if (history.length === 0) {
-        container.innerHTML = `
-          <div class="p-4 rounded-xl border border-slate-800 bg-slate-950 text-center text-slate-400 text-xs">
-            <p>No past payment transactions recorded yet.</p>
-            <p class="text-amber-400 mt-1 font-semibold">Current Balance: Fees Pending</p>
-          </div>
-        `;
+        container.innerHTML = `<div class="p-4 rounded-xl border border-slate-800 bg-slate-950 text-center text-slate-400 text-xs"><p>No past payment transactions recorded yet.</p><p class="text-amber-400 mt-1 font-semibold">Current Balance: Fees Pending</p></div>`;
       } else {
         container.innerHTML = history.slice().reverse().map(log => `
           <div class="p-3 rounded-xl border border-slate-800 bg-slate-950 space-y-1 text-xs">
-            <div class="flex items-center justify-between">
-              <span class="font-bold text-emerald-400 font-mono text-sm">₹ ${parseFloat(log.amount || 0).toFixed(2)}</span>
-              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-teal-500/10 text-teal-300 border border-teal-500/30">${log.mode || "CASH"}</span>
-            </div>
+            <div class="flex items-center justify-between"><span class="font-bold text-emerald-400 font-mono text-sm">₹ ${parseFloat(log.amount || 0).toFixed(2)}</span><span class="px-2 py-0.5 rounded text-[10px] font-bold bg-teal-500/10 text-teal-300 border border-teal-500/30">${log.mode || "CASH"}</span></div>
             <div class="grid grid-cols-2 gap-1 text-[11px] text-slate-400 pt-1 border-t border-slate-800/80">
               <div>Date: <strong class="text-slate-200 font-mono">${log.date || "N/A"}</strong></div>
               <div>Receipt: <strong class="text-slate-200 font-mono">${log.receiptNo || "N/A"}</strong></div>
@@ -1550,11 +1475,7 @@
     function renderEcFeesTable() {
       const tbody = document.getElementById("ec-fees-tbody");
       const search = (document.getElementById("ec-fees-search").value || "").toLowerCase().trim();
-      const list = appState.members.filter(m => !search || 
-        m.firm.toLowerCase().includes(search) || 
-        (m.mobile && m.mobile.includes(search)) || 
-        (m.area && m.area.toLowerCase().includes(search))
-      );
+      const list = appState.members.filter(m => !search || m.firm.toLowerCase().includes(search) || (m.mobile && m.mobile.includes(search)) || (m.area && m.area.toLowerCase().includes(search)));
 
       document.getElementById("ledger-total-count").textContent = appState.members.length;
       const totalCol = appState.members.reduce((acc, m) => acc + (parseFloat(m.feeAmount) || 0), 0);
@@ -1563,40 +1484,14 @@
       tbody.innerHTML = list.map(m => {
         const isPaid = m.feeStatus === "PAID";
         const hist = (m.feeHistory && m.feeHistory.length > 0) ? m.feeHistory[m.feeHistory.length - 1] : null;
-
         return `
           <tr class="hover:bg-slate-900/80 transition">
-            <td class="py-2.5 px-3">
-              <div class="font-bold text-slate-200">${escapeHtml(m.firm)}</div>
-              <div class="text-[10px] text-slate-400 font-mono">ID: ${m.id}</div>
-            </td>
-            <td class="py-2.5 px-3">
-              <span class="px-2 py-0.5 rounded text-[10px] bg-slate-800 text-slate-300 font-medium">${escapeHtml(m.area || "Gondia")}</span>
-            </td>
-            <td class="py-2.5 px-3 text-center">
-              <span class="px-2 py-0.5 rounded text-[10px] font-bold ${isPaid ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/30" : "bg-amber-500/10 text-amber-400 border border-amber-500/30"}">
-                ${m.feeStatus}
-              </span>
-            </td>
-            <td class="py-2.5 px-3 text-right font-mono text-teal-400 font-bold">
-              ₹ ${parseFloat(m.feeAmount || 0).toLocaleString("en-IN", { minimumFractionDigits: 2 })}
-            </td>
-            <td class="py-2.5 px-3 text-slate-400 text-[11px]">
-              ${hist ? `
-                <button onclick="showFeeHistoryModal('${m.id}')" title="View details" class="text-left group flex items-center gap-1 hover:text-teal-300">
-                  <span class="font-mono text-slate-300 group-hover:underline">${hist.receiptNo}</span> • <span>${hist.date}</span>
-                  <i data-lucide="external-link" class="w-3 h-3 text-teal-400"></i>
-                </button>
-              ` : `<span class="italic text-slate-600">Pending</span>`}
-            </td>
-            <td class="py-2.5 px-3 text-right space-x-1">
-              <button onclick="openFeePaymentModal('${m.id}')" class="px-2 py-1 rounded bg-teal-500/10 hover:bg-teal-500/20 text-teal-300 border border-teal-500/30 text-[11px] font-medium">
-                Record Inflow
-              </button>
-              <button onclick="showFeeHistoryModal('${m.id}')" title="Payment History" class="p-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300">
-                <i data-lucide="clock" class="w-3.5 h-3.5"></i>
-              </button>
-            </td>
+            <td class="py-2.5 px-3"><div class="font-bold text-slate-200">${escapeHtml(m.firm)}</div><div class="text-[10px] text-slate-400 font-mono">ID: ${m.id}</div></td>
+            <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded text-[10px] bg-slate-800 text-slate-300 font-medium">${escapeHtml(m.area || "Gondia")}</span></td>
+            <td class="py-2.5 px-3 text-center"><span class="px-2 py-0.5 rounded text-[10px] font-bold ${isPaid ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/30" : "bg-amber-500/10 text-amber-400 border border-amber-500/30"}">${m.feeStatus}</span></td>
+            <td class="py-2.5 px-3 text-right font-mono text-teal-400 font-bold">₹ ${parseFloat(m.feeAmount || 0).toLocaleString("en-IN", { minimumFractionDigits: 2 })}</td>
+            <td class="py-2.5 px-3 text-slate-400 text-[11px]">${hist ? `<button onclick="showFeeHistoryModal('${m.id}')" class="text-left group flex items-center gap-1 hover:text-teal-300"><span class="font-mono text-slate-300 group-hover:underline">${hist.receiptNo}</span> • <span>${hist.date}</span></button>` : `<span class="italic text-slate-600">Pending</span>`}</td>
+            <td class="py-2.5 px-3 text-right space-x-1"><button onclick="openFeePaymentModal('${m.id}')" class="px-2.5 py-1 rounded bg-teal-500/10 hover:bg-teal-500/20 text-teal-300 border border-teal-500/30 text-[11px] font-medium">Record Inflow</button></td>
           </tr>
         `;
       }).join("");
@@ -1607,14 +1502,7 @@
       const title = document.getElementById("ec-new-meet-title").value.trim();
       const date = document.getElementById("ec-new-meet-date").value;
       if (!title) { alert("Please enter meeting title"); return; }
-
-      const newM = {
-        id: "meet-" + Date.now(),
-        title: title,
-        date: date,
-        attendance: {}
-      };
-
+      const newM = { id: "meet-" + Date.now(), title: title, date: date, attendance: {} };
       appState.meetings.unshift(newM);
       appState.activeMeetingId = newM.id;
       logActivity(`Created & activated meeting: "${title}"`);
@@ -1632,7 +1520,6 @@
       const search = (document.getElementById("ec-checkin-search").value || "").toLowerCase().trim();
       const activeM = appState.meetings.find(m => m.id === appState.activeMeetingId) || appState.meetings[0];
       const meetAttendance = (activeM && activeM.attendance) ? activeM.attendance : {};
-
       document.getElementById("ec-current-meeting-label").textContent = `Active Meeting: ${activeM.title} (${activeM.date})`;
       const list = appState.members.filter(m => !search || m.firm.toLowerCase().includes(search));
 
@@ -1643,16 +1530,8 @@
             <td class="py-2 px-3 font-semibold text-slate-200">${escapeHtml(m.firm)}</td>
             <td class="py-2 px-3 text-slate-400">${escapeHtml(m.area || "Gondia")}</td>
             <td class="py-2 px-3 font-mono text-slate-300">${m.mobile || "N/A"}</td>
-            <td class="py-2 px-3 text-center">
-              <span class="px-2 py-0.5 rounded text-[10px] font-bold ${isPres ? "bg-indigo-500/20 text-indigo-300" : "bg-slate-800 text-slate-500"}">
-                ${isPres ? "PRESENT" : "ABSENT"}
-              </span>
-            </td>
-            <td class="py-2 px-3 text-right">
-              <button onclick="toggleEcCheckin('${m.id}')" class="px-3 py-1 rounded text-[11px] font-bold transition ${isPres ? "bg-rose-500/10 text-rose-400 border border-rose-500/30 hover:bg-rose-500/20" : "bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/20"}">
-                ${isPres ? "Mark Absent" : "Mark Present"}
-              </button>
-            </td>
+            <td class="py-2 px-3 text-center"><span class="px-2 py-0.5 rounded text-[10px] font-bold ${isPres ? "bg-indigo-500/20 text-indigo-300" : "bg-slate-800 text-slate-500"}">${isPres ? "PRESENT" : "ABSENT"}</span></td>
+            <td class="py-2 px-3 text-right"><button onclick="toggleEcCheckin('${m.id}')" class="px-3 py-1 rounded text-[11px] font-bold transition ${isPres ? "bg-rose-500/10 text-rose-400 border border-rose-500/30 hover:bg-rose-500/20" : "bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/20"}">${isPres ? "Mark Absent" : "Mark Present"}</button></td>
           </tr>
         `;
       }).join("");
@@ -1661,20 +1540,73 @@
     function toggleEcCheckin(memberId) {
       const activeM = appState.meetings.find(m => m.id === appState.activeMeetingId) || appState.meetings[0];
       if (!activeM.attendance) activeM.attendance = {};
-
-      const currentStatus = activeM.attendance[memberId] === "PRESENT";
-      activeM.attendance[memberId] = currentStatus ? "ABSENT" : "PRESENT";
-      
+      activeM.attendance[memberId] = activeM.attendance[memberId] === "PRESENT" ? "ABSENT" : "PRESENT";
       const m = appState.members.find(x => x.id === memberId);
       logActivity(`Marked ${m ? m.firm : memberId} as ${activeM.attendance[memberId]} in meeting "${activeM.title}"`);
-
       persistLocal();
       updateStats();
       renderMembersTable();
       renderEcMeetingCheckinTable();
     }
 
-    // Expense Vouchers
+    function renderMembersTable() {
+      const tbody = document.getElementById("members-table-body");
+      const search = document.getElementById("member-search").value.toLowerCase().trim();
+      const areaFilter = document.getElementById("filter-area").value;
+      const feeFilter = document.getElementById("filter-fee").value;
+      const attendanceFilter = document.getElementById("filter-attendance").value;
+
+      const activeM = appState.meetings.find(m => m.id === appState.activeMeetingId) || appState.meetings[0];
+      const meetAttendance = (activeM && activeM.attendance) ? activeM.attendance : {};
+
+      const filtered = appState.members.filter(m => {
+        const pharmMatch = Array.isArray(m.pharmacists) ? m.pharmacists.some(p => p.toLowerCase().includes(search)) : (m.pharmacist && m.pharmacist.toLowerCase().includes(search));
+        const matchSearch = !search || m.firm.toLowerCase().includes(search) || (m.owner && m.owner.toLowerCase().includes(search)) || pharmMatch || (m.dlNo && m.dlNo.toLowerCase().includes(search)) || (m.fssaiNo && m.fssaiNo.includes(search)) || (m.address && m.address.toLowerCase().includes(search)) || (m.mobile && m.mobile.includes(search)) || (m.area && m.area.toLowerCase().includes(search));
+        const matchArea = areaFilter === "ALL" || m.area === areaFilter;
+        const matchFee = feeFilter === "ALL" || m.feeStatus === feeFilter;
+        const isPres = meetAttendance[m.id] === "PRESENT";
+        const matchAttendance = attendanceFilter === "ALL" || (attendanceFilter === "PRESENT" && isPres) || (attendanceFilter === "ABSENT" && !isPres);
+        return matchSearch && matchArea && matchFee && matchAttendance;
+      });
+
+      document.getElementById("table-results-count").textContent = `Showing ${filtered.length} of ${appState.members.length} chemists`;
+      if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" class="py-12 text-center text-slate-500">No chemists found matching filters.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = filtered.map((m, idx) => {
+        const isPaid = m.feeStatus === "PAID";
+        const isPresent = meetAttendance[m.id] === "PRESENT";
+        const pharmList = Array.isArray(m.pharmacists) && m.pharmacists.length > 0 ? m.pharmacists : (m.pharmacist ? [m.pharmacist] : []);
+
+        return `
+          <tr class="hover:bg-slate-800/40 transition group">
+            <td class="py-2.5 px-3 text-center text-slate-500 font-mono text-[11px]">${idx + 1}</td>
+            <td class="py-2.5 px-3">
+              <div class="font-bold text-slate-100 text-xs tracking-wide">${escapeHtml(m.firm)}</div>
+              <div class="flex flex-wrap items-center gap-1.5 mt-0.5 text-[10px]">
+                ${m.owner ? `<span class="text-slate-400">Prop: <strong class="text-slate-300 font-medium">${escapeHtml(m.owner)}</strong></span>` : ""}
+                ${pharmList.map(p => `<span class="px-1.5 py-0.2 rounded bg-teal-500/10 text-teal-300 border border-teal-500/20 font-medium flex items-center gap-0.5"><i data-lucide="award" class="w-2.5 h-2.5"></i> ${escapeHtml(p)}</span>`).join("")}
+              </div>
+              ${(m.dlNo || m.fssaiNo) ? `<div class="flex flex-wrap items-center gap-2 mt-1 text-[10px] text-slate-400 font-mono">${m.dlNo ? `<span>DL: <strong class="text-slate-300">${escapeHtml(m.dlNo)}</strong>${m.dlExpiry ? ` (Exp: ${m.dlExpiry})` : ""}</span>` : ""}${m.dlNo && m.fssaiNo ? `<span>•</span>` : ""}${m.fssaiNo ? `<span>FSSAI: <strong class="text-amber-300">${escapeHtml(m.fssaiNo)}</strong>${m.fssaiExpiry ? ` (Exp: ${m.fssaiExpiry})` : ""}</span>` : ""}</div>` : ""}
+            </td>
+            <td class="py-2.5 px-3"><span class="inline-block px-2 py-0.5 rounded text-[10px] font-medium bg-slate-800 text-slate-300 border border-slate-700/60 mb-0.5">${escapeHtml(m.area || "Gondia")}</span><div class="text-[11px] text-slate-400 truncate max-w-xs">${escapeHtml(m.address || "")}</div></td>
+            <td class="py-2.5 px-3">${m.mobile ? `<div class="flex items-center gap-2 font-mono text-slate-300"><span>${m.mobile}</span><a href="https://wa.me/91${m.mobile}" target="_blank" class="text-emerald-400"><i data-lucide="message-square" class="w-3.5 h-3.5"></i></a></div>` : `<span class="text-slate-600 italic">No Mobile</span>`}</td>
+            <td class="py-2.5 px-3 text-center"><button onclick="showFeeHistoryModal('${m.id}')" class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold ${isPaid ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/30" : "bg-amber-500/10 text-amber-400 border border-amber-500/30"}">${m.feeStatus} ${m.feeAmount ? `(₹${m.feeAmount})` : ""}</button></td>
+            <td class="py-2.5 px-3 text-center"><span class="inline-flex items-center gap-1 text-[11px] font-medium ${isPresent ? "text-indigo-400 font-semibold" : "text-slate-500"}"><i data-lucide="${isPresent ? "check-circle" : "minus"}" class="w-3 h-3"></i>${isPresent ? "Present" : "Absent"}</span></td>
+            <td class="py-2.5 px-3 text-right space-x-1 whitespace-nowrap">
+              <button onclick="triggerProtectedAction('EDIT', '${m.id}')" title="Edit Member" class="p-1 rounded bg-slate-800 hover:bg-slate-700 text-amber-400"><i data-lucide="edit-3" class="w-3.5 h-3.5"></i></button>
+              <button onclick="triggerProtectedAction('DELETE', '${m.id}')" title="Delete Member" class="p-1 rounded bg-slate-800 hover:bg-slate-700 text-rose-400"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+              <button onclick="showFeeHistoryModal('${m.id}')" title="Payment Log" class="p-1 rounded bg-slate-800 hover:bg-slate-700 text-teal-400"><i data-lucide="receipt" class="w-3.5 h-3.5"></i></button>
+            </td>
+          </tr>
+        `;
+      }).join("");
+      lucide.createIcons();
+    }
+
+    // Expense Vouchers & Settlements
     let activeVoucherRows = [
       { desc: "HOTEL RIYA IMPERIAL EXECUTIVE ROOM 301 BOOKED", date: "2026-09-23", mode: "UPI", ref: "PAYTM/UJJIVAN/31535", amt: 1800 },
       { desc: "BALLAL SIR GND TO NGP VIDARBHA 2ND AC TKT", date: "2026-09-23", mode: "UPI", ref: "VIA IRCTC ID", amt: 794 },
@@ -1687,19 +1619,18 @@
     function renderVoucherRows() {
       const container = document.getElementById("voucher-rows-container");
       container.innerHTML = activeVoucherRows.map((item, idx) => `
-        <div class="grid grid-cols-12 gap-2 px-3 py-2 items-center bg-slate-900/40 hover:bg-slate-900/80 transition">
+        <div class="grid grid-cols-12 gap-2 px-3 py-2 items-center bg-slate-900/40">
           <div class="col-span-4"><input type="text" value="${escapeHtml(item.desc)}" oninput="updateVoucherRow(${idx}, 'desc', this.value)" class="w-full bg-slate-950 border border-slate-800 rounded px-2 py-1 text-xs text-slate-100 uppercase"></div>
           <div class="col-span-2"><input type="date" value="${item.date}" oninput="updateVoucherRow(${idx}, 'date', this.value)" class="w-full bg-slate-950 border border-slate-800 rounded px-2 py-1 text-xs text-slate-100"></div>
-          <div class="col-span-2"><select onchange="updateVoucherRow(${idx}, 'mode', this.value)" class="w-full bg-slate-950 border border-slate-800 rounded px-2 py-1 text-xs text-slate-100"><option value="UPI" ${item.mode === "UPI" ? "selected" : ""}>UPI</option><option value="CASH" ${item.mode === "CASH" ? "selected" : ""}>CASH</option></select></div>
+          <div class="col-span-2"><select onchange="updateVoucherRow(${idx}, 'mode', this.value)" class="w-full bg-slate-950 border border-slate-800 rounded px-2 py-1 text-xs text-slate-100"><option value="UPI">UPI</option><option value="CASH">CASH</option></select></div>
           <div class="col-span-2"><input type="text" value="${escapeHtml(item.ref || "")}" oninput="updateVoucherRow(${idx}, 'ref', this.value)" placeholder="Ref" class="w-full bg-slate-950 border border-slate-800 rounded px-2 py-1 text-xs text-slate-100"></div>
           <div class="col-span-1"><input type="number" value="${item.amt}" oninput="updateVoucherRow(${idx}, 'amt', this.value)" class="w-full bg-slate-950 border border-slate-800 rounded px-2 py-1 text-xs text-right font-mono text-teal-400 font-bold"></div>
-          <div class="col-span-1 text-center"><button onclick="removeVoucherRow(${idx})" class="text-rose-400 hover:text-rose-300 p-1"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button></div>
+          <div class="col-span-1 text-center"><button onclick="removeVoucherRow(${idx})" class="text-rose-400 p-1"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button></div>
         </div>
       `).join("");
       calculateVoucherTotal();
       lucide.createIcons();
     }
-
     function addVoucherItemRow() { activeVoucherRows.push({ desc: "", date: document.getElementById("v-date").value, mode: "UPI", ref: "", amt: 0 }); renderVoucherRows(); }
     function removeVoucherRow(idx) { activeVoucherRows.splice(idx, 1); renderVoucherRows(); }
     function updateVoucherRow(idx, field, val) { if (field === "amt") { activeVoucherRows[idx].amt = parseFloat(val) || 0; calculateVoucherTotal(); } else { activeVoucherRows[idx][field] = val; } }
@@ -1715,23 +1646,10 @@
       const date = document.getElementById("v-date").value;
       const purpose = document.getElementById("v-purpose").value.trim() || "GDCDA Official Expenses";
       const total = calculateVoucherTotal();
-
-      const newV = {
-        id: "vouch-" + Date.now(),
-        payer: payer,
-        date: date,
-        purpose: purpose,
-        items: JSON.parse(JSON.stringify(activeVoucherRows)),
-        total: total,
-        settlements: []
-      };
-      appState.vouchers.unshift(newV);
+      appState.vouchers.unshift({ id: "vouch-" + Date.now(), payer, date, purpose, items: JSON.parse(JSON.stringify(activeVoucherRows)), total, settlements: [] });
       logActivity(`Created Voucher: ${purpose} (₹${total}) by ${payer}`);
-      persistLocal();
-      renderVouchersLedger();
-      renderSettlementsLedger();
-      showToast("Voucher Saved!");
-      autoSilentLiveSync();
+      persistLocal(); renderVouchersLedger(); renderSettlementsLedger();
+      showToast("Voucher Saved!"); autoSilentLiveSync();
     }
 
     function renderVouchersLedger() {
@@ -1742,11 +1660,9 @@
           <td class="py-2 px-3 font-mono text-slate-400">${v.date}</td>
           <td class="py-2 px-3 font-medium text-slate-200">${escapeHtml(v.payer)}</td>
           <td class="py-2 px-3 text-slate-300 font-semibold">${escapeHtml(v.purpose)}</td>
-          <td class="py-2 px-3 text-right font-mono text-teal-400 font-bold">₹ ${v.total.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</td>
+          <td class="py-2 px-3 text-right font-mono text-teal-400 font-bold">₹ ${v.total.toLocaleString("en-IN")}</td>
           <td class="py-2 px-3 text-center"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/10 text-amber-400">PENDING</span></td>
-          <td class="py-2 px-3 text-right space-x-1">
-            <button onclick="printSavedA6Voucher('${v.id}')" class="p-1 rounded bg-slate-800 text-indigo-400"><i data-lucide="printer" class="w-3.5 h-3.5"></i></button>
-          </td>
+          <td class="py-2 px-3 text-right"><button onclick="printSavedA6Voucher('${v.id}')" class="p-1 rounded bg-slate-800 text-indigo-400"><i data-lucide="printer" class="w-3.5 h-3.5"></i></button></td>
         </tr>
       `).join("");
       lucide.createIcons();
@@ -1772,9 +1688,9 @@
           </tr>
         `;
       }).join("");
-      document.getElementById("kpi-claimed").textContent = "₹ " + totalClaimed.toLocaleString("en-IN", { minimumFractionDigits: 2 });
-      document.getElementById("kpi-reimbursed").textContent = "₹ " + totalPaid.toLocaleString("en-IN", { minimumFractionDigits: 2 });
-      document.getElementById("kpi-dues").textContent = "₹ " + (totalClaimed - totalPaid).toLocaleString("en-IN", { minimumFractionDigits: 2 });
+      document.getElementById("kpi-claimed").textContent = "₹ " + totalClaimed.toLocaleString("en-IN");
+      document.getElementById("kpi-reimbursed").textContent = "₹ " + totalPaid.toLocaleString("en-IN");
+      document.getElementById("kpi-dues").textContent = "₹ " + (totalClaimed - totalPaid).toLocaleString("en-IN");
     }
 
     function promptRecordSettlement(vouchId) {
@@ -1784,17 +1700,14 @@
       if (!amtStr) return;
       const amt = parseFloat(amtStr);
       if (!v.settlements) v.settlements = [];
-      v.settlements.push({ date: new Date().toISOString().split("T")[0], amt: amt, mode: "UPI", ref: "UTR-" + Date.now() });
+      v.settlements.push({ date: new Date().toISOString().split("T")[0], amt, mode: "UPI", ref: "UTR-" + Date.now() });
       logActivity(`Disbursed ₹${amt} settlement to ${v.payer}`);
-      persistLocal();
-      renderVouchersLedger();
-      renderSettlementsLedger();
-      showToast("Settlement Recorded!");
+      persistLocal(); renderVouchersLedger(); renderSettlementsLedger();
+      showToast("Settlement Recorded!"); autoSilentLiveSync();
     }
 
     function printCurrentA6Voucher() { executeA6PrintStream({ payer: document.getElementById("v-payer").value, date: document.getElementById("v-date").value, purpose: document.getElementById("v-purpose").value, items: activeVoucherRows, total: calculateVoucherTotal() }); }
     function printSavedA6Voucher(vouchId) { const v = appState.vouchers.find(x => x.id === vouchId); if (v) executeA6PrintStream(v); }
-
     function executeA6PrintStream(voucher) {
       const iframe = document.getElementById("print-frame");
       const numInWords = inWords(Math.round(voucher.total));
@@ -1829,13 +1742,9 @@
       mem.feeHistory.push({ receiptNo: ref, date: document.getElementById("fee-form-date").value, amount: amt, mode: mode, ref: ref, collector: collector, year: "2025-26" });
 
       logActivity(`Recorded fee payment: ₹${amt} from "${mem.firm}" (Collector: ${collector})`);
-      persistLocal();
-      closeFeePaymentModal();
-      updateStats();
-      renderMembersTable();
-      renderEcFeesTable();
-      showToast(`Fee Recorded for ${mem.firm}`);
-      autoSilentLiveSync();
+      persistLocal(); closeFeePaymentModal(); updateStats();
+      renderMembersTable(); renderEcFeesTable();
+      showToast(`Fee Recorded for ${mem.firm}`); autoSilentLiveSync();
     }
 
     function downloadJsonBackup() {
@@ -1859,9 +1768,8 @@
           if (d.meetings) appState.meetings = d.meetings;
           if (d.ecMembers) appState.ecMembers = d.ecMembers;
           if (d.auditLogs) appState.auditLogs = d.auditLogs;
-          persistLocal();
-          initSystem();
-          logActivity("Restored vault from JSON backup file");
+          persistLocal(); initSystem();
+          logActivity("Restored vault from JSON backup");
           showToast("Vault Restored Successfully!");
         } catch(err) { alert("Invalid JSON file"); }
       };
@@ -1901,10 +1809,23 @@
     function showToast(msg) {
       const t = document.createElement("div");
       t.className = "fixed bottom-5 right-5 z-50 px-4 py-2.5 rounded-xl bg-slate-900 border border-teal-500/50 text-teal-300 text-xs font-semibold shadow-2xl";
-      t.textContent = msg;
-      document.body.appendChild(t);
+      t.textContent = msg; document.body.appendChild(t);
       setTimeout(() => t.remove(), 3000);
     }
+
+    window.addEventListener("keydown", (e) => {
+      if (e.key === "/" && document.activeElement.tagName !== "INPUT" && document.activeElement.tagName !== "TEXTAREA") {
+        e.preventDefault(); document.getElementById("member-search").focus();
+      } else if (e.altKey && (e.key === "s" || e.key === "S")) {
+        e.preventDefault(); openCloudConfigModal();
+      } else if (e.altKey && (e.key === "n" || e.key === "N")) {
+        e.preventDefault(); openAddMemberModal();
+      } else if (e.altKey && (e.key === "x" || e.key === "X")) {
+        e.preventDefault(); openEcPortalAuth();
+      } else if (e.altKey && (e.key === "e" || e.key === "E")) {
+        e.preventDefault(); exportAttendanceCSV();
+      }
+    });
 
     document.addEventListener("DOMContentLoaded", initSystem);
   </script>
