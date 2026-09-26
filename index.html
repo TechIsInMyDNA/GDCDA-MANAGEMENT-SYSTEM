@@ -121,7 +121,7 @@
       
       <div class="relative w-full md:flex-1">
         <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
-        <input type="text" id="member-search" placeholder="Search by Firm, Owner, Pharmacist, Mobile, Address... (Press '/' to focus)" 
+        <input type="text" id="member-search" placeholder="Search by Firm, Owner, Pharmacist, DL No, FSSAI, Mobile, Village... (Press '/' to focus)" 
           class="w-full pl-10 pr-12 py-2 bg-slate-950/80 border border-slate-800 rounded-lg text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition"
           oninput="renderMembersTable()">
         <kbd class="hidden sm:inline-block absolute right-3 top-1/2 -translate-y-1/2 text-[10px] bg-slate-800 border border-slate-700 text-slate-400 px-1.5 py-0.5 rounded font-mono">/</kbd>
@@ -164,7 +164,7 @@
         <span class="text-xs text-slate-400 font-medium" id="table-results-count">Showing 983 of 983 chemists</span>
         <div class="flex items-center gap-3">
           <span class="text-[11px] text-slate-400 flex items-center gap-1.5">
-            <i data-lucide="shield-alert" class="w-3.5 h-3.5 text-indigo-400"></i> Meeting Check-In: EC Authority inside EC Dashboard
+            <i data-lucide="shield-alert" class="w-3.5 h-3.5 text-indigo-400"></i> Meeting Check-In: Managed inside EC Dashboard
           </span>
         </div>
       </div>
@@ -174,7 +174,7 @@
           <thead class="sticky top-0 bg-slate-900 border-b border-slate-800 text-slate-400 uppercase tracking-wider text-[11px] z-10">
             <tr>
               <th class="py-3 px-3 w-12 text-center">#</th>
-              <th class="py-3 px-3">Chemist & Entity Details</th>
+              <th class="py-3 px-3">Chemist & Regulatory Details</th>
               <th class="py-3 px-3">Tahasil & Address</th>
               <th class="py-3 px-3">Mobile Contact</th>
               <th class="py-3 px-3 text-center">2025-26 Fees</th>
@@ -204,7 +204,7 @@
           </div>
           <div>
             <h3 class="text-sm font-bold text-white">GitHub Cloud Vault Live Sync Config</h3>
-            <p class="text-xs text-slate-400">Token, Repo, Username & Masterphrase save hote hi live auto-sync start ho jayega</p>
+            <p class="text-xs text-slate-400">Credentials save hone par live silent sync start ho jayega</p>
           </div>
         </div>
         <button onclick="closeCloudConfigModal()" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
@@ -229,7 +229,7 @@
 
         <div>
           <label class="block font-medium text-slate-300 mb-1">Master Passphrase (AES-256-GCM Military Encryption Key) *</label>
-          <input type="password" id="cfg-passphrase" placeholder="Enter master secret passphrase..." class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-100 font-mono focus:outline-none focus:border-teal-500">
+          <input type="password" id="cfg-passphrase" placeholder="Enter master passphrase..." class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-100 font-mono focus:outline-none focus:border-teal-500">
         </div>
       </div>
 
@@ -244,10 +244,10 @@
   </div>
 
   <!-- ============================================================== -->
-  <!-- MODAL: ADD / EDIT CHEMIST MEMBER                               -->
+  <!-- MODAL: ADD / EDIT CHEMIST MEMBER (WITH REGULATORY & MULTI-PHARMA)-->
   <!-- ============================================================== -->
   <div id="member-form-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md hidden flex items-center justify-center p-4">
-    <div class="w-full max-w-md bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl p-5 space-y-4">
+    <div class="w-full max-w-lg bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl p-5 space-y-4 max-h-[90vh] overflow-y-auto custom-scrollbar">
       <div class="flex items-center justify-between border-b border-slate-800 pb-3">
         <h3 class="text-sm font-bold text-white flex items-center gap-2" id="member-modal-title">
           <i data-lucide="store" class="w-4 h-4 text-teal-400"></i> Chemist Member Form
@@ -255,22 +255,64 @@
         <button onclick="closeMemberFormModal()" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-4 h-4"></i></button>
       </div>
 
-      <div class="space-y-2.5 text-xs">
+      <div class="space-y-3 text-xs">
         <input type="hidden" id="mem-in-id">
+        
         <div>
           <label class="block text-slate-400 mb-0.5">Chemist / Firm Name *</label>
           <input type="text" id="mem-in-firm" placeholder="e.g. SHREE GANESH MEDICALS" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-100 uppercase">
         </div>
+
         <div class="grid grid-cols-2 gap-2">
           <div>
             <label class="block text-slate-400 mb-0.5">Proprietor / Owner Name</label>
             <input type="text" id="mem-in-owner" placeholder="Owner Name..." class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-100">
           </div>
           <div>
-            <label class="block text-slate-400 mb-0.5">Qualified Pharmacist</label>
-            <input type="text" id="mem-in-pharmacist" placeholder="Pharmacist Name..." class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-100">
+            <label class="block text-slate-400 mb-0.5">Mobile Contact</label>
+            <input type="text" id="mem-in-mobile" placeholder="10-digit Mobile" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-100 font-mono">
           </div>
         </div>
+
+        <!-- QUALIFIED PHARMACISTS (DYNAMIC MULTI-INPUT) -->
+        <div class="p-3 rounded-xl border border-slate-800 bg-slate-950/70 space-y-2">
+          <div class="flex items-center justify-between">
+            <label class="font-semibold text-slate-300 flex items-center gap-1.5">
+              <i data-lucide="award" class="w-3.5 h-3.5 text-teal-400"></i> Qualified Pharmacist(s) *
+            </label>
+            <button type="button" onclick="addPharmacistInputRow()" class="px-2 py-0.5 rounded bg-teal-500/10 hover:bg-teal-500/20 text-teal-300 border border-teal-500/30 text-[11px] font-medium flex items-center gap-1">
+              <i data-lucide="plus" class="w-3 h-3"></i> Add Pharmacist
+            </button>
+          </div>
+          <div id="pharmacist-rows-container" class="space-y-1.5">
+            <!-- Row inputs -->
+          </div>
+        </div>
+
+        <!-- DRUG LICENSE DETAILS -->
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-slate-400 mb-0.5">Drug License No (DL No)</label>
+            <input type="text" id="mem-in-dl" placeholder="e.g. 20B/21B-XXXXXX" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-100 font-mono uppercase">
+          </div>
+          <div>
+            <label class="block text-slate-400 mb-0.5">DL Expiry Date</label>
+            <input type="date" id="mem-in-dl-expiry" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-100">
+          </div>
+        </div>
+
+        <!-- FSSAI DETAILS -->
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-slate-400 mb-0.5">FSSAI License No</label>
+            <input type="text" id="mem-in-fssai" placeholder="14-digit FSSAI No" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-100 font-mono">
+          </div>
+          <div>
+            <label class="block text-slate-400 mb-0.5">FSSAI Expiry Date</label>
+            <input type="date" id="mem-in-fssai-expiry" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-100">
+          </div>
+        </div>
+
         <div class="grid grid-cols-2 gap-2">
           <div>
             <label class="block text-slate-400 mb-0.5">Tahasil / Taluka *</label>
@@ -286,14 +328,11 @@
             </select>
           </div>
           <div>
-            <label class="block text-slate-400 mb-0.5">Mobile Number</label>
-            <input type="text" id="mem-in-mobile" placeholder="10-digit Mobile" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-100 font-mono">
+            <label class="block text-slate-400 mb-0.5">Shop Address / Village</label>
+            <input type="text" id="mem-in-address" placeholder="Address..." class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-100">
           </div>
         </div>
-        <div>
-          <label class="block text-slate-400 mb-0.5">Shop Address / Village</label>
-          <input type="text" id="mem-in-address" placeholder="Address..." class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-100">
-        </div>
+
         <div class="grid grid-cols-2 gap-2">
           <div>
             <label class="block text-slate-400 mb-0.5">2025-26 Fee Status</label>
@@ -317,7 +356,7 @@
   </div>
 
   <!-- ============================================================== -->
-  <!-- MODAL: PIN VERIFICATION GATE (FOR EDIT / DELETE - PIN: 1441)   -->
+  <!-- MODAL: PIN VERIFICATION (PIN: 1441 FOR EDIT / DELETE)          -->
   <!-- ============================================================== -->
   <div id="pin-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md hidden flex items-center justify-center p-4">
     <div class="w-full max-w-xs bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl p-5 space-y-4">
@@ -326,7 +365,7 @@
           <i data-lucide="key-round" class="w-5 h-5"></i>
         </div>
         <h4 class="text-sm font-bold text-white">Security PIN Verification</h4>
-        <p class="text-[11px] text-slate-400">Enter authorized 4-digit PIN to proceed.</p>
+        <p class="text-[11px] text-slate-400">Enter master PIN 1441 to unlock this action.</p>
       </div>
 
       <div>
@@ -337,6 +376,31 @@
       <div class="flex gap-2">
         <button onclick="closePinModal()" class="flex-1 py-2 rounded-lg bg-slate-800 text-xs font-semibold text-slate-300">Cancel</button>
         <button onclick="submitPinVerification()" class="flex-1 py-2 rounded-lg bg-amber-600 hover:bg-amber-500 text-xs font-semibold text-white">Verify</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- MODAL: DETAILED FEE INFLOW AUDIT LOG (KAB, KISNE, KYA DIYA)    -->
+  <!-- ============================================================== -->
+  <div id="fee-history-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <div class="w-full max-w-md bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl p-5 space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div>
+          <h3 class="text-sm font-bold text-white flex items-center gap-2">
+            <i data-lucide="history" class="w-4 h-4 text-emerald-400"></i> Fee Inflow Log & History
+          </h3>
+          <p class="text-xs text-slate-400 font-semibold" id="fee-history-firm-name">Firm Name</p>
+        </div>
+        <button onclick="closeFeeHistoryModal()" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+
+      <div class="space-y-2 max-h-72 overflow-y-auto custom-scrollbar" id="fee-history-container">
+        <!-- Injected history logs -->
+      </div>
+
+      <div class="pt-2 border-t border-slate-800 flex justify-end">
+        <button onclick="closeFeeHistoryModal()" class="px-4 py-1.5 rounded-lg bg-slate-800 text-xs font-semibold text-slate-300">Close</button>
       </div>
     </div>
   </div>
@@ -361,11 +425,12 @@
             <p class="text-xs text-slate-400">Expense reimbursement, Running Fees Ledger, Meeting Check-In & Creation</p>
           </div>
         </div>
+        <!-- CLOSING AUTOMATICALLY LOCKS EC PORTAL AS REQUESTED -->
         <div class="flex items-center gap-2">
-          <button onclick="lockEcPortal()" class="px-2.5 py-1.5 rounded-lg border border-slate-700 bg-slate-800 hover:bg-slate-700 text-xs text-slate-300 flex items-center gap-1.5">
-            <i data-lucide="lock" class="w-3.5 h-3.5"></i> Lock Portal
+          <button onclick="lockAndCloseEcPortal()" class="px-2.5 py-1.5 rounded-lg border border-slate-700 bg-slate-800 hover:bg-slate-700 text-xs text-slate-300 flex items-center gap-1.5">
+            <i data-lucide="lock" class="w-3.5 h-3.5"></i> Lock & Exit
           </button>
-          <button onclick="closeEcPortalModal()" class="p-1.5 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white">
+          <button onclick="lockAndCloseEcPortal()" class="p-1.5 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white" title="Close and Lock">
             <i data-lucide="x" class="w-5 h-5"></i>
           </button>
         </div>
@@ -410,7 +475,7 @@
                   <th class="py-2.5 px-3">Tahasil</th>
                   <th class="py-2.5 px-3 text-center">Status</th>
                   <th class="py-2.5 px-3 text-right">Fee Inflow (₹)</th>
-                  <th class="py-2.5 px-3">Receipt / Mode</th>
+                  <th class="py-2.5 px-3">Last Payment Details</th>
                   <th class="py-2.5 px-3 text-right">Action</th>
                 </tr>
               </thead>
@@ -423,7 +488,6 @@
 
         <!-- TAB: MEETING AUTHORITY & CHECK-IN -->
         <div id="ec-tab-meetings" class="space-y-5 hidden">
-          <!-- Create Meeting Banner -->
           <div class="p-4 rounded-xl border border-indigo-500/30 bg-indigo-500/10 space-y-3">
             <h4 class="text-xs font-bold text-indigo-300 uppercase tracking-wider flex items-center gap-1.5">
               <i data-lucide="plus-circle" class="w-4 h-4"></i> Create & Activate Association Meeting
@@ -445,7 +509,6 @@
             </div>
           </div>
 
-          <!-- Active Meeting Check-In Table -->
           <div class="space-y-3">
             <div class="flex items-center justify-between">
               <div>
@@ -511,7 +574,6 @@
             </div>
           </div>
 
-          <!-- Items Breakdown -->
           <div class="space-y-2">
             <div class="flex items-center justify-between">
               <span class="text-xs font-semibold text-slate-300">Expense Items Breakdown</span>
@@ -741,7 +803,6 @@
       }
     };
 
-    // Pending security action store
     let pendingAction = null; // { type: 'EDIT'|'DELETE', id: '...' }
 
     function initSystem() {
@@ -764,10 +825,10 @@
         try { appState.cloudConfig = Object.assign(appState.cloudConfig, JSON.parse(savedConfig)); } catch(e){}
       }
 
-      if (sessionStorage.getItem("GDCDA_EC_AUTH") === "TRUE") {
-        appState.isEcAuthenticated = true;
-        updateEcAuthUI();
-      }
+      // EC Auth is always locked on start or after closing dashboard
+      appState.isEcAuthenticated = false;
+      sessionStorage.removeItem("GDCDA_EC_AUTH");
+      updateEcAuthUI();
 
       updateStats();
       renderMembersTable();
@@ -778,7 +839,6 @@
       renderEcMeetingCheckinTable();
       lucide.createIcons();
 
-      // Trigger automatic silent live sync if credentials present
       if (appState.cloudConfig.token && appState.cloudConfig.passphrase) {
         autoSilentLiveSync();
       }
@@ -795,7 +855,7 @@
       }));
     }
 
-    // --- AUTOMATIC LIVE SYNC ENGINE ---
+    // --- AUTOMATIC LIVE SYNC ---
     function openCloudConfigModal() {
       const cfg = appState.cloudConfig;
       document.getElementById("cfg-token").value = cfg.token || "";
@@ -823,7 +883,6 @@
       await autoSilentLiveSync();
     }
 
-    // WebCrypto AES-256
     async function getDerivedKey(passphrase, salt) {
       const enc = new TextEncoder();
       const keyMaterial = await crypto.subtle.importKey("raw", enc.encode(passphrase), "PBKDF2", false, ["deriveKey"]);
@@ -944,18 +1003,63 @@
       }
     }
 
+    // Dynamic Pharmacist Inputs Helper
+    function renderPharmacistInputs(pharmacistsArray) {
+      const container = document.getElementById("pharmacist-rows-container");
+      if (!pharmacistsArray || pharmacistsArray.length === 0) {
+        pharmacistsArray = [""];
+      }
+      container.innerHTML = pharmacistsArray.map((ph, idx) => `
+        <div class="flex items-center gap-1.5 pharmacist-row">
+          <input type="text" value="${escapeHtml(ph)}" placeholder="Qualified Pharmacist Name ${idx + 1}" class="pharma-input flex-1 bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-slate-100 text-xs">
+          ${idx > 0 ? `
+            <button type="button" onclick="removePharmacistInputRow(this)" class="p-1.5 rounded text-rose-400 hover:bg-slate-800"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+          ` : ""}
+        </div>
+      `).join("");
+      lucide.createIcons();
+    }
+
+    function addPharmacistInputRow() {
+      const container = document.getElementById("pharmacist-rows-container");
+      const div = document.createElement("div");
+      div.className = "flex items-center gap-1.5 pharmacist-row";
+      div.innerHTML = `
+        <input type="text" placeholder="Qualified Pharmacist Name" class="pharma-input flex-1 bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-slate-100 text-xs">
+        <button type="button" onclick="removePharmacistInputRow(this)" class="p-1.5 rounded text-rose-400 hover:bg-slate-800"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+      `;
+      container.appendChild(div);
+      lucide.createIcons();
+    }
+
+    function removePharmacistInputRow(btn) {
+      btn.parentElement.remove();
+    }
+
     function executeMemberEdit(memberId) {
       const m = appState.members.find(x => x.id === memberId);
       if (!m) return;
       document.getElementById("mem-in-id").value = m.id;
       document.getElementById("mem-in-firm").value = m.firm || "";
       document.getElementById("mem-in-owner").value = m.owner || "";
-      document.getElementById("mem-in-pharmacist").value = m.pharmacist || "";
+      document.getElementById("mem-in-dl").value = m.dlNo || "";
+      document.getElementById("mem-in-dl-expiry").value = m.dlExpiry || "";
+      document.getElementById("mem-in-fssai").value = m.fssaiNo || "";
+      document.getElementById("mem-in-fssai-expiry").value = m.fssaiExpiry || "";
       document.getElementById("mem-in-area").value = m.area || "Gondia";
       document.getElementById("mem-in-mobile").value = m.mobile || "";
       document.getElementById("mem-in-address").value = m.address || "";
       document.getElementById("mem-in-fee-status").value = m.feeStatus || "PENDING";
       document.getElementById("mem-in-fee-amt").value = m.feeAmount || 0;
+
+      let pharmList = [];
+      if (Array.isArray(m.pharmacists) && m.pharmacists.length > 0) {
+        pharmList = m.pharmacists;
+      } else if (m.pharmacist) {
+        pharmList = [m.pharmacist];
+      }
+      renderPharmacistInputs(pharmList);
+
       document.getElementById("member-modal-title").innerHTML = `<i data-lucide="edit-3" class="w-4 h-4 text-teal-400"></i> Edit Chemist Member`;
       document.getElementById("member-form-modal").classList.remove("hidden");
       lucide.createIcons();
@@ -975,16 +1079,21 @@
       }
     }
 
-    // --- ADD / SAVE MEMBER ---
+    // --- ADD MEMBER FORM ---
     function openAddMemberModal() {
       document.getElementById("mem-in-id").value = "";
       document.getElementById("mem-in-firm").value = "";
       document.getElementById("mem-in-owner").value = "";
-      document.getElementById("mem-in-pharmacist").value = "";
+      document.getElementById("mem-in-dl").value = "";
+      document.getElementById("mem-in-dl-expiry").value = "";
+      document.getElementById("mem-in-fssai").value = "";
+      document.getElementById("mem-in-fssai-expiry").value = "";
       document.getElementById("mem-in-mobile").value = "";
       document.getElementById("mem-in-address").value = "";
       document.getElementById("mem-in-fee-status").value = "PAID";
       document.getElementById("mem-in-fee-amt").value = "251";
+
+      renderPharmacistInputs([""]);
       document.getElementById("member-modal-title").innerHTML = `<i data-lucide="store" class="w-4 h-4 text-teal-400"></i> Add Chemist Medical Store`;
       document.getElementById("member-form-modal").classList.remove("hidden");
       lucide.createIcons();
@@ -999,7 +1108,16 @@
       const firm = document.getElementById("mem-in-firm").value.trim().toUpperCase();
       if (!firm) { alert("Please enter Chemist Firm Name"); return; }
       const owner = document.getElementById("mem-in-owner").value.trim();
-      const pharmacist = document.getElementById("mem-in-pharmacist").value.trim();
+      const dlNo = document.getElementById("mem-in-dl").value.trim().toUpperCase();
+      const dlExpiry = document.getElementById("mem-in-dl-expiry").value;
+      const fssaiNo = document.getElementById("mem-in-fssai").value.trim();
+      const fssaiExpiry = document.getElementById("mem-in-fssai-expiry").value;
+
+      // Collect all dynamic pharmacists
+      const phInputs = document.querySelectorAll(".pharma-input");
+      const pharmacists = Array.from(phInputs).map(i => i.value.trim()).filter(v => v !== "");
+      const primaryPharmacist = pharmacists.length > 0 ? pharmacists[0] : "";
+
       const area = document.getElementById("mem-in-area").value;
       const mobile = document.getElementById("mem-in-mobile").value.trim();
       const address = document.getElementById("mem-in-address").value.trim() || `${area}, Maharashtra`;
@@ -1007,12 +1125,16 @@
       const feeAmt = parseFloat(document.getElementById("mem-in-fee-amt").value) || 0;
 
       if (id) {
-        // Update existing
         const m = appState.members.find(x => x.id === id);
         if (m) {
           m.firm = firm;
           m.owner = owner;
-          m.pharmacist = pharmacist;
+          m.pharmacist = primaryPharmacist;
+          m.pharmacists = pharmacists;
+          m.dlNo = dlNo;
+          m.dlExpiry = dlExpiry;
+          m.fssaiNo = fssaiNo;
+          m.fssaiExpiry = fssaiExpiry;
           m.area = area;
           m.mobile = mobile;
           m.address = address;
@@ -1022,12 +1144,16 @@
           showToast(`Updated: ${firm}`);
         }
       } else {
-        // Create New
         const newM = {
           id: `mem-gdcda-${String(appState.members.length + 1).padStart(4, '0')}`,
           firm: firm,
           owner: owner,
-          pharmacist: pharmacist,
+          pharmacist: primaryPharmacist,
+          pharmacists: pharmacists,
+          dlNo: dlNo,
+          dlExpiry: dlExpiry,
+          fssaiNo: fssaiNo,
+          fssaiExpiry: fssaiExpiry,
           mobile: mobile,
           phone: "",
           area: area,
@@ -1049,16 +1175,13 @@
       autoSilentLiveSync();
     }
 
-    // --- EC AUTHENTICATION GATE (PASSWORD: GDCDARocks@144EC) ---
+    // --- REQUIREMENT 1: EC AUTHENTICATION & AUTO-LOCK ON CLOSE ---
     function openEcPortalAuth() {
-      if (appState.isEcAuthenticated) {
-        openEcPortalModal();
-      } else {
-        document.getElementById("ec-password-input").value = "";
-        document.getElementById("ec-login-error").classList.add("hidden");
-        document.getElementById("ec-login-modal").classList.remove("hidden");
-        document.getElementById("ec-password-input").focus();
-      }
+      // Always prompt password on click
+      document.getElementById("ec-password-input").value = "";
+      document.getElementById("ec-login-error").classList.add("hidden");
+      document.getElementById("ec-login-modal").classList.remove("hidden");
+      document.getElementById("ec-password-input").focus();
     }
 
     function closeEcLoginModal() {
@@ -1067,12 +1190,12 @@
 
     function verifyEcLogin() {
       const pwd = document.getElementById("ec-password-input").value.trim();
-      if (pwd === "GDCDARocks@144EC" || pwd === "GDCDA-Rocks@144EC") {
+      // EXACT PASSWORD AS SPECIFIED
+      if (pwd === "GDCDARocks@144EC") {
         appState.isEcAuthenticated = true;
         sessionStorage.setItem("GDCDA_EC_AUTH", "TRUE");
         closeEcLoginModal();
         updateEcAuthUI();
-        renderMembersTable();
         openEcPortalModal();
         showToast("EC Authentication Granted!");
       } else {
@@ -1080,20 +1203,20 @@
       }
     }
 
-    function lockEcPortal() {
+    // MANDATORY REQUIREMENT: CROSS / CLOSE PAR AUTO LOCK
+    function lockAndCloseEcPortal() {
       appState.isEcAuthenticated = false;
       sessionStorage.removeItem("GDCDA_EC_AUTH");
       updateEcAuthUI();
       closeEcPortalModal();
-      renderMembersTable();
-      showToast("EC Portal Locked.");
+      showToast("EC Dashboard Closed & Successfully Locked!");
     }
 
     function updateEcAuthUI() {
       const label = document.getElementById("ec-auth-label");
       const shield = document.getElementById("ec-shield-icon");
       if (appState.isEcAuthenticated) {
-        label.textContent = "EC Dashboard";
+        label.textContent = "EC Dashboard (Active)";
         shield.classList.replace("text-indigo-400", "text-emerald-400");
       } else {
         label.textContent = "EC Portal (Alt+X)";
@@ -1132,6 +1255,47 @@
       lucide.createIcons();
     }
 
+    // --- REQUIREMENT 2: KAB KISNE KYA PAYMENT DIYA AUDIT LOG ---
+    function showFeeHistoryModal(memberId) {
+      const m = appState.members.find(x => x.id === memberId);
+      if (!m) return;
+
+      document.getElementById("fee-history-firm-name").textContent = `${m.firm} (${m.area || 'Gondia'})`;
+      const container = document.getElementById("fee-history-container");
+
+      const history = (m.feeHistory && m.feeHistory.length > 0) ? m.feeHistory : [];
+      if (history.length === 0) {
+        container.innerHTML = `
+          <div class="p-4 rounded-xl border border-slate-800 bg-slate-950 text-center text-slate-400 text-xs">
+            <p>No past payment transactions recorded yet.</p>
+            <p class="text-amber-400 mt-1 font-semibold">Current Balance: Fees Pending</p>
+          </div>
+        `;
+      } else {
+        container.innerHTML = history.slice().reverse().map(log => `
+          <div class="p-3 rounded-xl border border-slate-800 bg-slate-950 space-y-1 text-xs">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-emerald-400 font-mono text-sm">₹ ${parseFloat(log.amount || 0).toFixed(2)}</span>
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-teal-500/10 text-teal-300 border border-teal-500/30">${log.mode || "CASH"}</span>
+            </div>
+            <div class="grid grid-cols-2 gap-1 text-[11px] text-slate-400 pt-1 border-t border-slate-800/80">
+              <div>Date: <strong class="text-slate-200 font-mono">${log.date || "N/A"}</strong></div>
+              <div>Receipt: <strong class="text-slate-200 font-mono">${log.receiptNo || "N/A"}</strong></div>
+              <div class="col-span-2">Collected By: <strong class="text-slate-200">${log.collector || "Taluka In-charge"}</strong></div>
+              ${log.ref ? `<div class="col-span-2 text-slate-500 italic">Note / Ref: ${escapeHtml(log.ref)}</div>` : ""}
+            </div>
+          </div>
+        `).join("");
+      }
+
+      document.getElementById("fee-history-modal").classList.remove("hidden");
+      lucide.createIcons();
+    }
+
+    function closeFeeHistoryModal() {
+      document.getElementById("fee-history-modal").classList.add("hidden");
+    }
+
     // --- MEMBERS MASTER RUNNING FEE LEDGER ---
     function renderEcFeesTable() {
       const tbody = document.getElementById("ec-fees-tbody");
@@ -1168,19 +1332,148 @@
               ₹ ${parseFloat(m.feeAmount || 0).toLocaleString("en-IN", { minimumFractionDigits: 2 })}
             </td>
             <td class="py-2.5 px-3 text-slate-400 text-[11px]">
-              ${hist ? `<span class="font-mono text-slate-300">${hist.receiptNo}</span> • <span class="text-teal-400">${hist.mode}</span>` : `<span class="italic text-slate-600">Pending</span>`}
+              ${hist ? `
+                <button onclick="showFeeHistoryModal('${m.id}')" title="Click to view full payment log" class="text-left group flex items-center gap-1 hover:text-teal-300">
+                  <span class="font-mono text-slate-300 group-hover:underline">${hist.receiptNo}</span> • <span>${hist.date}</span>
+                  <i data-lucide="external-link" class="w-3 h-3 text-teal-400"></i>
+                </button>
+              ` : `<span class="italic text-slate-600">Pending</span>`}
             </td>
-            <td class="py-2.5 px-3 text-right">
-              <button onclick="openFeePaymentModal('${m.id}')" class="px-2.5 py-1 rounded bg-teal-500/10 hover:bg-teal-500/20 text-teal-300 border border-teal-500/30 text-[11px] font-medium">
-                Record Payment
+            <td class="py-2.5 px-3 text-right space-x-1">
+              <button onclick="openFeePaymentModal('${m.id}')" class="px-2 py-1 rounded bg-teal-500/10 hover:bg-teal-500/20 text-teal-300 border border-teal-500/30 text-[11px] font-medium">
+                Record Inflow
+              </button>
+              <button onclick="showFeeHistoryModal('${m.id}')" title="Payment History" class="p-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300">
+                <i data-lucide="clock" class="w-3.5 h-3.5"></i>
               </button>
             </td>
           </tr>
         `;
       }).join("");
+      lucide.createIcons();
     }
 
-    // --- MEETING MANAGEMENT & LIVE CHECKIN INSIDE EC DASHBOARD ---
+    // --- REQUIREMENT 3: MAIN ROSTER RICH DETAILS TABLE ---
+    function renderMembersTable() {
+      const tbody = document.getElementById("members-table-body");
+      const search = document.getElementById("member-search").value.toLowerCase().trim();
+      const areaFilter = document.getElementById("filter-area").value;
+      const feeFilter = document.getElementById("filter-fee").value;
+      const attendanceFilter = document.getElementById("filter-attendance").value;
+
+      const activeM = appState.meetings.find(m => m.id === appState.activeMeetingId) || appState.meetings[0];
+      const meetAttendance = (activeM && activeM.attendance) ? activeM.attendance : {};
+
+      const filtered = appState.members.filter(m => {
+        const pharmMatch = Array.isArray(m.pharmacists) 
+          ? m.pharmacists.some(p => p.toLowerCase().includes(search))
+          : (m.pharmacist && m.pharmacist.toLowerCase().includes(search));
+
+        const matchSearch = !search || 
+          (m.firm && m.firm.toLowerCase().includes(search)) ||
+          (m.owner && m.owner.toLowerCase().includes(search)) ||
+          pharmMatch ||
+          (m.dlNo && m.dlNo.toLowerCase().includes(search)) ||
+          (m.fssaiNo && m.fssaiNo.includes(search)) ||
+          (m.address && m.address.toLowerCase().includes(search)) ||
+          (m.mobile && m.mobile.includes(search)) ||
+          (m.area && m.area.toLowerCase().includes(search));
+
+        const matchArea = areaFilter === "ALL" || m.area === areaFilter;
+        const matchFee = feeFilter === "ALL" || m.feeStatus === feeFilter;
+
+        const isPres = meetAttendance[m.id] === "PRESENT";
+        const matchAttendance = attendanceFilter === "ALL" || 
+          (attendanceFilter === "PRESENT" && isPres) ||
+          (attendanceFilter === "ABSENT" && !isPres);
+
+        return matchSearch && matchArea && matchFee && matchAttendance;
+      });
+
+      document.getElementById("table-results-count").textContent = `Showing ${filtered.length} of ${appState.members.length} chemists`;
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" class="py-12 text-center text-slate-500">No chemists found matching filters.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = filtered.map((m, idx) => {
+        const isPaid = m.feeStatus === "PAID";
+        const isPresent = meetAttendance[m.id] === "PRESENT";
+
+        const pharmList = Array.isArray(m.pharmacists) && m.pharmacists.length > 0 
+          ? m.pharmacists 
+          : (m.pharmacist ? [m.pharmacist] : []);
+
+        return `
+          <tr class="hover:bg-slate-800/40 transition group">
+            <td class="py-2.5 px-3 text-center text-slate-500 font-mono text-[11px]">${idx + 1}</td>
+            <td class="py-2.5 px-3">
+              <div class="font-bold text-slate-100 text-xs tracking-wide">${escapeHtml(m.firm)}</div>
+              
+              <!-- Owner & Pharmacist badges -->
+              <div class="flex flex-wrap items-center gap-1.5 mt-0.5 text-[10px]">
+                ${m.owner ? `<span class="text-slate-400">Prop: <strong class="text-slate-300 font-medium">${escapeHtml(m.owner)}</strong></span>` : ""}
+                ${pharmList.map(p => `
+                  <span class="px-1.5 py-0.2 rounded bg-teal-500/10 text-teal-300 border border-teal-500/20 font-medium flex items-center gap-0.5">
+                    <i data-lucide="award" class="w-2.5 h-2.5"></i> ${escapeHtml(p)}
+                  </span>
+                `).join("")}
+              </div>
+
+              <!-- DL & FSSAI Details -->
+              ${(m.dlNo || m.fssaiNo) ? `
+                <div class="flex flex-wrap items-center gap-2 mt-1 text-[10px] text-slate-400 font-mono">
+                  ${m.dlNo ? `<span title="DL Exp: ${m.dlExpiry || 'N/A'}">DL: <strong class="text-slate-300">${escapeHtml(m.dlNo)}</strong>${m.dlExpiry ? ` (Exp: ${m.dlExpiry})` : ""}</span>` : ""}
+                  ${(m.dlNo && m.fssaiNo) ? `<span class="text-slate-600">•</span>` : ""}
+                  ${m.fssaiNo ? `<span title="FSSAI Exp: ${m.fssaiExpiry || 'N/A'}">FSSAI: <strong class="text-amber-300">${escapeHtml(m.fssaiNo)}</strong>${m.fssaiExpiry ? ` (Exp: ${m.fssaiExpiry})` : ""}</span>` : ""}
+                </div>
+              ` : ""}
+            </td>
+            <td class="py-2.5 px-3">
+              <span class="inline-block px-2 py-0.5 rounded text-[10px] font-medium bg-slate-800 text-slate-300 border border-slate-700/60 mb-0.5">${escapeHtml(m.area || "Gondia")}</span>
+              <div class="text-[11px] text-slate-400 truncate max-w-xs">${escapeHtml(m.address || "")}</div>
+            </td>
+            <td class="py-2.5 px-3">
+              ${m.mobile ? `
+                <div class="flex items-center gap-2 font-mono text-slate-300">
+                  <span>${m.mobile}</span>
+                  <a href="https://wa.me/91${m.mobile}" target="_blank" title="WhatsApp Message" class="text-emerald-400 hover:text-emerald-300">
+                    <i data-lucide="message-square" class="w-3.5 h-3.5"></i>
+                  </a>
+                </div>
+              ` : `<span class="text-slate-600 italic">No Mobile</span>`}
+            </td>
+            <td class="py-2.5 px-3 text-center">
+              <button onclick="showFeeHistoryModal('${m.id}')" title="Click to view payment history" class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold ${isPaid ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/20" : "bg-amber-500/10 text-amber-400 border border-amber-500/30"}">
+                ${m.feeStatus} ${m.feeAmount ? `(₹${m.feeAmount})` : ""}
+              </button>
+            </td>
+            <td class="py-2.5 px-3 text-center">
+              <span class="inline-flex items-center gap-1 text-[11px] font-medium ${isPresent ? "text-indigo-400 font-semibold" : "text-slate-500"}">
+                <i data-lucide="${isPresent ? "check-circle" : "minus"}" class="w-3 h-3"></i>
+                ${isPresent ? "Present" : "Absent"}
+              </span>
+            </td>
+            <td class="py-2.5 px-3 text-right space-x-1 whitespace-nowrap">
+              <button onclick="triggerProtectedAction('EDIT', '${m.id}')" title="Edit Member (PIN 1441)" class="p-1 rounded bg-slate-800 hover:bg-slate-700 text-amber-400 transition">
+                <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
+              </button>
+              <button onclick="triggerProtectedAction('DELETE', '${m.id}')" title="Delete Member (PIN 1441)" class="p-1 rounded bg-slate-800 hover:bg-slate-700 text-rose-400 transition">
+                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+              </button>
+              <button onclick="showFeeHistoryModal('${m.id}')" title="Payment Log" class="p-1 rounded bg-slate-800 hover:bg-slate-700 text-teal-400 transition">
+                <i data-lucide="receipt" class="w-3.5 h-3.5"></i>
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join("");
+
+      lucide.createIcons();
+    }
+
+    // --- MEETING MANAGEMENT & EC CHECKIN TABLE ---
     function createNewMeetingFromEc() {
       const title = document.getElementById("ec-new-meet-title").value.trim();
       const date = document.getElementById("ec-new-meet-date").value;
@@ -1199,7 +1492,7 @@
       updateStats();
       renderMembersTable();
       renderEcMeetingCheckinTable();
-      showToast(`Meeting Created: ${title}`);
+      showToast(`Meeting Activated: ${title}`);
       autoSilentLiveSync();
     }
 
@@ -1210,7 +1503,6 @@
       const meetAttendance = (activeM && activeM.attendance) ? activeM.attendance : {};
 
       document.getElementById("ec-current-meeting-label").textContent = `Active Meeting: ${activeM.title} (${activeM.date})`;
-
       const list = appState.members.filter(m => !search || m.firm.toLowerCase().includes(search));
 
       tbody.innerHTML = list.map(m => {
@@ -1244,102 +1536,6 @@
       updateStats();
       renderMembersTable();
       renderEcMeetingCheckinTable();
-    }
-
-    // --- MAIN ROSTER TABLE RENDER ---
-    function renderMembersTable() {
-      const tbody = document.getElementById("members-table-body");
-      const search = document.getElementById("member-search").value.toLowerCase().trim();
-      const areaFilter = document.getElementById("filter-area").value;
-      const feeFilter = document.getElementById("filter-fee").value;
-      const attendanceFilter = document.getElementById("filter-attendance").value;
-
-      const activeM = appState.meetings.find(m => m.id === appState.activeMeetingId) || appState.meetings[0];
-      const meetAttendance = (activeM && activeM.attendance) ? activeM.attendance : {};
-
-      const filtered = appState.members.filter(m => {
-        const matchSearch = !search || 
-          (m.firm && m.firm.toLowerCase().includes(search)) ||
-          (m.owner && m.owner.toLowerCase().includes(search)) ||
-          (m.pharmacist && m.pharmacist.toLowerCase().includes(search)) ||
-          (m.address && m.address.toLowerCase().includes(search)) ||
-          (m.mobile && m.mobile.includes(search)) ||
-          (m.area && m.area.toLowerCase().includes(search));
-
-        const matchArea = areaFilter === "ALL" || m.area === areaFilter;
-        const matchFee = feeFilter === "ALL" || m.feeStatus === feeFilter;
-
-        const isPres = meetAttendance[m.id] === "PRESENT";
-        const matchAttendance = attendanceFilter === "ALL" || 
-          (attendanceFilter === "PRESENT" && isPres) ||
-          (attendanceFilter === "ABSENT" && !isPres);
-
-        return matchSearch && matchArea && matchFee && matchAttendance;
-      });
-
-      document.getElementById("table-results-count").textContent = `Showing ${filtered.length} of ${appState.members.length} chemists`;
-
-      if (filtered.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" class="py-12 text-center text-slate-500">No chemists found matching filters.</td></tr>`;
-        return;
-      }
-
-      tbody.innerHTML = filtered.map((m, idx) => {
-        const isPaid = m.feeStatus === "PAID";
-        const isPresent = meetAttendance[m.id] === "PRESENT";
-
-        return `
-          <tr class="hover:bg-slate-800/40 transition">
-            <td class="py-2.5 px-3 text-center text-slate-500 font-mono text-[11px]">${idx + 1}</td>
-            <td class="py-2.5 px-3">
-              <div class="font-bold text-slate-100 text-xs tracking-wide">${escapeHtml(m.firm)}</div>
-              <div class="flex flex-wrap items-center gap-1.5 mt-0.5 text-[10px]">
-                ${m.owner ? `<span class="text-slate-400">Prop: <strong class="text-slate-300 font-medium">${escapeHtml(m.owner)}</strong></span>` : ""}
-                ${m.owner && m.pharmacist ? `<span class="text-slate-600">•</span>` : ""}
-                ${m.pharmacist ? `<span class="text-teal-400 font-medium flex items-center gap-0.5"><i data-lucide="award" class="w-3 h-3"></i> ${escapeHtml(m.pharmacist)}</span>` : ""}
-              </div>
-            </td>
-            <td class="py-2.5 px-3">
-              <span class="inline-block px-2 py-0.5 rounded text-[10px] font-medium bg-slate-800 text-slate-300 border border-slate-700/60 mb-0.5">${escapeHtml(m.area || "Gondia")}</span>
-              <div class="text-[11px] text-slate-400 truncate max-w-xs">${escapeHtml(m.address || "")}</div>
-            </td>
-            <td class="py-2.5 px-3">
-              ${m.mobile ? `
-                <div class="flex items-center gap-2 font-mono text-slate-300">
-                  <span>${m.mobile}</span>
-                  <a href="https://wa.me/91${m.mobile}" target="_blank" title="WhatsApp Message" class="text-emerald-400 hover:text-emerald-300">
-                    <i data-lucide="message-square" class="w-3.5 h-3.5"></i>
-                  </a>
-                </div>
-              ` : `<span class="text-slate-600 italic">No Mobile</span>`}
-            </td>
-            <td class="py-2.5 px-3 text-center">
-              <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold ${isPaid ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/30" : "bg-amber-500/10 text-amber-400 border border-amber-500/30"}">
-                ${m.feeStatus} ${m.feeAmount ? `(₹${m.feeAmount})` : ""}
-              </span>
-            </td>
-            <td class="py-2.5 px-3 text-center">
-              <!-- Strictly read-only in main roster; EC authority toggle is inside EC Dashboard -->
-              <span class="inline-flex items-center gap-1 text-[11px] font-medium ${isPresent ? "text-indigo-400 font-semibold" : "text-slate-500"}">
-                <i data-lucide="${isPresent ? "check-circle" : "minus"}" class="w-3 h-3"></i>
-                ${isPresent ? "Present" : "Absent"}
-              </span>
-            </td>
-            <td class="py-2.5 px-3 text-right space-x-1 whitespace-nowrap">
-              <!-- Edit Protected with 1441 -->
-              <button onclick="triggerProtectedAction('EDIT', '${m.id}')" title="Edit Member (PIN 1441)" class="p-1 rounded bg-slate-800 hover:bg-slate-700 text-amber-400 transition">
-                <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
-              </button>
-              <!-- Delete Protected with 1441 -->
-              <button onclick="triggerProtectedAction('DELETE', '${m.id}')" title="Delete Member (PIN 1441)" class="p-1 rounded bg-slate-800 hover:bg-slate-700 text-rose-400 transition">
-                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-              </button>
-            </td>
-          </tr>
-        `;
-      }).join("");
-
-      lucide.createIcons();
     }
 
     // --- EXPENSE VOUCHER ENGINE ---
@@ -1556,7 +1752,7 @@
       showToast("Voucher loaded into editor!");
     }
 
-    // A6 Print Stream
+    // A6 Isolated Printing
     function printCurrentA6Voucher() {
       const payer = document.getElementById("v-payer").value;
       const date = document.getElementById("v-date").value;
@@ -1666,7 +1862,7 @@
       }, 350);
     }
 
-    // --- MEMBER FEE RECORD MODAL ---
+    // --- RECORD FEE PAYMENT ---
     let activeFeeMemberId = null;
 
     function openFeePaymentModal(memberId) {
@@ -1708,7 +1904,7 @@
       updateStats();
       renderMembersTable();
       renderEcFeesTable();
-      showToast(`Fees Updated: ${mem.firm} (₹${amt})`);
+      showToast(`Fees Recorded: ${mem.firm} (₹${amt})`);
       autoSilentLiveSync();
     }
 
@@ -1765,10 +1961,11 @@
       const activeM = appState.meetings.find(m => m.id === appState.activeMeetingId) || appState.meetings[0];
       const meetAttendance = (activeM && activeM.attendance) ? activeM.attendance : {};
 
-      let csv = "ID,Chemist Firm Name,Proprietor,Pharmacist,Tahasil,Address,Mobile,Attendance Status,Meeting Title,Meeting Date\n";
+      let csv = "ID,Chemist Firm Name,Proprietor,Pharmacist,DL No,FSSAI No,Tahasil,Address,Mobile,Attendance Status,Meeting Title,Date\n";
       appState.members.forEach(m => {
         const st = meetAttendance[m.id] === "PRESENT" ? "PRESENT" : "ABSENT";
-        csv += `"${m.id}","${(m.firm||"").replace(/"/g, '""')}","${(m.owner||"").replace(/"/g, '""')}","${(m.pharmacist||"").replace(/"/g, '""')}","${m.area||""}","${(m.address||"").replace(/"/g, '""')}","${m.mobile||""}","${st}","${(activeM.title||"").replace(/"/g, '""')}","${activeM.date||""}"\n`;
+        const pharma = Array.isArray(m.pharmacists) ? m.pharmacists.join(" / ") : (m.pharmacist || "");
+        csv += `"${m.id}","${(m.firm||"").replace(/"/g, '""')}","${(m.owner||"").replace(/"/g, '""')}","${pharma.replace(/"/g, '""')}","${m.dlNo||""}","${m.fssaiNo||""}","${m.area||""}","${(m.address||"").replace(/"/g, '""')}","${m.mobile||""}","${st}","${(activeM.title||"").replace(/"/g, '""')}","${activeM.date||""}"\n`;
       });
 
       const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
@@ -1828,7 +2025,6 @@
       }, 3000);
     }
 
-    // Keyboard Shortcuts
     window.addEventListener("keydown", (e) => {
       if (e.key === "/" && document.activeElement.tagName !== "INPUT" && document.activeElement.tagName !== "TEXTAREA") {
         e.preventDefault();
