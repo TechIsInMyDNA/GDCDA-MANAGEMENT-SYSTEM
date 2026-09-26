@@ -82,7 +82,7 @@
         <span class="text-indigo-400 text-[11px]" id="current-operator-role">(Administrator)</span>
       </div>
       <button onclick="lockAndCloseEcPortal()" class="text-rose-400 hover:text-rose-300 text-[11px] font-semibold flex items-center gap-1 cursor-pointer">
-        <i data-lucide="log-out" class="w-3.5 h-3.5"></i> Switch / Exit Session
+        <i data-lucide="log-out" class="w-3 h-3"></i> Switch / Exit Session
       </button>
     </div>
   </div>
@@ -190,19 +190,25 @@
     </div>
   </main>
 
-  <!-- CLOUD CONFIG MODAL -->
+  <!-- CLOUD CONFIG MODAL (ALT+S) -->
   <div id="cloud-config-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md hidden flex items-center justify-center p-4">
     <div class="w-full max-w-lg bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl p-6 space-y-4">
       <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-        <h3 class="text-sm font-bold text-white flex items-center gap-2">
-          <i data-lucide="cloud" class="w-5 h-5 text-teal-400"></i> GitHub Live Sync Settings
-        </h3>
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-lg bg-teal-500/10 border border-teal-500/20 text-teal-400 flex items-center justify-center">
+            <i data-lucide="cloud" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="text-sm font-bold text-white">GitHub Cloud Vault Live Sync</h3>
+            <p class="text-xs text-slate-400">data.json se direct pull & live auto-sync</p>
+          </div>
+        </div>
         <button onclick="closeCloudConfigModal()" class="text-slate-400 hover:text-white cursor-pointer"><i data-lucide="x" class="w-5 h-5"></i></button>
       </div>
 
       <div class="space-y-3 text-xs">
         <div>
-          <label class="block font-medium text-slate-300 mb-1">GitHub PAT Token</label>
+          <label class="block font-medium text-slate-300 mb-1">GitHub Personal Access Token (PAT)</label>
           <input type="password" id="cfg-token" placeholder="ghp_xxxxxxxxxxxx" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-100 font-mono focus:outline-none focus:border-teal-500">
         </div>
         <div class="grid grid-cols-2 gap-2">
@@ -217,7 +223,7 @@
         </div>
         <div class="grid grid-cols-2 gap-2">
           <div>
-            <label class="block font-medium text-slate-300 mb-1">File Path</label>
+            <label class="block font-medium text-slate-300 mb-1">Vault Path</label>
             <input type="text" id="cfg-path" value="data.json" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-100 font-mono">
           </div>
           <div>
@@ -233,15 +239,144 @@
 
       <div class="pt-2 border-t border-slate-800 flex gap-2">
         <button onclick="closeCloudConfigModal()" class="flex-1 py-2 rounded-lg bg-slate-800 text-xs font-semibold text-slate-300 cursor-pointer">Cancel</button>
-        <button onclick="saveAndLiveSyncCloud()" class="flex-1 py-2 rounded-lg bg-teal-600 hover:bg-teal-500 text-xs font-semibold text-white cursor-pointer">Save & Auto-Sync Live</button>
+        <button onclick="saveAndLiveSyncCloud()" class="flex-1 py-2 rounded-lg bg-teal-600 hover:bg-teal-500 text-xs font-semibold text-white shadow-md cursor-pointer flex items-center justify-center gap-1.5">
+          <i data-lucide="check" class="w-4 h-4"></i> Save & Pull Live
+        </button>
       </div>
     </div>
   </div>
 
-  <!-- EC PORTAL MODAL -->
+  <!-- ADD / EDIT CHEMIST MEMBER MODAL -->
+  <div id="member-form-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <div class="w-full max-w-lg bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl p-5 space-y-4 max-h-[90vh] overflow-y-auto custom-scrollbar">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <h3 class="text-sm font-bold text-white flex items-center gap-2" id="member-modal-title">
+          <i data-lucide="store" class="w-4 h-4 text-teal-400"></i> Chemist Member Form
+        </h3>
+        <button onclick="closeMemberFormModal()" class="text-slate-400 hover:text-white cursor-pointer"><i data-lucide="x" class="w-4 h-4"></i></button>
+      </div>
+
+      <div class="space-y-3 text-xs">
+        <input type="hidden" id="mem-in-id">
+        <div>
+          <label class="block text-slate-400 mb-0.5">Chemist / Firm Name *</label>
+          <input type="text" id="mem-in-firm" placeholder="e.g. SHREE GANESH MEDICALS" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-100 uppercase">
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-slate-400 mb-0.5">Proprietor / Owner Name</label>
+            <input type="text" id="mem-in-owner" placeholder="Owner Name..." class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-100">
+          </div>
+          <div>
+            <label class="block text-slate-400 mb-0.5">Mobile Contact</label>
+            <input type="text" id="mem-in-mobile" placeholder="10-digit Mobile" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-100 font-mono">
+          </div>
+        </div>
+
+        <div class="p-3 rounded-xl border border-slate-800 bg-slate-950/70 space-y-2">
+          <div class="flex items-center justify-between">
+            <label class="font-semibold text-slate-300 flex items-center gap-1.5">
+              <i data-lucide="award" class="w-3.5 h-3.5 text-teal-400"></i> Qualified Pharmacist(s)
+            </label>
+            <button type="button" onclick="addPharmacistInputRow()" class="px-2 py-0.5 rounded bg-teal-500/10 hover:bg-teal-500/20 text-teal-300 border border-teal-500/30 text-[11px] font-medium flex items-center gap-1 cursor-pointer">
+              <i data-lucide="plus" class="w-3 h-3"></i> Add Pharmacist
+            </button>
+          </div>
+          <div id="pharmacist-rows-container" class="space-y-1.5"></div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-slate-400 mb-0.5">Drug License No (DL No)</label>
+            <input type="text" id="mem-in-dl" placeholder="e.g. 20B/21B-XXXXXX" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-100 font-mono uppercase">
+          </div>
+          <div>
+            <label class="block text-slate-400 mb-0.5">DL Expiry Date</label>
+            <input type="date" id="mem-in-dl-expiry" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-100">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-slate-400 mb-0.5">FSSAI License No</label>
+            <input type="text" id="mem-in-fssai" placeholder="14-digit FSSAI No" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-100 font-mono">
+          </div>
+          <div>
+            <label class="block text-slate-400 mb-0.5">FSSAI Expiry Date</label>
+            <input type="date" id="mem-in-fssai-expiry" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-100">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-slate-400 mb-0.5">Tahasil / Taluka *</label>
+            <select id="mem-in-area" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-100">
+              <option value="Gondia">Gondia</option>
+              <option value="Tirora">Tirora</option>
+              <option value="Amgaon">Amgaon</option>
+              <option value="Goregaon">Goregaon</option>
+              <option value="Deori">Deori</option>
+              <option value="Salekasa">Salekasa</option>
+              <option value="Morgaon Arjuni">Morgaon Arjuni</option>
+              <option value="Sadak Arjuni">Sadak Arjuni</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-slate-400 mb-0.5">Shop Address / Village</label>
+            <input type="text" id="mem-in-address" placeholder="Address..." class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-100">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-slate-400 mb-0.5">2025-26 Fee Status</label>
+            <select id="mem-in-fee-status" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-100">
+              <option value="PAID">PAID</option>
+              <option value="PENDING">PENDING</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-slate-400 mb-0.5">Fee Amount (₹)</label>
+            <input type="number" id="mem-in-fee-amt" value="251" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-100">
+          </div>
+        </div>
+      </div>
+
+      <div class="flex gap-2 pt-2">
+        <button onclick="closeMemberFormModal()" class="flex-1 py-2 rounded-lg bg-slate-800 text-xs font-semibold text-slate-300 cursor-pointer">Cancel</button>
+        <button onclick="saveMemberRecord()" class="flex-1 py-2 rounded-lg bg-teal-600 hover:bg-teal-500 text-xs font-semibold text-white shadow-md cursor-pointer">Save Member</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PIN VERIFICATION MODAL -->
+  <div id="pin-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <div class="w-full max-w-xs bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl p-5 space-y-4">
+      <div class="text-center space-y-1">
+        <div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 mx-auto flex items-center justify-center">
+          <i data-lucide="key-round" class="w-5 h-5"></i>
+        </div>
+        <h4 class="text-sm font-bold text-white">Security Verification</h4>
+        <p class="text-[11px] text-slate-400">Enter authorized PIN to proceed.</p>
+      </div>
+
+      <div>
+        <input type="password" id="pin-input" maxlength="4" placeholder="••••" class="w-full text-center tracking-widest text-lg bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-100 font-mono focus:outline-none focus:border-amber-500">
+        <p id="pin-error" class="text-[11px] text-rose-400 hidden mt-1 text-center">Invalid Security PIN!</p>
+      </div>
+
+      <div class="flex gap-2">
+        <button onclick="closePinModal()" class="flex-1 py-2 rounded-lg bg-slate-800 text-xs font-semibold text-slate-300 cursor-pointer">Cancel</button>
+        <button onclick="submitPinVerification()" class="flex-1 py-2 rounded-lg bg-amber-600 hover:bg-amber-500 text-xs font-semibold text-white cursor-pointer">Verify</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- EC PORTAL COMPLETE MODAL (ALL TABS RESTORED) -->
   <div id="ec-portal-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md hidden flex items-center justify-center p-2 sm:p-4">
     <div class="w-full max-w-5xl bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl flex flex-col max-h-[92vh] overflow-hidden">
       
+      <!-- EC Portal Header -->
       <div class="p-4 sm:px-6 border-b border-slate-800 flex items-center justify-between bg-slate-900/90">
         <div class="flex items-center gap-3">
           <div class="w-9 h-9 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center">
@@ -249,10 +384,10 @@
           </div>
           <div>
             <h2 class="text-base sm:text-lg font-bold text-white flex items-center gap-2">
-              GDCDA EC Portal
+              GDCDA Executive Committee (EC) Portal
               <span class="text-[10px] px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 font-mono" id="ec-session-operator-tag">Logged: EC Admin</span>
             </h2>
-            <p class="text-xs text-slate-400">Fees Ledger, Meeting Check-in & EC Team Management</p>
+            <p class="text-xs text-slate-400">Expense Reimbursement, Fees Ledger, Settlements & Check-In Authority</p>
           </div>
         </div>
         <div class="flex items-center gap-2">
@@ -268,28 +403,46 @@
       <!-- Navigation Tabs -->
       <div class="border-b border-slate-800 bg-slate-950/60 px-6 flex items-center gap-2 text-xs font-medium overflow-x-auto">
         <button onclick="switchEcTab('fees')" id="tab-btn-fees" class="py-3 px-3 text-teal-400 border-b-2 border-teal-500 font-semibold flex items-center gap-1.5 whitespace-nowrap cursor-pointer">
-          <i data-lucide="wallet" class="w-4 h-4"></i> Fees Ledger
+          <i data-lucide="wallet" class="w-4 h-4"></i> Members Fees Ledger (<span id="ledger-total-count">0</span>)
+        </button>
+        <button onclick="switchEcTab('meetings')" id="tab-btn-meetings" class="py-3 px-3 text-slate-400 hover:text-slate-200 border-b-2 border-transparent flex items-center gap-1.5 whitespace-nowrap cursor-pointer">
+          <i data-lucide="calendar-check" class="w-4 h-4"></i> Meeting Authority & Check-In
+        </button>
+        <button onclick="switchEcTab('creator')" id="tab-btn-creator" class="py-3 px-3 text-slate-400 hover:text-slate-200 border-b-2 border-transparent flex items-center gap-1.5 whitespace-nowrap cursor-pointer">
+          <i data-lucide="plus-circle" class="w-4 h-4"></i> Expense Reimbursement Creator
+        </button>
+        <button onclick="switchEcTab('vouchers')" id="tab-btn-vouchers" class="py-3 px-3 text-slate-400 hover:text-slate-200 border-b-2 border-transparent flex items-center gap-1.5 whitespace-nowrap cursor-pointer">
+          <i data-lucide="receipt" class="w-4 h-4"></i> Saved Vouchers (<span id="saved-vouchers-count">1</span>)
+        </button>
+        <button onclick="switchEcTab('settlements')" id="tab-btn-settlements" class="py-3 px-3 text-slate-400 hover:text-slate-200 border-b-2 border-transparent flex items-center gap-1.5 whitespace-nowrap cursor-pointer">
+          <i data-lucide="credit-card" class="w-4 h-4"></i> Reimbursements & Settlements
         </button>
         <button onclick="switchEcTab('team')" id="tab-btn-team" class="py-3 px-3 text-slate-400 hover:text-slate-200 border-b-2 border-transparent flex items-center gap-1.5 whitespace-nowrap cursor-pointer">
           <i data-lucide="users" class="w-4 h-4"></i> EC Team & Passwords
         </button>
       </div>
 
+      <!-- Tab Content Area -->
       <div class="flex-1 overflow-y-auto p-4 sm:p-6 custom-scrollbar bg-slate-900/40">
-        <!-- TAB: FEES -->
+
+        <!-- TAB 1: RUNNING FEES LEDGER -->
         <div id="ec-tab-fees" class="space-y-4">
-          <div class="flex items-center justify-between pb-3 border-b border-slate-800">
-            <h3 class="text-sm font-semibold text-white">Chemists Master Fee Ledger</h3>
-            <input type="text" id="ec-fees-search" placeholder="Search firm..." oninput="renderEcFeesTable()" class="bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-teal-500">
+          <div class="flex flex-col sm:flex-row items-center justify-between gap-3 pb-3 border-b border-slate-800">
+            <div>
+              <h3 class="text-sm font-semibold text-white">Chemists Master Fee Ledger</h3>
+              <p class="text-xs text-slate-400">Total Collection: <span class="text-emerald-400 font-bold" id="ec-ledger-total-amount">₹ 0.00</span></p>
+            </div>
+            <input type="text" id="ec-fees-search" placeholder="Search firm, mobile..." oninput="renderEcFeesTable()" class="w-full sm:w-64 bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-teal-500">
           </div>
           <div class="border border-slate-800 rounded-xl overflow-hidden bg-slate-950/60 max-h-[60vh] overflow-y-auto custom-scrollbar">
             <table class="w-full text-left text-xs">
               <thead class="sticky top-0 bg-slate-900 border-b border-slate-800 text-slate-400 uppercase text-[11px]">
                 <tr>
-                  <th class="py-2.5 px-3">Firm Name</th>
+                  <th class="py-2.5 px-3">Chemist / Firm</th>
                   <th class="py-2.5 px-3">Tahasil</th>
                   <th class="py-2.5 px-3 text-center">Status</th>
-                  <th class="py-2.5 px-3 text-right">Fee (₹)</th>
+                  <th class="py-2.5 px-3 text-right">Fee Inflow (₹)</th>
+                  <th class="py-2.5 px-3 text-right">Action</th>
                 </tr>
               </thead>
               <tbody id="ec-fees-tbody" class="divide-y divide-slate-800/60"></tbody>
@@ -297,24 +450,194 @@
           </div>
         </div>
 
-        <!-- TAB: EC TEAM (DIRECT ADD WITH NO PIN) -->
+        <!-- TAB 2: MEETING CHECK-IN AUTHORITY -->
+        <div id="ec-tab-meetings" class="space-y-5 hidden">
+          <div class="p-4 rounded-xl border border-indigo-500/30 bg-indigo-500/10 space-y-3">
+            <h4 class="text-xs font-bold text-indigo-300 uppercase tracking-wider flex items-center gap-1.5">
+              <i data-lucide="plus-circle" class="w-4 h-4"></i> Create & Activate Association Meeting
+            </h4>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
+              <div>
+                <label class="block text-slate-400 mb-0.5">Meeting Subject *</label>
+                <input type="text" id="ec-new-meet-title" placeholder="e.g. EC Meeting 2026" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-slate-100">
+              </div>
+              <div>
+                <label class="block text-slate-400 mb-0.5">Meeting Date *</label>
+                <input type="date" id="ec-new-meet-date" value="2026-09-26" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-slate-100">
+              </div>
+              <div class="flex items-end">
+                <button onclick="createNewMeetingFromEc()" class="w-full py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 font-semibold text-white shadow-md transition cursor-pointer">
+                  Create Meeting
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="space-y-3">
+            <div class="flex items-center justify-between">
+              <div>
+                <h4 class="text-xs font-bold text-slate-200">Active Meeting Live Check-in Grid</h4>
+                <p class="text-[11px] text-slate-400" id="ec-current-meeting-label">Meeting: General Body Meeting - Pharmacist Day 2026</p>
+              </div>
+              <input type="text" id="ec-checkin-search" placeholder="Search chemist..." oninput="renderEcMeetingCheckinTable()" class="bg-slate-950 border border-slate-800 rounded-lg px-3 py-1 text-xs text-slate-200">
+            </div>
+
+            <div class="border border-slate-800 rounded-xl overflow-hidden bg-slate-950/60 max-h-[50vh] overflow-y-auto custom-scrollbar">
+              <table class="w-full text-left text-xs">
+                <thead class="sticky top-0 bg-slate-900 border-b border-slate-800 text-slate-400 uppercase text-[11px]">
+                  <tr>
+                    <th class="py-2.5 px-3">Chemist Firm</th>
+                    <th class="py-2.5 px-3">Tahasil</th>
+                    <th class="py-2.5 px-3">Mobile</th>
+                    <th class="py-2.5 px-3 text-center">Status</th>
+                    <th class="py-2.5 px-3 text-right">EC Action</th>
+                  </tr>
+                </thead>
+                <tbody id="ec-checkin-tbody" class="divide-y divide-slate-800/60"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 3: EXPENSE REIMBURSEMENT CREATOR -->
+        <div id="ec-tab-creator" class="space-y-5 hidden">
+          <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+            <h3 class="text-sm font-semibold text-white flex items-center gap-2">
+              <i data-lucide="file-text" class="w-4 h-4 text-teal-400"></i> Create GDCDA Reimbursement Voucher
+            </h3>
+            <button onclick="resetVoucherForm()" class="text-xs text-slate-400 hover:text-teal-400 flex items-center gap-1 cursor-pointer">
+              <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i> + Clear Form
+            </button>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div>
+              <label class="block text-[11px] font-medium text-slate-400 mb-1">Paid By (Claimant EC Member) *</label>
+              <select id="v-payer" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-teal-500"></select>
+            </div>
+            <div>
+              <label class="block text-[11px] font-medium text-slate-400 mb-1">Voucher Date *</label>
+              <input type="date" id="v-date" value="2026-09-24" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-teal-500">
+            </div>
+            <div>
+              <label class="block text-[11px] font-medium text-slate-400 mb-1">General Purpose *</label>
+              <input type="text" id="v-purpose" value="WORLD PHARMACIST DAY 2026" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-teal-500">
+            </div>
+          </div>
+
+          <div class="space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-semibold text-slate-300">Expense Breakdown Items</span>
+              <button onclick="addVoucherItemRow()" class="px-2.5 py-1 rounded bg-teal-500/10 hover:bg-teal-500/20 text-teal-400 border border-teal-500/30 text-[11px] font-medium flex items-center gap-1 cursor-pointer">
+                <i data-lucide="plus" class="w-3 h-3"></i> Add Row
+              </button>
+            </div>
+
+            <div class="border border-slate-800 rounded-lg overflow-hidden bg-slate-950/60">
+              <div class="grid grid-cols-12 gap-2 px-3 py-2 bg-slate-900 border-b border-slate-800 text-[11px] font-medium text-slate-400 uppercase">
+                <div class="col-span-4">Particulars / Description</div>
+                <div class="col-span-2">Date</div>
+                <div class="col-span-2">Mode</div>
+                <div class="col-span-2">Ref / UTR</div>
+                <div class="col-span-1 text-right">Amt (₹)</div>
+                <div class="col-span-1 text-center">Action</div>
+              </div>
+              <div id="voucher-rows-container" class="divide-y divide-slate-800/60"></div>
+            </div>
+          </div>
+
+          <div class="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 rounded-xl border border-slate-800 bg-slate-950/80">
+            <div>
+              <span class="text-xs text-slate-400">Total Calculated Voucher Amount:</span>
+              <div class="text-2xl font-black text-teal-400 tracking-tight" id="v-total-display">₹ 0.00</div>
+            </div>
+            <div class="flex items-center gap-2 w-full sm:w-auto">
+              <button onclick="saveCurrentVoucher()" class="flex-1 sm:flex-none px-4 py-2 rounded-lg bg-teal-600 hover:bg-teal-500 text-white font-semibold text-xs shadow-lg shadow-teal-600/20 transition flex items-center justify-center gap-1.5 cursor-pointer">
+                <i data-lucide="save" class="w-4 h-4"></i> Save Voucher to Ledger
+              </button>
+              <button onclick="printCurrentA6Voucher()" class="flex-1 sm:flex-none px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs shadow-lg shadow-indigo-600/20 transition flex items-center justify-center gap-1.5 cursor-pointer">
+                <i data-lucide="printer" class="w-4 h-4"></i> Print A6 Portrait Voucher
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 4: SAVED VOUCHERS LEDGER -->
+        <div id="ec-tab-vouchers" class="space-y-4 hidden">
+          <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+            <h3 class="text-sm font-semibold text-white">Registered Reimbursement Vouchers</h3>
+          </div>
+          <div class="border border-slate-800 rounded-xl overflow-hidden bg-slate-950/60">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-slate-900 border-b border-slate-800 text-slate-400 uppercase text-[11px]">
+                <tr>
+                  <th class="py-2.5 px-3">Date</th>
+                  <th class="py-2.5 px-3">Claimant</th>
+                  <th class="py-2.5 px-3">Purpose</th>
+                  <th class="py-2.5 px-3 text-right">Amount (₹)</th>
+                  <th class="py-2.5 px-3 text-center">Status</th>
+                  <th class="py-2.5 px-3 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="vouchers-ledger-body" class="divide-y divide-slate-800/60"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- TAB 5: REIMBURSEMENTS & SETTLEMENTS -->
+        <div id="ec-tab-settlements" class="space-y-4 hidden">
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div class="p-3.5 rounded-xl border border-slate-800 bg-slate-950">
+              <p class="text-[11px] text-slate-400 font-medium">Total Expenses Claimed</p>
+              <p class="text-xl font-bold text-teal-400 mt-1" id="kpi-claimed">₹ 0.00</p>
+            </div>
+            <div class="p-3.5 rounded-xl border border-slate-800 bg-slate-950">
+              <p class="text-[11px] text-slate-400 font-medium">Total Reimbursed / Paid</p>
+              <p class="text-xl font-bold text-emerald-400 mt-1" id="kpi-reimbursed">₹ 0.00</p>
+            </div>
+            <div class="p-3.5 rounded-xl border border-slate-800 bg-slate-950">
+              <p class="text-[11px] text-slate-400 font-medium">Pending Dues to Members</p>
+              <p class="text-xl font-bold text-amber-400 mt-1" id="kpi-dues">₹ 0.00</p>
+            </div>
+          </div>
+
+          <div class="border border-slate-800 rounded-xl overflow-hidden bg-slate-950/60">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-slate-900 border-b border-slate-800 text-slate-400 uppercase text-[11px]">
+                <tr>
+                  <th class="py-2.5 px-3">Date</th>
+                  <th class="py-2.5 px-3">Claimant</th>
+                  <th class="py-2.5 px-3">Purpose</th>
+                  <th class="py-2.5 px-3 text-right">Claimed (₹)</th>
+                  <th class="py-2.5 px-3 text-right">Paid (₹)</th>
+                  <th class="py-2.5 px-3 text-right">Balance (₹)</th>
+                  <th class="py-2.5 px-3 text-center">Status</th>
+                  <th class="py-2.5 px-3 text-right">Action</th>
+                </tr>
+              </thead>
+              <tbody id="settlements-ledger-body" class="divide-y divide-slate-800/60"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- TAB 6: EC TEAM MANAGEMENT -->
         <div id="ec-tab-team" class="space-y-4 hidden">
           <div class="flex items-center justify-between pb-3 border-b border-slate-800">
             <div>
               <h3 class="text-sm font-semibold text-white">Executive Committee Members</h3>
-              <p class="text-xs text-slate-400">Create login credentials for committee members</p>
+              <p class="text-xs text-slate-400">Add committee members and set login passwords</p>
             </div>
             <button onclick="openEcMemberModalDirect()" class="px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs shadow-md flex items-center gap-1.5 cursor-pointer">
               <i data-lucide="user-plus" class="w-3.5 h-3.5"></i> Add EC Member
             </button>
           </div>
 
-          <div class="border border-slate-800 rounded-xl overflow-hidden bg-slate-950/60">
+          <div class="border border-slate-800 rounded-xl overflow-hidden bg-slate-950/60 max-h-[50vh] overflow-y-auto custom-scrollbar">
             <table class="w-full text-left text-xs">
               <thead class="sticky top-0 bg-slate-900 border-b border-slate-800 text-slate-400 uppercase text-[11px]">
                 <tr>
                   <th class="py-2.5 px-3">Name</th>
-                  <th class="py-2.5 px-3">Designation</th>
+                  <th class="py-2.5 px-3">Role / Designation</th>
                   <th class="py-2.5 px-3">Password</th>
                   <th class="py-2.5 px-3 text-right">Action</th>
                 </tr>
@@ -323,6 +646,7 @@
             </table>
           </div>
         </div>
+
       </div>
 
     </div>
@@ -361,12 +685,12 @@
     </div>
   </div>
 
-  <!-- EC AUTH GATE -->
+  <!-- EC AUTH GATE (PASSWORD) -->
   <div id="ec-login-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md hidden flex items-center justify-center p-4">
     <div class="w-full max-w-sm bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl p-6 space-y-4">
       <div class="text-center space-y-1">
         <h3 class="text-base font-bold text-white">EC Portal Authentication</h3>
-        <p class="text-xs text-slate-400">Master passphrase ya apna EC password enter karein.</p>
+        <p class="text-xs text-slate-400">Master passphrase ya apna personal EC password enter karein.</p>
       </div>
       <div>
         <input type="password" id="ec-password-input" placeholder="Password..." class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-indigo-500">
@@ -379,14 +703,98 @@
     </div>
   </div>
 
-  <!-- SCRIPT -->
+  <!-- RECORD FEE PAYMENT MODAL -->
+  <div id="fee-payment-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <div class="w-full max-w-md bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl p-5 space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <h3 class="text-sm font-bold text-white flex items-center gap-2">
+          <i data-lucide="wallet" class="w-4 h-4 text-emerald-400"></i> Record Member Fee Inflow
+        </h3>
+        <button onclick="closeFeePaymentModal()" class="text-slate-400 hover:text-white cursor-pointer"><i data-lucide="x" class="w-4 h-4"></i></button>
+      </div>
+
+      <div class="space-y-3">
+        <div>
+          <label class="block text-[11px] font-medium text-slate-400 mb-0.5">Chemist Firm Name</label>
+          <input type="text" id="fee-form-firm" readonly class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-300 font-bold">
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-[11px] font-medium text-slate-400 mb-0.5">Amount (₹) *</label>
+            <input type="number" id="fee-form-amt" value="251" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-100 focus:outline-none focus:border-teal-500">
+          </div>
+          <div>
+            <label class="block text-[11px] font-medium text-slate-400 mb-0.5">Payment Mode *</label>
+            <select id="fee-form-mode" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-100">
+              <option value="UPI">UPI</option>
+              <option value="CASH">CASH</option>
+              <option value="CHEQUE">CHEQUE</option>
+              <option value="BANK TRANSFER">BANK TRANSFER</option>
+            </select>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-[11px] font-medium text-slate-400 mb-0.5">Date Received *</label>
+            <input type="date" id="fee-form-date" value="2026-09-26" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-100">
+          </div>
+          <div>
+            <label class="block text-[11px] font-medium text-slate-400 mb-0.5">Receipt / Ref No.</label>
+            <input type="text" id="fee-form-ref" placeholder="REC-2026-XXXX" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-100">
+          </div>
+        </div>
+      </div>
+
+      <div class="flex gap-2 pt-2">
+        <button onclick="closeFeePaymentModal()" class="flex-1 py-2 rounded-lg bg-slate-800 text-xs font-semibold text-slate-300 cursor-pointer">Cancel</button>
+        <button onclick="saveFeePayment()" class="flex-1 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-xs font-semibold text-white shadow-md shadow-emerald-600/20 cursor-pointer">Save & Update Ledger</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRINT STREAM IFRAME -->
+  <iframe id="print-frame" class="hidden"></iframe>
+
+  <!-- COMPLETE APP SCRIPT ENGINE -->
   <script>
+    const DEFAULT_SHUBHAM_VOUCHER = {
+      id: "vouch-2026-001",
+      payer: "Shubham Agrawal - Volunteer [Gondia City]",
+      date: "2026-09-24",
+      purpose: "WORLD PHARMACIST DAY 2026",
+      items: [
+        { desc: "HOTEL RIYA IMPERIAL EXECUTIVE ROOM 301 BOOKED", date: "2026-09-23", mode: "UPI", ref: "PAYTM/UJJIVAN/31535", amt: 1800 },
+        { desc: "BALLAL SIR GND TO NGP VIDARBHA 2ND AC TKT", date: "2026-09-23", mode: "UPI", ref: "VIA IRCTC ID", amt: 794 },
+        { desc: "BALLAL SIR MORNING BREAKFAST", date: "2026-09-24", mode: "CASH", ref: "Cash Paid", amt: 155 },
+        { desc: "BALLAL SIR EVENING NASTA+DINNER", date: "2026-09-24", mode: "UPI", ref: "PAYTM/UJJIVAN/31535", amt: 367 },
+        { desc: "AIOCD STRIKE PURANA FOR RIBBON", date: "2026-09-24", mode: "CASH", ref: "Cash Paid", amt: 120 },
+        { desc: "GDCDA PIS SERVICES ONE TIME EXPENSE", date: "2026-09-24", mode: "UPI", ref: "Online portal", amt: 299 }
+      ],
+      total: 3535,
+      settlements: []
+    };
+
+    const DEFAULT_EC_MEMBERS = [
+      { id: "ec-01", name: "Shubham Agrawal", role: "Volunteer [Gondia City]", password: "shubham@gdcda" },
+      { id: "ec-02", name: "Deepak Agrawal", role: "Gondia City In-Charge", password: "deepak@gdcda" },
+      { id: "ec-03", name: "Kamlesh Shukla", role: "Gondia Rural In-Charge", password: "kamlesh@gdcda" },
+      { id: "ec-04", name: "Krushnakumar Raut", role: "Tirora In-Charge", password: "raut@gdcda" },
+      { id: "ec-05", name: "Narendra Bahetwar", role: "Amgaon In-Charge", password: "bahetwar@gdcda" },
+      { id: "ec-06", name: "Chandrashekhar Baghele", role: "Goregaon In-Charge", password: "baghele@gdcda" },
+      { id: "ec-07", name: "Narendra Tandekar", role: "Deori In-Charge", password: "tandekar@gdcda" },
+      { id: "ec-08", name: "Vishwanath Mendhe", role: "Salekasa In-Charge", password: "mendhe@gdcda" },
+      { id: "ec-09", name: "Nilesh Dongarwar", role: "Morgaon Arjuni In-Charge", password: "dongarwar@gdcda" },
+      { id: "ec-10", name: "Chhagan Kapgate", role: "Sadak Arjuni In-Charge", password: "kapgate@gdcda" }
+    ];
+
     let appState = {
       members: [],
-      ecMembers: [
-        { id: "ec-01", name: "Shubham Agrawal", role: "Volunteer [Gondia City]", password: "shubham@gdcda" },
-        { id: "ec-02", name: "Deepak Agrawal", role: "Gondia City In-Charge", password: "deepak@gdcda" }
+      vouchers: [DEFAULT_SHUBHAM_VOUCHER],
+      meetings: [
+        { id: "meet-001", title: "General Body Meeting - Pharmacist Day 2026", date: "2026-09-24", venue: "Gondia", attendance: {} }
       ],
+      activeMeetingId: "meet-001",
+      ecMembers: DEFAULT_EC_MEMBERS,
       isEcAuthenticated: false,
       currentOperator: { name: "Guest", role: "Public" },
       cloudConfig: {
@@ -399,12 +807,26 @@
       }
     };
 
+    let pendingAction = null;
+
+    let activeVoucherRows = [
+      { desc: "HOTEL RIYA IMPERIAL EXECUTIVE ROOM 301 BOOKED", date: "2026-09-23", mode: "UPI", ref: "PAYTM/UJJIVAN/31535", amt: 1800 },
+      { desc: "BALLAL SIR GND TO NGP VIDARBHA 2ND AC TKT", date: "2026-09-23", mode: "UPI", ref: "VIA IRCTC ID", amt: 794 },
+      { desc: "BALLAL SIR MORNING BREAKFAST", date: "2026-09-24", mode: "CASH", ref: "Cash Paid", amt: 155 },
+      { desc: "BALLAL SIR EVENING NASTA+DINNER", date: "2026-09-24", mode: "UPI", ref: "PAYTM/UJJIVAN/31535", amt: 367 },
+      { desc: "AIOCD STRIKE PURANA FOR RIBBON", date: "2026-09-24", mode: "CASH", ref: "Cash Paid", amt: 120 },
+      { desc: "GDCDA PIS SERVICES ONE TIME EXPENSE", date: "2026-09-24", mode: "UPI", ref: "Online portal", amt: 299 }
+    ];
+
     function initSystem() {
       const local = localStorage.getItem("GDCDA_APP_VAULT");
       if (local) {
         try {
           const parsed = JSON.parse(local);
           if (parsed.members && parsed.members.length > 0) appState.members = parsed.members;
+          if (parsed.vouchers && parsed.vouchers.length > 0) appState.vouchers = parsed.vouchers;
+          if (parsed.meetings && parsed.meetings.length > 0) appState.meetings = parsed.meetings;
+          if (parsed.activeMeetingId) appState.activeMeetingId = parsed.activeMeetingId;
           if (parsed.ecMembers && parsed.ecMembers.length > 0) appState.ecMembers = parsed.ecMembers;
           if (parsed.cloudConfig) appState.cloudConfig = Object.assign(appState.cloudConfig, parsed.cloudConfig);
         } catch(e) {}
@@ -418,10 +840,15 @@
       updateStats();
       renderMembersTable();
       renderEcFeesTable();
+      renderEcMeetingCheckinTable();
       renderEcTeamTable();
+      renderVoucherRows();
+      renderVouchersLedger();
+      renderSettlementsLedger();
+      updatePayerDropdown();
       lucide.createIcons();
 
-      // Silent Auto Pull from GitHub if Token & Passphrase exist
+      // Silent Auto Pull from GitHub on page startup
       if (appState.cloudConfig.token && appState.cloudConfig.passphrase) {
         pullFromGitHubVault();
       }
@@ -430,6 +857,9 @@
     function persistLocal() {
       localStorage.setItem("GDCDA_APP_VAULT", JSON.stringify({
         members: appState.members,
+        vouchers: appState.vouchers,
+        meetings: appState.meetings,
+        activeMeetingId: appState.activeMeetingId,
         ecMembers: appState.ecMembers,
         cloudConfig: appState.cloudConfig,
         lastUpdated: new Date().toISOString()
@@ -444,14 +874,22 @@
       document.getElementById("stat-pending").textContent = total - paid;
     }
 
+    // MAIN ROSTER RENDER (RICH DETAILS)
     function renderMembersTable() {
       const tbody = document.getElementById("members-table-body");
       const s = (document.getElementById("member-search").value || "").toLowerCase();
       const area = document.getElementById("filter-area").value;
       const fee = document.getElementById("filter-fee").value;
 
+      const activeM = appState.meetings.find(m => m.id === appState.activeMeetingId) || appState.meetings[0];
+      const att = (activeM && activeM.attendance) ? activeM.attendance : {};
+
       const list = appState.members.filter(m => {
-        const matchSearch = !s || (m.firm && m.firm.toLowerCase().includes(s)) || (m.mobile && m.mobile.includes(s));
+        const matchSearch = !s || 
+          (m.firm && m.firm.toLowerCase().includes(s)) || 
+          (m.owner && m.owner.toLowerCase().includes(s)) ||
+          (m.pharmacist && m.pharmacist.toLowerCase().includes(s)) ||
+          (m.mobile && m.mobile.includes(s));
         const matchArea = area === "ALL" || m.area === area;
         const matchFee = fee === "ALL" || m.feeStatus === fee;
         return matchSearch && matchArea && matchFee;
@@ -459,42 +897,213 @@
 
       document.getElementById("table-results-count").textContent = `Showing ${list.length} of ${appState.members.length} chemists`;
 
-      tbody.innerHTML = list.map((m, idx) => `
-        <tr class="hover:bg-slate-800/40 transition">
-          <td class="py-2.5 px-3 text-center text-slate-500 font-mono text-[11px]">${idx + 1}</td>
-          <td class="py-2.5 px-3">
-            <div class="font-bold text-slate-100">${escapeHtml(m.firm)}</div>
-            <div class="text-[10px] text-slate-400">Prop: ${escapeHtml(m.owner || "-")} | Pharmacist: ${escapeHtml(m.pharmacist || "-")}</div>
-          </td>
-          <td class="py-2.5 px-3">${escapeHtml(m.area || "Gondia")}</td>
-          <td class="py-2.5 px-3 font-mono">${m.mobile || "N/A"}</td>
-          <td class="py-2.5 px-3 text-center">
-            <span class="px-2 py-0.5 rounded text-[10px] font-bold ${m.feeStatus === 'PAID' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-amber-500/10 text-amber-400'}">${m.feeStatus}</span>
-          </td>
-          <td class="py-2.5 px-3 text-center text-slate-500 text-[11px]">Absent</td>
-          <td class="py-2.5 px-3 text-right">
-            <button onclick="deleteMember('${m.id}')" class="p-1 text-rose-400 hover:text-rose-300 cursor-pointer"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
-          </td>
+      tbody.innerHTML = list.map((m, idx) => {
+        const isPresent = att[m.id] === 'PRESENT';
+        return `
+          <tr class="hover:bg-slate-800/40 transition">
+            <td class="py-2.5 px-3 text-center text-slate-500 font-mono text-[11px]">${idx + 1}</td>
+            <td class="py-2.5 px-3">
+              <div class="font-bold text-slate-100">${escapeHtml(m.firm)}</div>
+              <div class="text-[10px] text-slate-400">
+                ${m.owner ? `Prop: <strong class="text-slate-300">${escapeHtml(m.owner)}</strong>` : ""}
+                ${m.pharmacist ? ` | Pharmacist: <span class="text-teal-400">${escapeHtml(m.pharmacist)}</span>` : ""}
+              </div>
+            </td>
+            <td class="py-2.5 px-3">${escapeHtml(m.area || "Gondia")}</td>
+            <td class="py-2.5 px-3 font-mono">${m.mobile || "N/A"}</td>
+            <td class="py-2.5 px-3 text-center">
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold ${m.feeStatus === 'PAID' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-amber-500/10 text-amber-400'}">${m.feeStatus}</span>
+            </td>
+            <td class="py-2.5 px-3 text-center">
+              <span class="text-[11px] font-semibold ${isPresent ? 'text-indigo-400' : 'text-slate-500'}">${isPresent ? 'Present' : 'Absent'}</span>
+            </td>
+            <td class="py-2.5 px-3 text-right space-x-1 whitespace-nowrap">
+              <button onclick="triggerProtectedAction('EDIT', '${m.id}')" class="p-1 rounded bg-slate-800 text-amber-400 hover:text-amber-300 cursor-pointer"><i data-lucide="edit-3" class="w-3.5 h-3.5"></i></button>
+              <button onclick="triggerProtectedAction('DELETE', '${m.id}')" class="p-1 rounded bg-slate-800 text-rose-400 hover:text-rose-300 cursor-pointer"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+            </td>
+          </tr>
+        `;
+      }).join("");
+      lucide.createIcons();
+    }
+
+    // EXPENSE REIMBURSEMENT VOUCHER ENGINE
+    function renderVoucherRows() {
+      const container = document.getElementById("voucher-rows-container");
+      if (!container) return;
+      container.innerHTML = activeVoucherRows.map((item, idx) => `
+        <div class="grid grid-cols-12 gap-2 px-3 py-2 items-center bg-slate-900/40">
+          <div class="col-span-4"><input type="text" value="${escapeHtml(item.desc)}" oninput="updateVoucherRow(${idx}, 'desc', this.value)" class="w-full bg-slate-950 border border-slate-800 rounded px-2 py-1 text-xs text-slate-100 uppercase"></div>
+          <div class="col-span-2"><input type="date" value="${item.date}" oninput="updateVoucherRow(${idx}, 'date', this.value)" class="w-full bg-slate-950 border border-slate-800 rounded px-2 py-1 text-xs text-slate-100"></div>
+          <div class="col-span-2"><select onchange="updateVoucherRow(${idx}, 'mode', this.value)" class="w-full bg-slate-950 border border-slate-800 rounded px-2 py-1 text-xs text-slate-100"><option value="UPI" ${item.mode === "UPI" ? "selected" : ""}>UPI</option><option value="CASH" ${item.mode === "CASH" ? "selected" : ""}>CASH</option></select></div>
+          <div class="col-span-2"><input type="text" value="${escapeHtml(item.ref || "")}" oninput="updateVoucherRow(${idx}, 'ref', this.value)" placeholder="Ref" class="w-full bg-slate-950 border border-slate-800 rounded px-2 py-1 text-xs text-slate-100"></div>
+          <div class="col-span-1"><input type="number" value="${item.amt}" oninput="updateVoucherRow(${idx}, 'amt', this.value)" class="w-full bg-slate-950 border border-slate-800 rounded px-2 py-1 text-xs text-right font-mono text-teal-400 font-bold"></div>
+          <div class="col-span-1 text-center"><button onclick="removeVoucherRow(${idx})" class="text-rose-400 p-1 cursor-pointer"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button></div>
+        </div>
+      `).join("");
+      calculateVoucherTotal();
+      lucide.createIcons();
+    }
+    function addVoucherItemRow() { activeVoucherRows.push({ desc: "", date: document.getElementById("v-date").value, mode: "UPI", ref: "", amt: 0 }); renderVoucherRows(); }
+    function removeVoucherRow(idx) { activeVoucherRows.splice(idx, 1); renderVoucherRows(); }
+    function updateVoucherRow(idx, field, val) { if (field === "amt") { activeVoucherRows[idx].amt = parseFloat(val) || 0; calculateVoucherTotal(); } else { activeVoucherRows[idx][field] = val; } }
+    function calculateVoucherTotal() {
+      const sum = activeVoucherRows.reduce((acc, row) => acc + (parseFloat(row.amt) || 0), 0);
+      document.getElementById("v-total-display").textContent = "₹ " + sum.toLocaleString("en-IN", { minimumFractionDigits: 2 });
+      return sum;
+    }
+    function resetVoucherForm() { activeVoucherRows = [{ desc: "", date: new Date().toISOString().split("T")[0], mode: "UPI", ref: "", amt: 0 }]; document.getElementById("v-purpose").value = ""; renderVoucherRows(); }
+
+    function saveCurrentVoucher() {
+      const payer = document.getElementById("v-payer").value;
+      const date = document.getElementById("v-date").value;
+      const purpose = document.getElementById("v-purpose").value.trim() || "GDCDA Official Expenses";
+      const total = calculateVoucherTotal();
+      appState.vouchers.unshift({ id: "vouch-" + Date.now(), payer, date, purpose, items: JSON.parse(JSON.stringify(activeVoucherRows)), total, settlements: [] });
+      persistLocal(); renderVouchersLedger(); renderSettlementsLedger();
+      showToast("Voucher Saved to Ledger!"); autoPushToGitHub();
+    }
+
+    function renderVouchersLedger() {
+      const tbody = document.getElementById("vouchers-ledger-body");
+      if (!tbody) return;
+      document.getElementById("saved-vouchers-count").textContent = appState.vouchers.length;
+      tbody.innerHTML = appState.vouchers.map(v => `
+        <tr class="hover:bg-slate-900/60 transition">
+          <td class="py-2 px-3 font-mono text-slate-400">${v.date}</td>
+          <td class="py-2 px-3 font-medium text-slate-200">${escapeHtml(v.payer)}</td>
+          <td class="py-2 px-3 text-slate-300 font-semibold">${escapeHtml(v.purpose)}</td>
+          <td class="py-2 px-3 text-right font-mono text-teal-400 font-bold">₹ ${parseFloat(v.total).toLocaleString("en-IN", {minimumFractionDigits: 2})}</td>
+          <td class="py-2 px-3 text-center"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/10 text-amber-400">PENDING</span></td>
+          <td class="py-2 px-3 text-right"><button onclick="printSavedA6Voucher('${v.id}')" class="p-1 rounded bg-slate-800 text-indigo-400 cursor-pointer"><i data-lucide="printer" class="w-3.5 h-3.5"></i></button></td>
         </tr>
       `).join("");
       lucide.createIcons();
     }
 
-    function renderEcFeesTable() {
-      const tbody = document.getElementById("ec-fees-tbody");
+    function renderSettlementsLedger() {
+      const tbody = document.getElementById("settlements-ledger-body");
       if (!tbody) return;
-      const s = (document.getElementById("ec-fees-search").value || "").toLowerCase();
+      let totalClaimed = 0, totalPaid = 0;
+      tbody.innerHTML = appState.vouchers.map(v => {
+        totalClaimed += v.total;
+        const paid = (v.settlements || []).reduce((acc, r) => acc + (parseFloat(r.amt) || 0), 0);
+        totalPaid += paid;
+        return `
+          <tr class="hover:bg-slate-900/60 transition">
+            <td class="py-2 px-3 font-mono text-slate-400">${v.date}</td>
+            <td class="py-2 px-3 text-slate-200">${escapeHtml(v.payer)}</td>
+            <td class="py-2 px-3 text-slate-300">${escapeHtml(v.purpose)}</td>
+            <td class="py-2 px-3 text-right font-mono text-slate-300 font-bold">₹ ${v.total}</td>
+            <td class="py-2 px-3 text-right font-mono text-emerald-400 font-bold">₹ ${paid}</td>
+            <td class="py-2 px-3 text-right font-mono text-amber-400 font-bold">₹ ${v.total - paid}</td>
+            <td class="py-2 px-3 text-center"><span class="px-2 py-0.5 rounded text-[10px] font-bold ${v.total - paid <= 0 ? 'bg-emerald-500/10 text-emerald-400' : 'bg-rose-500/10 text-rose-400'}">${v.total - paid <= 0 ? 'SETTLED' : 'UNPAID'}</span></td>
+            <td class="py-2 px-3 text-right"><button onclick="promptRecordSettlement('${v.id}')" class="px-2 py-1 rounded bg-teal-500/10 text-teal-300 text-[11px] cursor-pointer">+ Disburse</button></td>
+          </tr>
+        `;
+      }).join("");
+      document.getElementById("kpi-claimed").textContent = "₹ " + totalClaimed.toLocaleString("en-IN", {minimumFractionDigits: 2});
+      document.getElementById("kpi-reimbursed").textContent = "₹ " + totalPaid.toLocaleString("en-IN", {minimumFractionDigits: 2});
+      document.getElementById("kpi-dues").textContent = "₹ " + (totalClaimed - totalPaid).toLocaleString("en-IN", {minimumFractionDigits: 2});
+      lucide.createIcons();
+    }
+
+    function promptRecordSettlement(vouchId) {
+      const v = appState.vouchers.find(x => x.id === vouchId);
+      if (!v) return;
+      const amtStr = prompt(`Enter payment amount for ${v.payer}:`, v.total);
+      if (!amtStr) return;
+      const amt = parseFloat(amtStr);
+      if (!v.settlements) v.settlements = [];
+      v.settlements.push({ date: new Date().toISOString().split("T")[0], amt, mode: "UPI", ref: "UTR-" + Date.now() });
+      persistLocal(); renderVouchersLedger(); renderSettlementsLedger();
+      showToast("Settlement Recorded!"); autoPushToGitHub();
+    }
+
+    function printCurrentA6Voucher() { executeA6PrintStream({ payer: document.getElementById("v-payer").value, date: document.getElementById("v-date").value, purpose: document.getElementById("v-purpose").value, items: activeVoucherRows, total: calculateVoucherTotal() }); }
+    function printSavedA6Voucher(vouchId) { const v = appState.vouchers.find(x => x.id === vouchId); if (v) executeA6PrintStream(v); }
+    function executeA6PrintStream(voucher) {
+      const iframe = document.getElementById("print-frame");
+      const printHtml = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>Voucher</title><style>@page { size: 105mm 148mm portrait; margin: 5mm; } body { font-family: sans-serif; font-size: 8.5pt; color: #000; } .box { border: 1.5pt solid #000; padding: 4.5mm; height: 138mm; display: flex; flex-direction: column; justify-content: space-between; } table { width: 100%; border-collapse: collapse; font-size: 7pt; } th, td { border-bottom: 0.5pt solid #000; padding: 2pt; text-align: left; }</style></head><body><div class="box"><div><h2 style="text-align:center;margin:0;">GDCDA VOUCHER</h2><p><b>Claimant:</b> ${voucher.payer}</p><p><b>Purpose:</b> ${voucher.purpose}</p><table><thead><tr><th>#</th><th>Particulars</th><th>Amt</th></tr></thead><tbody>${voucher.items.map((it, i)=>`<tr><td>${i+1}</td><td>${it.desc}</td><td>${it.amt}</td></tr>`).join("")}</tbody></table></div><div><p><b>Total Amount:</b> ₹ ${voucher.total}</p></div></div></body></html>`;
+      const doc = iframe.contentWindow.document;
+      doc.open(); doc.write(printHtml); doc.close();
+      setTimeout(() => iframe.contentWindow.print(), 350);
+    }
+
+    // MEETING & ATTENDANCE
+    function createNewMeetingFromEc() {
+      const title = document.getElementById("ec-new-meet-title").value.trim();
+      const date = document.getElementById("ec-new-meet-date").value;
+      if (!title) { alert("Enter title"); return; }
+      appState.meetings.unshift({ id: "meet-" + Date.now(), title, date, attendance: {} });
+      persistLocal(); renderMembersTable(); renderEcMeetingCheckinTable(); showToast("Meeting Activated");
+    }
+
+    function renderEcMeetingCheckinTable() {
+      const tbody = document.getElementById("ec-checkin-tbody");
+      if (!tbody) return;
+      const s = (document.getElementById("ec-checkin-search").value || "").toLowerCase();
+      const am = appState.meetings.find(m => m.id === appState.activeMeetingId) || appState.meetings[0];
+      const att = (am && am.attendance) ? am.attendance : {};
       tbody.innerHTML = appState.members.filter(m => !s || (m.firm && m.firm.toLowerCase().includes(s))).map(m => `
         <tr class="hover:bg-slate-900 transition">
-          <td class="py-2.5 px-3 font-bold text-slate-200">${escapeHtml(m.firm)}</td>
-          <td class="py-2.5 px-3">${m.area}</td>
-          <td class="py-2.5 px-3 text-center"><span class="px-2 py-0.5 rounded text-[10px] font-bold ${m.feeStatus === 'PAID' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-amber-500/10 text-amber-400'}">${m.feeStatus}</span></td>
-          <td class="py-2.5 px-3 text-right font-mono text-teal-400">₹ ${m.feeAmount || 0}</td>
+          <td class="py-2 px-3 font-semibold text-slate-200">${escapeHtml(m.firm)}</td>
+          <td class="py-2 px-3">${escapeHtml(m.area || "Gondia")}</td>
+          <td class="py-2 px-3">${m.mobile || "N/A"}</td>
+          <td class="py-2 px-3 text-center"><span class="px-2 py-0.5 rounded text-[10px] font-bold ${att[m.id] === 'PRESENT' ? 'bg-indigo-500/20 text-indigo-300' : 'bg-slate-800 text-slate-500'}">${att[m.id] === 'PRESENT' ? 'PRESENT' : 'ABSENT'}</span></td>
+          <td class="py-2 px-3 text-right"><button onclick="toggleEcCheckin('${m.id}')" class="px-3 py-1 rounded text-[11px] font-bold cursor-pointer ${att[m.id] === 'PRESENT' ? 'bg-rose-500/10 text-rose-400' : 'bg-emerald-500/10 text-emerald-400'}">${att[m.id] === 'PRESENT' ? 'Mark Absent' : 'Mark Present'}</button></td>
         </tr>
       `).join("");
     }
 
-    // EC TEAM MANAGEMENT - 1-CLICK DIRECT
+    function toggleEcCheckin(memberId) {
+      const am = appState.meetings.find(m => m.id === appState.activeMeetingId) || appState.meetings[0];
+      if (!am.attendance) am.attendance = {};
+      am.attendance[memberId] = am.attendance[memberId] === 'PRESENT' ? 'ABSENT' : 'PRESENT';
+      persistLocal(); renderMembersTable(); renderEcMeetingCheckinTable();
+    }
+
+    // FEES LEDGER
+    function renderEcFeesTable() {
+      const tbody = document.getElementById("ec-fees-tbody");
+      if (!tbody) return;
+      const s = (document.getElementById("ec-fees-search").value || "").toLowerCase();
+      const totalCol = appState.members.reduce((acc, m) => acc + (parseFloat(m.feeAmount) || 0), 0);
+      document.getElementById("ledger-total-count").textContent = appState.members.length;
+      document.getElementById("ec-ledger-total-amount").textContent = "₹ " + totalCol.toLocaleString("en-IN", { minimumFractionDigits: 2 });
+      
+      tbody.innerHTML = appState.members.filter(m => !s || (m.firm && m.firm.toLowerCase().includes(s))).map(m => `
+        <tr class="hover:bg-slate-900 transition">
+          <td class="py-2.5 px-3 font-bold text-slate-200">${escapeHtml(m.firm)}</td>
+          <td class="py-2.5 px-3">${escapeHtml(m.area || "Gondia")}</td>
+          <td class="py-2.5 px-3 text-center"><span class="px-2 py-0.5 rounded text-[10px] font-bold ${m.feeStatus === 'PAID' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-amber-500/10 text-amber-400'}">${m.feeStatus}</span></td>
+          <td class="py-2.5 px-3 text-right font-mono text-teal-400">₹ ${m.feeAmount || 0}</td>
+          <td class="py-2.5 px-3 text-right"><button onclick="openFeePaymentModal('${m.id}')" class="px-2.5 py-1 rounded bg-teal-500/10 text-teal-300 cursor-pointer">Record Inflow</button></td>
+        </tr>
+      `).join("");
+    }
+
+    let activeFeeMemberId = null;
+    function openFeePaymentModal(id) {
+      activeFeeMemberId = id;
+      const m = appState.members.find(x => x.id === id);
+      if (!m) return;
+      document.getElementById("fee-form-firm").value = m.firm;
+      document.getElementById("fee-form-amt").value = m.feeAmount || 251;
+      document.getElementById("fee-payment-modal").classList.remove("hidden");
+    }
+    function closeFeePaymentModal() { document.getElementById("fee-payment-modal").classList.add("hidden"); }
+    function saveFeePayment() {
+      if (!activeFeeMemberId) return;
+      const m = appState.members.find(x => x.id === activeFeeMemberId);
+      const amt = parseFloat(document.getElementById("fee-form-amt").value) || 0;
+      m.feeStatus = amt > 0 ? "PAID" : "PENDING";
+      m.feeAmount = amt;
+      persistLocal(); closeFeePaymentModal(); updateStats(); renderMembersTable(); renderEcFeesTable();
+      showToast(`Fee Recorded: ${m.firm}`); autoPushToGitHub();
+    }
+
+    // EC TEAM DIRECT MODAL
     function openEcMemberModalDirect() {
       document.getElementById("ec-mem-in-id").value = "";
       document.getElementById("ec-mem-in-name").value = "";
@@ -502,25 +1111,16 @@
       document.getElementById("ec-mem-in-password").value = "";
       document.getElementById("ec-member-form-modal").classList.remove("hidden");
     }
-
-    function closeEcMemberFormModal() {
-      document.getElementById("ec-member-form-modal").classList.add("hidden");
-    }
-
+    function closeEcMemberFormModal() { document.getElementById("ec-member-form-modal").classList.add("hidden"); }
     function saveEcMemberRecord() {
       const name = document.getElementById("ec-mem-in-name").value.trim();
       const role = document.getElementById("ec-mem-in-role").value.trim();
       const pwd = document.getElementById("ec-mem-in-password").value.trim();
-      if (!name || !pwd) { alert("Name and password are required!"); return; }
-
+      if (!name || !pwd) { alert("Name and password required!"); return; }
       appState.ecMembers.push({ id: "ec-" + Date.now(), name, role, password: pwd });
-      persistLocal();
-      closeEcMemberFormModal();
-      renderEcTeamTable();
-      showToast(`Added EC Member: ${name}`);
-      autoPushToGitHub();
+      persistLocal(); closeEcMemberFormModal(); renderEcTeamTable(); updatePayerDropdown();
+      showToast(`Added EC Member: ${name}`); autoPushToGitHub();
     }
-
     function renderEcTeamTable() {
       const tbody = document.getElementById("ec-team-tbody");
       if (!tbody) return;
@@ -529,24 +1129,24 @@
           <td class="py-2.5 px-3 font-semibold text-slate-200">${escapeHtml(m.name)}</td>
           <td class="py-2.5 px-3 text-slate-300">${escapeHtml(m.role)}</td>
           <td class="py-2.5 px-3 font-mono text-teal-400">${escapeHtml(m.password)}</td>
-          <td class="py-2.5 px-3 text-right">
-            <button onclick="deleteEcMember('${m.id}')" class="text-rose-400 hover:text-rose-300 cursor-pointer"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
-          </td>
+          <td class="py-2.5 px-3 text-right"><button onclick="deleteEcMember('${m.id}')" class="text-rose-400 hover:text-rose-300 cursor-pointer"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button></td>
         </tr>
       `).join("");
       lucide.createIcons();
     }
-
     function deleteEcMember(id) {
-      if (confirm("Remove this EC member?")) {
+      if (confirm("Remove EC Member?")) {
         appState.ecMembers = appState.ecMembers.filter(x => x.id !== id);
-        persistLocal();
-        renderEcTeamTable();
-        autoPushToGitHub();
+        persistLocal(); renderEcTeamTable(); updatePayerDropdown(); autoPushToGitHub();
       }
     }
+    function updatePayerDropdown() {
+      const ps = document.getElementById("v-payer");
+      if (!ps) return;
+      ps.innerHTML = appState.ecMembers.map(m => `<option value="${escapeHtml(m.name)} - ${escapeHtml(m.role)}">${escapeHtml(m.name)} - ${escapeHtml(m.role)}</option>`).join("");
+    }
 
-    // CLOUD GITHUB SYNC ENGINE
+    // CLOUD GITHUB SYNC (DECRYPT & DYNAMIC JSON DETECT)
     function openCloudConfigModal() {
       const cfg = appState.cloudConfig;
       document.getElementById("cfg-token").value = cfg.token || "";
@@ -557,10 +1157,7 @@
       document.getElementById("cfg-passphrase").value = cfg.passphrase || "";
       document.getElementById("cloud-config-modal").classList.remove("hidden");
     }
-
-    function closeCloudConfigModal() {
-      document.getElementById("cloud-config-modal").classList.add("hidden");
-    }
+    function closeCloudConfigModal() { document.getElementById("cloud-config-modal").classList.add("hidden"); }
 
     async function saveAndLiveSyncCloud() {
       const cfg = appState.cloudConfig;
@@ -570,61 +1167,91 @@
       cfg.path = document.getElementById("cfg-path").value.trim();
       cfg.branch = document.getElementById("cfg-branch").value.trim();
       cfg.passphrase = document.getElementById("cfg-passphrase").value.trim();
-
       localStorage.setItem("GDCDA_CLOUD_CONFIG", JSON.stringify(cfg));
-      persistLocal();
-      closeCloudConfigModal();
+      persistLocal(); closeCloudConfigModal();
       showToast("Connecting to GitHub...");
       await pullFromGitHubVault();
     }
 
     async function pullFromGitHubVault() {
       const cfg = appState.cloudConfig;
-      if (!cfg.token || !cfg.passphrase) return;
-
-      const statusText = document.getElementById("sync-status-text");
-      statusText.textContent = "Pulling Live...";
+      if (!cfg.token) return;
+      const st = document.getElementById("sync-status-text");
+      st.textContent = "Pulling Live...";
 
       try {
-        const url = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${cfg.path}?ref=${cfg.branch || 'main'}`;
+        const url = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${cfg.path}?ref=${cfg.branch || 'main'}&t=${Date.now()}`;
         const res = await fetch(url, { headers: { "Authorization": `token ${cfg.token}`, "Accept": "application/vnd.github.v3+json" } });
         if (!res.ok) throw new Error("Could not find data.json");
 
         const data = await res.json();
         const contentStr = decodeURIComponent(escape(atob(data.content)));
-        const restored = await decryptPayload(contentStr, cfg.passphrase);
 
-        if (restored.members && restored.members.length > 0) {
-          appState.members = restored.members;
-          if (restored.ecMembers) appState.ecMembers = restored.ecMembers;
-          persistLocal();
-          updateStats();
-          renderMembersTable();
-          renderEcFeesTable();
-          statusText.textContent = "Synced Live";
-          showToast(`${appState.members.length} Members Pulled Live from GitHub!`);
+        let parsedData = null;
+        if (cfg.passphrase) {
+          try {
+            parsedData = await decryptPayload(contentStr, cfg.passphrase);
+          } catch(e) {
+            parsedData = JSON.parse(contentStr);
+          }
+        } else {
+          parsedData = JSON.parse(contentStr);
         }
+
+        // Support direct array or object structure
+        if (Array.isArray(parsedData)) {
+          appState.members = parsedData;
+        } else if (parsedData.members && Array.isArray(parsedData.members)) {
+          appState.members = parsedData.members;
+          if (parsedData.vouchers) appState.vouchers = parsedData.vouchers;
+          if (parsedData.meetings) appState.meetings = parsedData.meetings;
+          if (parsedData.ecMembers) appState.ecMembers = parsedData.ecMembers;
+        }
+
+        persistLocal();
+        updateStats();
+        renderMembersTable();
+        renderEcFeesTable();
+        renderEcMeetingCheckinTable();
+        renderVouchersLedger();
+        renderSettlementsLedger();
+        st.textContent = "Synced Live";
+        showToast(`Loaded ${appState.members.length} Members from data.json!`);
       } catch(err) {
-        statusText.textContent = "Sync Offline";
+        console.error("Pull error:", err);
+        st.textContent = "Sync Offline";
       }
     }
 
     async function autoPushToGitHub() {
       const cfg = appState.cloudConfig;
-      if (!cfg.token || !cfg.passphrase) return;
+      if (!cfg.token) return;
 
       try {
-        const rawVault = { members: appState.members, ecMembers: appState.ecMembers, timestamp: new Date().toISOString() };
-        const fileContent = await encryptPayload(rawVault, cfg.passphrase);
-        const url = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${cfg.path}`;
+        const rawVault = {
+          members: appState.members,
+          vouchers: appState.vouchers,
+          meetings: appState.meetings,
+          activeMeetingId: appState.activeMeetingId,
+          ecMembers: appState.ecMembers,
+          timestamp: new Date().toISOString()
+        };
 
+        let fileContent = "";
+        if (cfg.passphrase) {
+          fileContent = await encryptPayload(rawVault, cfg.passphrase);
+        } else {
+          fileContent = JSON.stringify(rawVault, null, 2);
+        }
+
+        const url = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${cfg.path}`;
         const getRes = await fetch(url, { headers: { "Authorization": `token ${cfg.token}`, "Accept": "application/vnd.github.v3+json" } });
         let sha = getRes.ok ? (await getRes.json()).sha : null;
 
         await fetch(url, {
           method: "PUT",
           headers: { "Authorization": `token ${cfg.token}`, "Content-Type": "application/json" },
-          body: JSON.stringify({ message: `Update data.json [${new Date().toLocaleString()}]`, content: btoa(unescape(encodeURIComponent(fileContent))), sha, branch: cfg.branch || "main" })
+          body: JSON.stringify({ message: `Auto Update [${new Date().toLocaleString()}]`, content: btoa(unescape(encodeURIComponent(fileContent))), sha, branch: cfg.branch || "main" })
         });
       } catch(e) {}
     }
@@ -656,55 +1283,160 @@
       return JSON.parse(new TextDecoder().decode(dec));
     }
 
-    // EC AUTH
+    // PIN GATEWAY (1441)
+    function triggerProtectedAction(type, id) {
+      pendingAction = { type, id };
+      document.getElementById("pin-input").value = "";
+      document.getElementById("pin-error").classList.add("hidden");
+      document.getElementById("pin-modal").classList.remove("hidden");
+      document.getElementById("pin-input").focus();
+    }
+    function closePinModal() { document.getElementById("pin-modal").classList.add("hidden"); pendingAction = null; }
+    function submitPinVerification() {
+      if (document.getElementById("pin-input").value.trim() === "1441") {
+        const a = pendingAction;
+        closePinModal();
+        if (a.type === 'EDIT') executeMemberEdit(a.id);
+        else if (a.type === 'DELETE') executeMemberDelete(a.id);
+      } else {
+        document.getElementById("pin-error").classList.remove("hidden");
+      }
+    }
+
+    function executeMemberDelete(id) {
+      const m = appState.members.find(x => x.id === id);
+      if (!m) return;
+      if (confirm(`Delete store: "${m.firm}"?`)) {
+        appState.members = appState.members.filter(x => x.id !== id);
+        persistLocal(); updateStats(); renderMembersTable(); renderEcFeesTable(); showToast("Member Deleted"); autoPushToGitHub();
+      }
+    }
+
+    function executeMemberEdit(id) {
+      const m = appState.members.find(x => x.id === id);
+      if (!m) return;
+      document.getElementById("mem-in-id").value = m.id;
+      document.getElementById("mem-in-firm").value = m.firm || "";
+      document.getElementById("mem-in-owner").value = m.owner || "";
+      document.getElementById("mem-in-dl").value = m.dlNo || "";
+      document.getElementById("mem-in-dl-expiry").value = m.dlExpiry || "";
+      document.getElementById("mem-in-fssai").value = m.fssaiNo || "";
+      document.getElementById("mem-in-fssai-expiry").value = m.fssaiExpiry || "";
+      document.getElementById("mem-in-area").value = m.area || "Gondia";
+      document.getElementById("mem-in-mobile").value = m.mobile || "";
+      document.getElementById("mem-in-address").value = m.address || "";
+      document.getElementById("mem-in-fee-status").value = m.feeStatus || "PENDING";
+      document.getElementById("mem-in-fee-amt").value = m.feeAmount || 0;
+      renderPharmacistInputs(m.pharmacists || [m.pharmacist || ""]);
+      document.getElementById("member-form-modal").classList.remove("hidden");
+      lucide.createIcons();
+    }
+
+    function renderPharmacistInputs(arr) {
+      const c = document.getElementById("pharmacist-rows-container");
+      if (!arr || arr.length === 0) arr = [""];
+      c.innerHTML = arr.map((ph, idx) => `
+        <div class="flex items-center gap-1.5 pharmacist-row">
+          <input type="text" value="${escapeHtml(ph)}" placeholder="Pharmacist Name ${idx + 1}" class="pharma-input flex-1 bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-slate-100 text-xs">
+          ${idx > 0 ? `<button type="button" onclick="this.parentElement.remove()" class="p-1.5 rounded text-rose-400 cursor-pointer"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>` : ""}
+        </div>
+      `).join("");
+      lucide.createIcons();
+    }
+    function addPharmacistInputRow() {
+      const c = document.getElementById("pharmacist-rows-container");
+      const d = document.createElement("div");
+      d.className = "flex items-center gap-1.5 pharmacist-row";
+      d.innerHTML = `<input type="text" placeholder="Pharmacist Name" class="pharma-input flex-1 bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-slate-100 text-xs"><button type="button" onclick="this.parentElement.remove()" class="p-1.5 rounded text-rose-400 cursor-pointer"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>`;
+      c.appendChild(d); lucide.createIcons();
+    }
+
+    function openAddMemberModal() {
+      document.getElementById("mem-in-id").value = "";
+      document.getElementById("mem-in-firm").value = "";
+      document.getElementById("mem-in-owner").value = "";
+      document.getElementById("mem-in-dl").value = "";
+      document.getElementById("mem-in-dl-expiry").value = "";
+      document.getElementById("mem-in-fssai").value = "";
+      document.getElementById("mem-in-fssai-expiry").value = "";
+      document.getElementById("mem-in-mobile").value = "";
+      document.getElementById("mem-in-address").value = "";
+      document.getElementById("mem-in-fee-status").value = "PAID";
+      document.getElementById("mem-in-fee-amt").value = "251";
+      renderPharmacistInputs([""]);
+      document.getElementById("member-form-modal").classList.remove("hidden");
+      lucide.createIcons();
+    }
+    function closeMemberFormModal() { document.getElementById("member-form-modal").classList.add("hidden"); }
+
+    function saveMemberRecord() {
+      const id = document.getElementById("mem-in-id").value;
+      const firm = document.getElementById("mem-in-firm").value.trim().toUpperCase();
+      if (!firm) { alert("Enter Firm Name"); return; }
+      const owner = document.getElementById("mem-in-owner").value.trim();
+      const dlNo = document.getElementById("mem-in-dl").value.trim().toUpperCase();
+      const dlExpiry = document.getElementById("mem-in-dl-expiry").value;
+      const fssaiNo = document.getElementById("mem-in-fssai").value.trim();
+      const fssaiExpiry = document.getElementById("mem-in-fssai-expiry").value;
+      const phs = Array.from(document.querySelectorAll(".pharma-input")).map(i => i.value.trim()).filter(Boolean);
+      const area = document.getElementById("mem-in-area").value;
+      const mobile = document.getElementById("mem-in-mobile").value.trim();
+      const address = document.getElementById("mem-in-address").value.trim() || `${area}, Maharashtra`;
+      const feeStatus = document.getElementById("mem-in-fee-status").value;
+      const feeAmt = parseFloat(document.getElementById("mem-in-fee-amt").value) || 0;
+
+      if (id) {
+        const m = appState.members.find(x => x.id === id);
+        if (m) Object.assign(m, { firm, owner, pharmacist: phs[0] || "", pharmacists: phs, dlNo, dlExpiry, fssaiNo, fssaiExpiry, area, mobile, address, feeStatus, feeAmount: feeAmt });
+      } else {
+        appState.members.unshift({
+          id: `mem-gdcda-${Date.now()}`, firm, owner, pharmacist: phs[0] || "", pharmacists: phs,
+          dlNo, dlExpiry, fssaiNo, fssaiExpiry, mobile, phone: "", area, address, feeStatus, feeAmount: feeAmt
+        });
+      }
+      persistLocal(); closeMemberFormModal(); updateStats(); renderMembersTable(); renderEcFeesTable();
+      showToast(`Saved: ${firm}`); autoPushToGitHub();
+    }
+
+    // EC PORTAL AUTHENTICATION
     function openEcPortalAuth() {
       document.getElementById("ec-password-input").value = "";
       document.getElementById("ec-login-error").classList.add("hidden");
       document.getElementById("ec-login-modal").classList.remove("hidden");
     }
-
-    function closeEcLoginModal() {
-      document.getElementById("ec-login-modal").classList.add("hidden");
-    }
-
+    function closeEcLoginModal() { document.getElementById("ec-login-modal").classList.add("hidden"); }
     function verifyEcLogin() {
       const pwd = document.getElementById("ec-password-input").value.trim();
       if (pwd === "GDCDARocks@144EC" || pwd === "GDCDA-Rocks@144EC") {
         appState.isEcAuthenticated = true;
-        closeEcLoginModal();
-        openEcPortalModal();
-        return;
+        closeEcLoginModal(); openEcPortalModal(); return;
       }
       const match = appState.ecMembers.find(m => m.password === pwd);
       if (match) {
         appState.isEcAuthenticated = true;
-        closeEcLoginModal();
-        openEcPortalModal();
+        closeEcLoginModal(); openEcPortalModal();
       } else {
         document.getElementById("ec-login-error").classList.remove("hidden");
       }
     }
-
     function openEcPortalModal() {
       document.getElementById("ec-portal-modal").classList.remove("hidden");
-      renderEcFeesTable();
-      renderEcTeamTable();
+      renderEcFeesTable(); renderEcMeetingCheckinTable(); renderVouchersLedger(); renderSettlementsLedger(); renderEcTeamTable();
       lucide.createIcons();
     }
-
     function lockAndCloseEcPortal() {
       appState.isEcAuthenticated = false;
       document.getElementById("ec-portal-modal").classList.add("hidden");
     }
-
     function switchEcTab(tab) {
-      ["fees", "team"].forEach(t => {
-        document.getElementById(`tab-btn-${t}`).className = (t === tab) ? "py-3 px-3 text-teal-400 border-b-2 border-teal-500 font-semibold flex items-center gap-1.5 cursor-pointer" : "py-3 px-3 text-slate-400 hover:text-slate-200 border-b-2 border-transparent flex items-center gap-1.5 cursor-pointer";
+      ["fees", "meetings", "creator", "vouchers", "settlements", "team"].forEach(t => {
+        document.getElementById(`tab-btn-${t}`).className = (t === tab) ? "py-3 px-3 text-teal-400 border-b-2 border-teal-500 font-semibold flex items-center gap-1.5 cursor-pointer whitespace-nowrap" : "py-3 px-3 text-slate-400 hover:text-slate-200 border-b-2 border-transparent flex items-center gap-1.5 cursor-pointer whitespace-nowrap";
         document.getElementById(`ec-tab-${t}`).classList.toggle("hidden", t !== tab);
       });
       lucide.createIcons();
     }
 
+    // BACKUP & RESTORE
     function handleVaultRestore(event) {
       const file = event.target.files[0];
       if (!file) return;
@@ -713,11 +1445,15 @@
         try {
           const d = JSON.parse(e.target.result);
           if (Array.isArray(d)) appState.members = d;
-          else if (d.members) appState.members = d.members;
-          persistLocal();
-          updateStats();
-          renderMembersTable();
+          else if (d.members) {
+            appState.members = d.members;
+            if (d.vouchers) appState.vouchers = d.vouchers;
+            if (d.meetings) appState.meetings = d.meetings;
+            if (d.ecMembers) appState.ecMembers = d.ecMembers;
+          }
+          persistLocal(); initSystem();
           showToast(`Loaded ${appState.members.length} Members!`);
+          autoPushToGitHub();
         } catch(err) { alert("Invalid JSON file"); }
       };
       reader.readAsText(file);
@@ -726,20 +1462,43 @@
     function downloadJsonBackup() {
       const a = document.createElement("a");
       a.href = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appState, null, 2));
-      a.download = `GDCDA_Backup.json`;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
+      a.download = `GDCDA_Vault_Backup_${new Date().toISOString().split("T")[0]}.json`;
+      document.body.appendChild(a); a.click(); a.remove();
+    }
+
+    function exportAttendanceCSV() {
+      const activeM = appState.meetings.find(m => m.id === appState.activeMeetingId) || appState.meetings[0];
+      const att = (activeM && activeM.attendance) ? activeM.attendance : {};
+      let csv = "ID,Firm,Proprietor,Pharmacist,Tahasil,Mobile,Status\n";
+      appState.members.forEach(m => {
+        csv += `"${m.id}","${(m.firm||"").replace(/"/g, '""')}","${(m.owner||"").replace(/"/g, '""')}","${(m.pharmacist||"").replace(/"/g, '""')}","${m.area||""}","${m.mobile||""}","${att[m.id]||"ABSENT"}"\n`;
+      });
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob); a.download = `Attendance.csv`;
+      document.body.appendChild(a); a.click(); a.remove();
     }
 
     function escapeHtml(str) { return str ? String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;") : ""; }
     function showToast(msg) {
       const t = document.createElement("div");
       t.className = "fixed bottom-5 right-5 z-50 px-4 py-2 bg-slate-900 border border-teal-500 text-teal-300 text-xs font-semibold rounded-xl shadow-xl";
-      t.textContent = msg;
-      document.body.appendChild(t);
-      setTimeout(() => t.remove(), 3000);
+      t.textContent = msg; document.body.appendChild(t); setTimeout(() => t.remove(), 3000);
     }
+
+    window.addEventListener("keydown", (e) => {
+      if (e.key === "/" && document.activeElement.tagName !== "INPUT" && document.activeElement.tagName !== "TEXTAREA") {
+        e.preventDefault(); document.getElementById("member-search").focus();
+      } else if (e.altKey && (e.key === "s" || e.key === "S")) {
+        e.preventDefault(); openCloudConfigModal();
+      } else if (e.altKey && (e.key === "n" || e.key === "N")) {
+        e.preventDefault(); openAddMemberModal();
+      } else if (e.altKey && (e.key === "x" || e.key === "X")) {
+        e.preventDefault(); openEcPortalAuth();
+      } else if (e.altKey && (e.key === "e" || e.key === "E")) {
+        e.preventDefault(); exportAttendanceCSV();
+      }
+    });
 
     document.addEventListener("DOMContentLoaded", initSystem);
   </script>
