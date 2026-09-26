@@ -207,7 +207,7 @@
           </div>
           <div>
             <h3 class="text-sm font-bold text-white">GitHub Cloud Vault Live Sync Config</h3>
-            <p class="text-xs text-slate-400">Credentials save hone par live silent sync start ho jayega</p>
+            <p class="text-xs text-slate-400">Credentials save hone par GitHub se data pull/push hoga</p>
           </div>
         </div>
         <button onclick="closeCloudConfigModal()" class="text-slate-400 hover:text-white cursor-pointer"><i data-lucide="x" class="w-5 h-5"></i></button>
@@ -237,7 +237,7 @@
       <div class="pt-2 border-t border-slate-800 flex gap-2">
         <button onclick="closeCloudConfigModal()" class="flex-1 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs text-slate-300 font-semibold transition cursor-pointer">Cancel</button>
         <button onclick="saveAndLiveSyncCloud()" class="flex-1 py-2 rounded-lg bg-teal-600 hover:bg-teal-500 text-xs text-white font-semibold shadow-md shadow-teal-600/20 transition flex items-center justify-center gap-1.5 cursor-pointer">
-          <i data-lucide="check" class="w-4 h-4"></i> Save & Auto-Sync Live
+          <i data-lucide="check" class="w-4 h-4"></i> Save & Pull Live from GitHub
         </button>
       </div>
     </div>
@@ -677,14 +677,14 @@
           </div>
         </div>
 
-        <!-- TAB: EC TEAM -->
+        <!-- TAB: EC TEAM (DIRECTLY OPENS WITHOUT PIN PROMPT) -->
         <div id="ec-tab-team" class="space-y-4 hidden">
           <div class="flex items-center justify-between pb-3 border-b border-slate-800">
             <div>
               <h3 class="text-sm font-semibold text-white">Executive Committee Members & Passwords</h3>
               <p class="text-xs text-slate-400">Add, edit roles or reset passwords for committee members.</p>
             </div>
-            <button onclick="triggerProtectedAction('ADD_EC_MEMBER', null)" class="px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs shadow-md flex items-center gap-1.5 cursor-pointer">
+            <button onclick="openEcMemberForm(null)" class="px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs shadow-md flex items-center gap-1.5 cursor-pointer">
               <i data-lucide="user-plus" class="w-3.5 h-3.5"></i> Add EC Member
             </button>
           </div>
@@ -797,8 +797,8 @@
       </div>
 
       <div class="flex gap-2 pt-2">
-        <button onclick="closeFeePaymentModal()" class="flex-1 py-2 rounded-lg bg-slate-800 text-xs font-semibold text-slate-300 cursor-pointer">Cancel</button>
-        <button onclick="saveFeePayment()" class="flex-1 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-xs font-semibold text-white shadow-md shadow-emerald-600/20 cursor-pointer">Save & Update Ledger</button>
+        <button onclick="closeFeePaymentModal()" class="flex-1 py-2 rounded-lg bg-slate-800 text-xs text-slate-300 font-semibold cursor-pointer">Cancel</button>
+        <button onclick="saveFeePayment()" class="flex-1 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-xs text-white font-semibold shadow-md shadow-emerald-600/20 cursor-pointer">Save & Update Ledger</button>
       </div>
     </div>
   </div>
@@ -869,7 +869,7 @@
       { id: "mem-005", firm: "AADITYA PHARMACEUTICALS", owner: "", pharmacist: "", mobile: "9422832811", area: "Tirora", address: "TIRORA, Tirora", feeStatus: "PAID", feeAmount: 753, feeNote: "₹753 (2025-26 Fees)", feeHistory: [] }
     ];
 
-    function initSystem() {
+    async function initSystem() {
       const localVault = localStorage.getItem("GDCDA_APP_VAULT");
       if (localVault) {
         try {
@@ -909,6 +909,11 @@
       renderAuditLogs();
       updatePayerDropdown();
       lucide.createIcons();
+
+      // AUTO-PULL FROM GITHUB ON LOAD IF CONFIG PRESENT
+      if (appState.cloudConfig.token && appState.cloudConfig.passphrase) {
+        await pullFromGitHubAndInit();
+      }
     }
 
     function persistLocal() {
@@ -965,6 +970,70 @@
 
     function closeCloudConfigModal() { document.getElementById("cloud-config-modal").classList.add("hidden"); }
 
+    async function getDerivedKey(passphrase, salt) {
+      const enc = new TextEncoder();
+      const keyMaterial = await crypto.subtle.importKey("raw", enc.encode(passphrase), "PBKDF2", false, ["deriveKey"]);
+      return await crypto.subtle.deriveKey(
+        { name: "PBKDF2", salt: salt, iterations: 100000, hash: "SHA-256" },
+        keyMaterial,
+        { name: "AES-GCM", length: 256 },
+        false,
+        ["encrypt", "decrypt"]
+      );
+    }
+
+    async function encryptPayload(dataObj, passphrase) {
+      const salt = crypto.getRandomValues(new Uint8Array(16));
+      const iv = crypto.getRandomValues(new Uint8Array(12));
+      const key = await getDerivedKey(passphrase, salt);
+      const encoded = new TextEncoder().encode(JSON.stringify(dataObj));
+      const ciphertext = await crypto.subtle.encrypt({ name: "AES-GCM", iv: iv }, key, encoded);
+
+      return JSON.stringify({
+        encrypted: true,
+        salt: btoa(String.fromCharCode(...salt)),
+        iv: btoa(String.fromCharCode(...iv)),
+        payload: btoa(String.fromCharCode(...new Uint8Array(ciphertext))),
+        timestamp: new Date().toISOString()
+      }, null, 2);
+    }
+
+    async function decryptPayload(jsonString, passphrase) {
+      const data = JSON.parse(jsonString);
+      if (!data.encrypted) return data;
+      const salt = Uint8Array.from(atob(data.salt), c => c.charCodeAt(0));
+      const iv = Uint8Array.from(atob(data.iv), c => c.charCodeAt(0));
+      const ciphertext = Uint8Array.from(atob(data.payload), c => c.charCodeAt(0));
+      const key = await getDerivedKey(passphrase, salt);
+      const decrypted = await crypto.subtle.decrypt({ name: "AES-GCM", iv: iv }, key, ciphertext);
+      return JSON.parse(new TextDecoder().decode(decrypted));
+    }
+
+    async function pullFromGitHubAndInit() {
+      const cfg = appState.cloudConfig;
+      if (!cfg.token || !cfg.passphrase) return;
+      const statusText = document.getElementById("sync-status-text");
+      statusText.textContent = "Pulling Live...";
+      try {
+        const url = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${cfg.path}?ref=${cfg.branch || "main"}`;
+        const res = await fetch(url, { headers: { "Authorization": `token ${cfg.token}`, "Accept": "application/vnd.github.v3+json" } });
+        if (!res.ok) return;
+        const data = await res.json();
+        const contentStr = decodeURIComponent(escape(atob(data.content)));
+        const restored = await decryptPayload(contentStr, cfg.passphrase);
+        if (restored.members && restored.members.length > 0) appState.members = restored.members;
+        if (restored.vouchers) appState.vouchers = restored.vouchers;
+        if (restored.meetings) appState.meetings = restored.meetings;
+        if (restored.activeMeetingId) appState.activeMeetingId = restored.activeMeetingId;
+        if (restored.ecMembers) appState.ecMembers = restored.ecMembers;
+        if (restored.auditLogs) appState.auditLogs = restored.auditLogs;
+        persistLocal(); updateStats(); renderMembersTable(); renderEcFeesTable();
+        statusText.textContent = "Synced Live";
+      } catch(err) {
+        statusText.textContent = "Sync Offline";
+      }
+    }
+
     async function saveAndLiveSyncCloud() {
       const cfg = appState.cloudConfig;
       cfg.token = document.getElementById("cfg-token").value.trim();
@@ -973,9 +1042,39 @@
       cfg.passphrase = document.getElementById("cfg-passphrase").value.trim();
       localStorage.setItem("GDCDA_CLOUD_CONFIG", JSON.stringify(cfg));
       persistLocal(); closeCloudConfigModal();
-      showToast("Credentials Saved."); logActivity("Cloud credentials updated");
+      showToast("Syncing with GitHub...");
+      await pullFromGitHubAndInit();
+      await autoSilentLiveSync();
     }
 
+    async function autoSilentLiveSync() {
+      const cfg = appState.cloudConfig;
+      if (!cfg.token || !cfg.passphrase) return;
+      const gear = document.getElementById("sync-gear-icon");
+      const statusText = document.getElementById("sync-status-text");
+      gear.classList.add("animate-spin");
+      statusText.textContent = "Pushing Live...";
+      try {
+        const rawVault = {
+          members: appState.members, vouchers: appState.vouchers, meetings: appState.meetings,
+          activeMeetingId: appState.activeMeetingId, ecMembers: appState.ecMembers, auditLogs: appState.auditLogs,
+          timestamp: new Date().toISOString()
+        };
+        const fileContent = await encryptPayload(rawVault, cfg.passphrase);
+        const url = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${cfg.path}`;
+        const getRes = await fetch(url, { headers: { "Authorization": `token ${cfg.token}`, "Accept": "application/vnd.github.v3+json" } });
+        let sha = getRes.ok ? (await getRes.json()).sha : null;
+        const putRes = await fetch(url, {
+          method: "PUT",
+          headers: { "Authorization": `token ${cfg.token}`, "Content-Type": "application/json", "Accept": "application/vnd.github.v3+json" },
+          body: JSON.stringify({ message: `Auto Live Sync [${new Date().toLocaleString()}]`, content: btoa(unescape(encodeURIComponent(fileContent))), sha, branch: cfg.branch || "main" })
+        });
+        if (putRes.ok) statusText.textContent = "Synced Live"; else statusText.textContent = "Sync Offline";
+      } catch(err) { statusText.textContent = "Local Vault"; }
+      finally { gear.classList.remove("animate-spin"); }
+    }
+
+    // --- PIN GATEWAY ---
     function triggerProtectedAction(actionType, targetId) {
       pendingAction = { type: actionType, id: targetId };
       document.getElementById("pin-input").value = "";
@@ -993,14 +1092,13 @@
         closePinModal();
         if (action.type === "EDIT") executeMemberEdit(action.id);
         else if (action.type === "DELETE") executeMemberDelete(action.id);
-        else if (action.type === "ADD_EC_MEMBER") openEcMemberForm(null);
-        else if (action.type === "EDIT_EC_MEMBER") openEcMemberForm(action.id);
         else if (action.type === "DELETE_EC_MEMBER") executeDeleteEcMember(action.id);
       } else {
-        document.getElementById("pin-error").classList.remove("hidden");
+        document.getElementById("pin-error").classList.add("hidden");
       }
     }
 
+    // --- EC MEMBERS MANAGEMENT ---
     function openEcMemberForm(ecId) {
       const title = document.getElementById("ec-member-modal-title");
       if (ecId) {
@@ -1032,25 +1130,41 @@
       const role = document.getElementById("ec-mem-in-role").value.trim();
       const mobile = document.getElementById("ec-mem-in-mobile").value.trim();
       const password = document.getElementById("ec-mem-in-password").value.trim();
+
       if (!name || !password || !role) { alert("Name, Role and Password are required!"); return; }
 
       if (id) {
         const m = appState.ecMembers.find(x => x.id === id);
-        if (m) { m.name = name; m.role = role; m.mobile = mobile; m.password = password; logActivity(`Updated EC Member: ${name}`); showToast(`Updated: ${name}`); }
+        if (m) {
+          m.name = name; m.role = role; m.mobile = mobile; m.password = password;
+          logActivity(`Updated EC Member details & password: ${name} (${role})`);
+          showToast(`EC Member Updated: ${name}`);
+        }
       } else {
-        appState.ecMembers.push({ id: "ec-" + Date.now(), name, role, mobile, password });
-        logActivity(`Added EC Member: ${name}`); showToast(`Added: ${name}`);
+        const newEc = { id: "ec-" + Date.now(), name: name, role: role, mobile: mobile, password: password };
+        appState.ecMembers.push(newEc);
+        logActivity(`Added New EC Member: ${name} (${role})`);
+        showToast(`EC Member Added: ${name}`);
       }
-      persistLocal(); closeEcMemberFormModal(); renderEcTeamTable(); updatePayerDropdown();
+
+      persistLocal();
+      closeEcMemberFormModal();
+      renderEcTeamTable();
+      updatePayerDropdown();
+      autoSilentLiveSync();
     }
 
     function executeDeleteEcMember(ecId) {
       const m = appState.ecMembers.find(x => x.id === ecId);
       if (!m) return;
-      if (confirm(`Remove EC Member "${m.name}"?`)) {
+      if (confirm(`Remove EC Member "${m.name}" from committee access?`)) {
         appState.ecMembers = appState.ecMembers.filter(x => x.id !== ecId);
         logActivity(`Deleted EC Member: ${m.name}`);
-        persistLocal(); renderEcTeamTable(); updatePayerDropdown(); showToast(`Removed: ${m.name}`);
+        persistLocal();
+        renderEcTeamTable();
+        updatePayerDropdown();
+        showToast(`Removed EC Member: ${m.name}`);
+        autoSilentLiveSync();
       }
     }
 
@@ -1060,12 +1174,16 @@
       tbody.innerHTML = appState.ecMembers.map(m => `
         <tr class="hover:bg-slate-900/80 transition">
           <td class="py-2.5 px-3 font-semibold text-slate-200">${escapeHtml(m.name)}</td>
-          <td class="py-2.5 px-3 text-slate-300">${escapeHtml(m.role)}</td>
+          <td class="py-2.5 px-3 text-slate-300 font-medium">${escapeHtml(m.role)}</td>
           <td class="py-2.5 px-3 font-mono text-slate-400">${m.mobile || "N/A"}</td>
           <td class="py-2.5 px-3 font-mono text-teal-400 font-bold">${escapeHtml(m.password)}</td>
           <td class="py-2.5 px-3 text-right space-x-1">
-            <button onclick="triggerProtectedAction('EDIT_EC_MEMBER', '${m.id}')" class="p-1 rounded bg-slate-800 text-amber-400 cursor-pointer"><i data-lucide="edit-3" class="w-3.5 h-3.5"></i></button>
-            <button onclick="triggerProtectedAction('DELETE_EC_MEMBER', '${m.id}')" class="p-1 rounded bg-slate-800 text-rose-400 cursor-pointer"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+            <button onclick="openEcMemberForm('${m.id}')" title="Edit / Reset Password" class="p-1 rounded bg-slate-800 hover:bg-slate-700 text-amber-400 cursor-pointer">
+              <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
+            </button>
+            <button onclick="triggerProtectedAction('DELETE_EC_MEMBER', '${m.id}')" title="Delete" class="p-1 rounded bg-slate-800 hover:bg-slate-700 text-rose-400 cursor-pointer">
+              <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+            </button>
           </td>
         </tr>
       `).join("");
@@ -1073,33 +1191,38 @@
     }
 
     function updatePayerDropdown() {
-      const ps = document.getElementById("v-payer");
-      if (!ps) return;
-      ps.innerHTML = appState.ecMembers.map(m => `<option value="${escapeHtml(m.name)} - ${escapeHtml(m.role)}">${escapeHtml(m.name)} - ${escapeHtml(m.role)}</option>`).join("");
+      const payerSelect = document.getElementById("v-payer");
+      if (!payerSelect) return;
+      payerSelect.innerHTML = appState.ecMembers.map(m => `
+        <option value="${escapeHtml(m.name)} - ${escapeHtml(m.role)}">${escapeHtml(m.name)} - ${escapeHtml(m.role)}</option>
+      `).join("");
     }
 
-    function renderPharmacistInputs(arr) {
-      const c = document.getElementById("pharmacist-rows-container");
-      if (!arr || arr.length === 0) arr = [""];
-      c.innerHTML = arr.map((ph, idx) => `
+    function renderPharmacistInputs(pharmacistsArray) {
+      const container = document.getElementById("pharmacist-rows-container");
+      if (!pharmacistsArray || pharmacistsArray.length === 0) pharmacistsArray = [""];
+      container.innerHTML = pharmacistsArray.map((ph, idx) => `
         <div class="flex items-center gap-1.5 pharmacist-row">
-          <input type="text" value="${escapeHtml(ph)}" placeholder="Pharmacist Name ${idx + 1}" class="pharma-input flex-1 bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-slate-100 text-xs">
-          ${idx > 0 ? `<button type="button" onclick="this.parentElement.remove()" class="p-1.5 rounded text-rose-400 cursor-pointer"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>` : ""}
+          <input type="text" value="${escapeHtml(ph)}" placeholder="Qualified Pharmacist Name ${idx + 1}" class="pharma-input flex-1 bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-slate-100 text-xs">
+          ${idx > 0 ? `<button type="button" onclick="removePharmacistInputRow(this)" class="p-1.5 rounded text-rose-400 hover:bg-slate-800 cursor-pointer"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>` : ""}
         </div>
       `).join("");
       lucide.createIcons();
     }
 
     function addPharmacistInputRow() {
-      const c = document.getElementById("pharmacist-rows-container");
-      const d = document.createElement("div");
-      d.className = "flex items-center gap-1.5 pharmacist-row";
-      d.innerHTML = `<input type="text" placeholder="Pharmacist Name" class="pharma-input flex-1 bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-slate-100 text-xs"><button type="button" onclick="this.parentElement.remove()" class="p-1.5 rounded text-rose-400 cursor-pointer"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>`;
-      c.appendChild(d); lucide.createIcons();
+      const container = document.getElementById("pharmacist-rows-container");
+      const div = document.createElement("div");
+      div.className = "flex items-center gap-1.5 pharmacist-row";
+      div.innerHTML = `<input type="text" placeholder="Qualified Pharmacist Name" class="pharma-input flex-1 bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-slate-100 text-xs"><button type="button" onclick="removePharmacistInputRow(this)" class="p-1.5 rounded text-rose-400 hover:bg-slate-800 cursor-pointer"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>`;
+      container.appendChild(div);
+      lucide.createIcons();
     }
 
-    function executeMemberEdit(id) {
-      const m = appState.members.find(x => x.id === id);
+    function removePharmacistInputRow(btn) { btn.parentElement.remove(); }
+
+    function executeMemberEdit(memberId) {
+      const m = appState.members.find(x => x.id === memberId);
       if (!m) return;
       document.getElementById("mem-in-id").value = m.id;
       document.getElementById("mem-in-firm").value = m.firm || "";
@@ -1113,17 +1236,29 @@
       document.getElementById("mem-in-address").value = m.address || "";
       document.getElementById("mem-in-fee-status").value = m.feeStatus || "PENDING";
       document.getElementById("mem-in-fee-amt").value = m.feeAmount || 0;
-      renderPharmacistInputs(m.pharmacists || [m.pharmacist || ""]);
+
+      let pharmList = [];
+      if (Array.isArray(m.pharmacists) && m.pharmacists.length > 0) pharmList = m.pharmacists;
+      else if (m.pharmacist) pharmList = [m.pharmacist];
+      renderPharmacistInputs(pharmList);
+
+      document.getElementById("member-modal-title").innerHTML = `<i data-lucide="edit-3" class="w-4 h-4 text-teal-400"></i> Edit Chemist Member`;
       document.getElementById("member-form-modal").classList.remove("hidden");
       lucide.createIcons();
     }
 
-    function executeMemberDelete(id) {
-      const m = appState.members.find(x => x.id === id);
+    function executeMemberDelete(memberId) {
+      const m = appState.members.find(x => x.id === memberId);
       if (!m) return;
-      if (confirm(`Delete "${m.firm}"?`)) {
-        appState.members = appState.members.filter(x => x.id !== id);
-        logActivity(`Deleted store: ${m.firm}`); persistLocal(); updateStats(); renderMembersTable(); renderEcFeesTable(); showToast("Deleted");
+      if (confirm(`Are you sure you want to delete "${m.firm}" permanently?`)) {
+        appState.members = appState.members.filter(x => x.id !== memberId);
+        logActivity(`Deleted Chemist Store: "${m.firm}" (${m.area})`);
+        persistLocal();
+        updateStats();
+        renderMembersTable();
+        renderEcFeesTable();
+        showToast(`Member Deleted: ${m.firm}`);
+        autoSilentLiveSync();
       }
     }
 
@@ -1139,7 +1274,9 @@
       document.getElementById("mem-in-address").value = "";
       document.getElementById("mem-in-fee-status").value = "PAID";
       document.getElementById("mem-in-fee-amt").value = "251";
+
       renderPharmacistInputs([""]);
+      document.getElementById("member-modal-title").innerHTML = `<i data-lucide="store" class="w-4 h-4 text-teal-400"></i> Add Chemist Medical Store`;
       document.getElementById("member-form-modal").classList.remove("hidden");
       lucide.createIcons();
     }
@@ -1149,13 +1286,17 @@
     function saveMemberRecord() {
       const id = document.getElementById("mem-in-id").value;
       const firm = document.getElementById("mem-in-firm").value.trim().toUpperCase();
-      if (!firm) { alert("Enter Firm Name"); return; }
+      if (!firm) { alert("Please enter Chemist Firm Name"); return; }
       const owner = document.getElementById("mem-in-owner").value.trim();
       const dlNo = document.getElementById("mem-in-dl").value.trim().toUpperCase();
       const dlExpiry = document.getElementById("mem-in-dl-expiry").value;
       const fssaiNo = document.getElementById("mem-in-fssai").value.trim();
       const fssaiExpiry = document.getElementById("mem-in-fssai-expiry").value;
-      const phs = Array.from(document.querySelectorAll(".pharma-input")).map(i => i.value.trim()).filter(Boolean);
+
+      const phInputs = document.querySelectorAll(".pharma-input");
+      const pharmacists = Array.from(phInputs).map(i => i.value.trim()).filter(v => v !== "");
+      const primaryPharmacist = pharmacists.length > 0 ? pharmacists[0] : "";
+
       const area = document.getElementById("mem-in-area").value;
       const mobile = document.getElementById("mem-in-mobile").value.trim();
       const address = document.getElementById("mem-in-address").value.trim() || `${area}, Maharashtra`;
@@ -1165,20 +1306,37 @@
       if (id) {
         const m = appState.members.find(x => x.id === id);
         if (m) {
-          Object.assign(m, { firm, owner, pharmacist: phs[0] || "", pharmacists: phs, dlNo, dlExpiry, fssaiNo, fssaiExpiry, area, mobile, address, feeStatus, feeAmount: feeAmt });
-          logActivity(`Updated ${firm}`); showToast(`Updated: ${firm}`);
+          m.firm = firm; m.owner = owner; m.pharmacist = primaryPharmacist; m.pharmacists = pharmacists;
+          m.dlNo = dlNo; m.dlExpiry = dlExpiry; m.fssaiNo = fssaiNo; m.fssaiExpiry = fssaiExpiry;
+          m.area = area; m.mobile = mobile; m.address = address; m.feeStatus = feeStatus; m.feeAmount = feeAmt;
+          m.feeNote = feeAmt > 0 ? `₹${feeAmt} (2025-26 Fees)` : "Fees Due 2025-26";
+          logActivity(`Updated details for "${firm}"`);
+          showToast(`Updated: ${firm}`);
         }
       } else {
-        appState.members.unshift({
-          id: `mem-gdcda-${Date.now()}`, firm, owner, pharmacist: phs[0] || "", pharmacists: phs,
-          dlNo, dlExpiry, fssaiNo, fssaiExpiry, mobile, phone: "", area, address, feeStatus, feeAmount: feeAmt,
-          feeNote: `₹${feeAmt}`, feeHistory: feeAmt > 0 ? [{ receiptNo: "REC-1", date: new Date().toISOString().split("T")[0], amount: feeAmt, mode: "CASH", ref: "New", collector: appState.currentOperator.name }] : []
-        });
-        logActivity(`Added ${firm}`); showToast(`Added: ${firm}`);
+        const newM = {
+          id: `mem-gdcda-${String(appState.members.length + 1).padStart(4, '0')}`,
+          firm: firm, owner: owner, pharmacist: primaryPharmacist, pharmacists: pharmacists,
+          dlNo: dlNo, dlExpiry: dlExpiry, fssaiNo: fssaiNo, fssaiExpiry: fssaiExpiry,
+          mobile: mobile, phone: "", area: area, address: address,
+          feeStatus: feeStatus, feeAmount: feeAmt,
+          feeNote: feeAmt > 0 ? `₹${feeAmt} (2025-26 Fees)` : "Fees Due 2025-26",
+          feeHistory: feeAmt > 0 ? [{ receiptNo: "REC-NEW", date: new Date().toISOString().split("T")[0], amount: feeAmt, mode: "CASH", ref: "Registration", collector: appState.currentOperator.name, year: "2025-26" }] : []
+        };
+        appState.members.unshift(newM);
+        logActivity(`Registered new Chemist Store: "${firm}"`);
+        showToast(`Registered: ${firm}`);
       }
-      persistLocal(); closeMemberFormModal(); updateStats(); renderMembersTable(); renderEcFeesTable();
+
+      persistLocal();
+      closeMemberFormModal();
+      updateStats();
+      renderMembersTable();
+      renderEcFeesTable();
+      autoSilentLiveSync();
     }
 
+    // EC Authentication
     function openEcPortalAuth() {
       document.getElementById("ec-password-input").value = "";
       document.getElementById("ec-login-error").classList.add("hidden");
@@ -1189,49 +1347,84 @@
     function closeEcLoginModal() { document.getElementById("ec-login-modal").classList.add("hidden"); }
 
     function verifyEcLogin() {
-      const pwd = document.getElementById("ec-password-input").value.trim();
-      if (pwd === "GDCDARocks@144EC" || pwd === "GDCDA-Rocks@144EC") {
-        appState.isEcAuthenticated = true; appState.currentOperator = { name: "Master Admin", role: "Council" };
-        sessionStorage.setItem("GDCDA_EC_AUTH", "TRUE"); closeEcLoginModal(); updateEcAuthUI(); openEcPortalModal(); showToast("Authenticated"); return;
+      const enteredPwd = document.getElementById("ec-password-input").value.trim();
+
+      if (enteredPwd === "GDCDARocks@144EC" || enteredPwd === "GDCDA-Rocks@144EC") {
+        appState.isEcAuthenticated = true;
+        appState.currentOperator = { name: "Master Admin", role: "Executive Council" };
+        sessionStorage.setItem("GDCDA_EC_AUTH", "TRUE");
+        closeEcLoginModal();
+        updateEcAuthUI();
+        openEcPortalModal();
+        logActivity("Logged in via Master EC Passphrase");
+        showToast("Authenticated as Master Admin!");
+        return;
       }
-      const match = appState.ecMembers.find(m => m.password === pwd);
-      if (match) {
-        appState.isEcAuthenticated = true; appState.currentOperator = { name: match.name, role: match.role };
-        sessionStorage.setItem("GDCDA_EC_AUTH", "TRUE"); closeEcLoginModal(); updateEcAuthUI(); openEcPortalModal(); showToast(`Welcome ${match.name}!`);
+
+      const matchedEc = appState.ecMembers.find(m => m.password === enteredPwd);
+      if (matchedEc) {
+        appState.isEcAuthenticated = true;
+        appState.currentOperator = { name: matchedEc.name, role: matchedEc.role };
+        sessionStorage.setItem("GDCDA_EC_AUTH", "TRUE");
+        closeEcLoginModal();
+        updateEcAuthUI();
+        openEcPortalModal();
+        logActivity(`Logged into EC Dashboard: ${matchedEc.name}`);
+        showToast(`Welcome ${matchedEc.name}!`);
       } else {
         document.getElementById("ec-login-error").classList.remove("hidden");
       }
     }
 
     function lockAndCloseEcPortal() {
-      appState.isEcAuthenticated = false; appState.currentOperator = { name: "Guest", role: "Public" };
-      sessionStorage.removeItem("GDCDA_EC_AUTH"); updateEcAuthUI(); closeEcPortalModal(); showToast("Locked");
+      if (appState.isEcAuthenticated) logActivity("Logged out & locked session");
+      appState.isEcAuthenticated = false;
+      appState.currentOperator = { name: "Guest", role: "Public" };
+      sessionStorage.removeItem("GDCDA_EC_AUTH");
+      updateEcAuthUI();
+      closeEcPortalModal();
+      showToast("EC Dashboard Closed & Successfully Locked!");
     }
 
     function updateEcAuthUI() {
       const label = document.getElementById("ec-auth-label");
       const shield = document.getElementById("ec-shield-icon");
       const banner = document.getElementById("operator-banner");
+      const opName = document.getElementById("current-operator-name");
+      const opRole = document.getElementById("current-operator-role");
+      const tag = document.getElementById("ec-session-operator-tag");
+
       if (appState.isEcAuthenticated) {
-        label.textContent = "EC Dashboard (Active)"; shield.classList.replace("text-indigo-400", "text-emerald-400"); banner.classList.remove("hidden");
-        document.getElementById("current-operator-name").textContent = appState.currentOperator.name;
-        document.getElementById("current-operator-role").textContent = `(${appState.currentOperator.role})`;
+        label.textContent = "EC Dashboard (Active)";
+        shield.classList.replace("text-indigo-400", "text-emerald-400");
+        banner.classList.remove("hidden");
+        opName.textContent = appState.currentOperator.name;
+        opRole.textContent = `(${appState.currentOperator.role})`;
+        if (tag) tag.textContent = `Active: ${appState.currentOperator.name}`;
       } else {
-        label.textContent = "EC Portal (Alt+X)"; shield.classList.replace("text-emerald-400", "text-indigo-400"); banner.classList.add("hidden");
+        label.textContent = "EC Portal (Alt+X)";
+        shield.classList.replace("text-emerald-400", "text-indigo-400");
+        banner.classList.add("hidden");
       }
       lucide.createIcons();
     }
 
     function openEcPortalModal() {
       document.getElementById("ec-portal-modal").classList.remove("hidden");
-      renderEcFeesTable(); renderEcMeetingCheckinTable(); renderEcTeamTable(); renderAuditLogs(); renderVouchersLedger(); renderSettlementsLedger();
+      renderEcFeesTable();
+      renderEcMeetingCheckinTable();
+      renderEcTeamTable();
+      renderAuditLogs();
+      renderVouchersLedger();
+      renderSettlementsLedger();
       lucide.createIcons();
     }
 
     function closeEcPortalModal() { document.getElementById("ec-portal-modal").classList.add("hidden"); }
 
     function switchEcTab(tabName) {
-      ["fees", "meetings", "creator", "vouchers", "settlements", "team", "logs"].forEach(t => {
+      const tabs = ["fees", "meetings", "creator", "vouchers", "settlements", "team", "logs"];
+      tabs.forEach(t => {
         const btn = document.getElementById(`tab-btn-${t}`);
         const content = document.getElementById(`ec-tab-${t}`);
         if (t === tabName) {
@@ -1249,13 +1442,28 @@
       lucide.createIcons();
     }
 
-    function showFeeHistoryModal(id) {
-      const m = appState.members.find(x => x.id === id);
+    // Fee History Modal
+    function showFeeHistoryModal(memberId) {
+      const m = appState.members.find(x => x.id === memberId);
       if (!m) return;
       document.getElementById("fee-history-firm-name").textContent = `${m.firm} (${m.area || 'Gondia'})`;
-      const c = document.getElementById("fee-history-container");
-      const h = m.feeHistory || [];
-      c.innerHTML = h.length === 0 ? `<div class="p-4 text-center text-slate-400 text-xs">No payment history.</div>` : h.map(l => `<div class="p-2 bg-slate-950 rounded text-xs">₹${l.amount} on ${l.date} via ${l.mode} (By: ${l.collector})</div>`).join("");
+      const container = document.getElementById("fee-history-container");
+      const history = (m.feeHistory && m.feeHistory.length > 0) ? m.feeHistory : [];
+      if (history.length === 0) {
+        container.innerHTML = `<div class="p-4 rounded-xl border border-slate-800 bg-slate-950 text-center text-slate-400 text-xs"><p>No past payment transactions recorded yet.</p><p class="text-amber-400 mt-1 font-semibold">Current Balance: Fees Pending</p></div>`;
+      } else {
+        container.innerHTML = history.slice().reverse().map(log => `
+          <div class="p-3 rounded-xl border border-slate-800 bg-slate-950 space-y-1 text-xs">
+            <div class="flex items-center justify-between"><span class="font-bold text-emerald-400 font-mono text-sm">₹ ${parseFloat(log.amount || 0).toFixed(2)}</span><span class="px-2 py-0.5 rounded text-[10px] font-bold bg-teal-500/10 text-teal-300 border border-teal-500/30">${log.mode || "CASH"}</span></div>
+            <div class="grid grid-cols-2 gap-1 text-[11px] text-slate-400 pt-1 border-t border-slate-800/80">
+              <div>Date: <strong class="text-slate-200 font-mono">${log.date || "N/A"}</strong></div>
+              <div>Receipt: <strong class="text-slate-200 font-mono">${log.receiptNo || "N/A"}</strong></div>
+              <div class="col-span-2">Collected By: <strong class="text-slate-200">${log.collector || "Taluka In-charge"}</strong></div>
+              ${log.ref ? `<div class="col-span-2 text-slate-500 italic">Note: ${escapeHtml(log.ref)}</div>` : ""}
+            </div>
+          </div>
+        `).join("");
+      }
       document.getElementById("fee-history-modal").classList.remove("hidden");
       lucide.createIcons();
     }
@@ -1264,112 +1472,126 @@
 
     function renderEcFeesTable() {
       const tbody = document.getElementById("ec-fees-tbody");
-      const s = (document.getElementById("ec-fees-search").value || "").toLowerCase();
-      const list = appState.members.filter(m => !s || m.firm.toLowerCase().includes(s) || (m.mobile && m.mobile.includes(s)));
+      const search = (document.getElementById("ec-fees-search").value || "").toLowerCase().trim();
+      const list = appState.members.filter(m => !search || m.firm.toLowerCase().includes(search) || (m.mobile && m.mobile.includes(search)) || (m.area && m.area.toLowerCase().includes(search)));
+
       document.getElementById("ledger-total-count").textContent = appState.members.length;
-      tbody.innerHTML = list.map(m => `
-        <tr class="hover:bg-slate-900 transition">
-          <td class="py-2.5 px-3 font-bold text-slate-200">${escapeHtml(m.firm)}</td>
-          <td class="py-2.5 px-3">${m.area}</td>
-          <td class="py-2.5 px-3 text-center"><span class="px-2 py-0.5 rounded text-[10px] font-bold ${m.feeStatus === 'PAID' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-amber-500/10 text-amber-400'}">${m.feeStatus}</span></td>
-          <td class="py-2.5 px-3 text-right font-mono text-teal-400">₹ ${m.feeAmount || 0}</td>
-          <td class="py-2.5 px-3"><button onclick="showFeeHistoryModal('${m.id}')" class="text-teal-300 underline cursor-pointer">View Log</button></td>
-          <td class="py-2.5 px-3 text-right"><button onclick="openFeePaymentModal('${m.id}')" class="px-2 py-1 rounded bg-teal-500/10 text-teal-300 cursor-pointer">Record Inflow</button></td>
-        </tr>
-      `).join("");
+      const totalCol = appState.members.reduce((acc, m) => acc + (parseFloat(m.feeAmount) || 0), 0);
+      document.getElementById("ec-ledger-total-amount").textContent = "₹ " + totalCol.toLocaleString("en-IN", { minimumFractionDigits: 2 });
+
+      tbody.innerHTML = list.map(m => {
+        const isPaid = m.feeStatus === "PAID";
+        const hist = (m.feeHistory && m.feeHistory.length > 0) ? m.feeHistory[m.feeHistory.length - 1] : null;
+        return `
+          <tr class="hover:bg-slate-900/80 transition">
+            <td class="py-2.5 px-3"><div class="font-bold text-slate-200">${escapeHtml(m.firm)}</div><div class="text-[10px] text-slate-400 font-mono">ID: ${m.id}</div></td>
+            <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded text-[10px] bg-slate-800 text-slate-300 font-medium">${escapeHtml(m.area || "Gondia")}</span></td>
+            <td class="py-2.5 px-3 text-center"><span class="px-2 py-0.5 rounded text-[10px] font-bold ${isPaid ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/30" : "bg-amber-500/10 text-amber-400 border border-amber-500/30"}">${m.feeStatus}</span></td>
+            <td class="py-2.5 px-3 text-right font-mono text-teal-400 font-bold">₹ ${parseFloat(m.feeAmount || 0).toLocaleString("en-IN", { minimumFractionDigits: 2 })}</td>
+            <td class="py-2.5 px-3 text-slate-400 text-[11px]">${hist ? `<button onclick="showFeeHistoryModal('${m.id}')" class="text-left group flex items-center gap-1 hover:text-teal-300 cursor-pointer"><span class="font-mono text-slate-300 group-hover:underline">${hist.receiptNo}</span> • <span>${hist.date}</span></button>` : `<span class="italic text-slate-600">Pending</span>`}</td>
+            <td class="py-2.5 px-3 text-right space-x-1"><button onclick="openFeePaymentModal('${m.id}')" class="px-2.5 py-1 rounded bg-teal-500/10 hover:bg-teal-500/20 text-teal-300 border border-teal-500/30 text-[11px] font-medium cursor-pointer">Record Inflow</button></td>
+          </tr>
+        `;
+      }).join("");
       lucide.createIcons();
     }
 
     function createNewMeetingFromEc() {
       const title = document.getElementById("ec-new-meet-title").value.trim();
       const date = document.getElementById("ec-new-meet-date").value;
-      if (!title) { alert("Enter title"); return; }
-      appState.meetings.unshift({ id: "meet-" + Date.now(), title, date, attendance: {} });
-      persistLocal(); updateStats(); renderMembersTable(); renderEcMeetingCheckinTable(); showToast("Meeting Created");
+      if (!title) { alert("Please enter meeting title"); return; }
+      const newM = { id: "meet-" + Date.now(), title: title, date: date, attendance: {} };
+      appState.meetings.unshift(newM);
+      appState.activeMeetingId = newM.id;
+      logActivity(`Created & activated meeting: "${title}"`);
+      persistLocal();
+      updateStats();
+      renderMembersTable();
+      renderEcMeetingCheckinTable();
+      showToast(`Meeting Activated: ${title}`);
+      autoSilentLiveSync();
     }
 
     function renderEcMeetingCheckinTable() {
       const tbody = document.getElementById("ec-checkin-tbody");
       if (!tbody) return;
-      const s = (document.getElementById("ec-checkin-search").value || "").toLowerCase();
-      const am = appState.meetings.find(m => m.id === appState.activeMeetingId) || appState.meetings[0];
-      const att = am.attendance || {};
-      tbody.innerHTML = appState.members.filter(m => !s || m.firm.toLowerCase().includes(s)).map(m => `
-        <tr class="hover:bg-slate-900 transition">
-          <td class="py-2 px-3 font-semibold text-slate-200">${escapeHtml(m.firm)}</td>
-          <td class="py-2 px-3">${m.area}</td>
-          <td class="py-2 px-3">${m.mobile || "N/A"}</td>
-          <td class="py-2 px-3 text-center"><span class="px-2 py-0.5 rounded text-[10px] font-bold ${att[m.id] === 'PRESENT' ? 'bg-indigo-500/20 text-indigo-300' : 'bg-slate-800 text-slate-500'}">${att[m.id] === 'PRESENT' ? 'PRESENT' : 'ABSENT'}</span></td>
-          <td class="py-2 px-3 text-right"><button onclick="toggleEcCheckin('${m.id}')" class="px-3 py-1 rounded text-[11px] font-bold cursor-pointer ${att[m.id] === 'PRESENT' ? 'bg-rose-500/10 text-rose-400' : 'bg-emerald-500/10 text-emerald-400'}">${att[m.id] === 'PRESENT' ? 'Mark Absent' : 'Mark Present'}</button></td>
-        </tr>
-      `).join("");
+      const search = (document.getElementById("ec-checkin-search").value || "").toLowerCase().trim();
+      const activeM = appState.meetings.find(m => m.id === appState.activeMeetingId) || appState.meetings[0];
+      const meetAttendance = (activeM && activeM.attendance) ? activeM.attendance : {};
+      document.getElementById("ec-current-meeting-label").textContent = `Active Meeting: ${activeM.title} (${activeM.date})`;
+      const list = appState.members.filter(m => !search || m.firm.toLowerCase().includes(search));
+
+      tbody.innerHTML = list.map(m => {
+        const isPres = meetAttendance[m.id] === "PRESENT";
+        return `
+          <tr class="hover:bg-slate-900/80 transition">
+            <td class="py-2 px-3 font-semibold text-slate-200">${escapeHtml(m.firm)}</td>
+            <td class="py-2 px-3 text-slate-400">${escapeHtml(m.area || "Gondia")}</td>
+            <td class="py-2 px-3 font-mono text-slate-300">${m.mobile || "N/A"}</td>
+            <td class="py-2 px-3 text-center"><span class="px-2 py-0.5 rounded text-[10px] font-bold ${isPres ? "bg-indigo-500/20 text-indigo-300" : "bg-slate-800 text-slate-500"}">${isPres ? "PRESENT" : "ABSENT"}</span></td>
+            <td class="py-2 px-3 text-right"><button onclick="toggleEcCheckin('${m.id}')" class="px-3 py-1 rounded text-[11px] font-bold transition cursor-pointer ${isPres ? "bg-rose-500/10 text-rose-400 border border-rose-500/30 hover:bg-rose-500/20" : "bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/20"}">${isPres ? "Mark Absent" : "Mark Present"}</button></td>
+          </tr>
+        `;
+      }).join("");
     }
 
     function toggleEcCheckin(memberId) {
-      const am = appState.meetings.find(m => m.id === appState.activeMeetingId) || appState.meetings[0];
-      if (!am.attendance) am.attendance = {};
-      am.attendance[memberId] = am.attendance[memberId] === 'PRESENT' ? 'ABSENT' : 'PRESENT';
-      persistLocal(); updateStats(); renderMembersTable(); renderEcMeetingCheckinTable();
-    }
-
-    function renderMembersTable() {
-      const tbody = document.getElementById("members-table-body");
-      const s = (document.getElementById("member-search").value || "").toLowerCase();
-      const am = appState.meetings.find(m => m.id === appState.activeMeetingId) || appState.meetings[0];
-      const att = am.attendance || {};
-
-      const filtered = appState.members.filter(m => !s || m.firm.toLowerCase().includes(s) || (m.mobile && m.mobile.includes(s)));
-      document.getElementById("table-results-count").textContent = `Showing ${filtered.length} of ${appState.members.length} chemists`;
-
-      tbody.innerHTML = filtered.map((m, idx) => `
-        <tr class="hover:bg-slate-800/40 transition">
-          <td class="py-2.5 px-3 text-center text-slate-500">${idx + 1}</td>
-          <td class="py-2.5 px-3">
-            <div class="font-bold text-slate-100">${escapeHtml(m.firm)}</div>
-            <div class="text-[10px] text-slate-400">Prop: ${escapeHtml(m.owner || "-")} | Pharmacist: ${escapeHtml(m.pharmacist || "-")}</div>
-          </td>
-          <td class="py-2.5 px-3">${m.area}</td>
-          <td class="py-2.5 px-3 font-mono">${m.mobile || "N/A"}</td>
-          <td class="py-2.5 px-3 text-center"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${m.feeStatus === 'PAID' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-amber-500/10 text-amber-400'}">${m.feeStatus}</span></td>
-          <td class="py-2.5 px-3 text-center"><span class="text-xs font-semibold ${att[m.id] === 'PRESENT' ? 'text-indigo-400' : 'text-slate-500'}">${att[m.id] === 'PRESENT' ? 'Present' : 'Absent'}</span></td>
-          <td class="py-2.5 px-3 text-right space-x-1">
-            <button onclick="triggerProtectedAction('EDIT', '${m.id}')" class="p-1 rounded bg-slate-800 text-amber-400 cursor-pointer"><i data-lucide="edit-3" class="w-3.5 h-3.5"></i></button>
-            <button onclick="triggerProtectedAction('DELETE', '${m.id}')" class="p-1 rounded bg-slate-800 text-rose-400 cursor-pointer"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
-          </td>
-        </tr>
-      `).join("");
-      lucide.createIcons();
+      const activeM = appState.meetings.find(m => m.id === appState.activeMeetingId) || appState.meetings[0];
+      if (!activeM.attendance) activeM.attendance = {};
+      activeM.attendance[memberId] = activeM.attendance[memberId] === "PRESENT" ? "ABSENT" : "PRESENT";
+      const m = appState.members.find(x => x.id === memberId);
+      logActivity(`Marked ${m ? m.firm : memberId} as ${activeM.attendance[memberId]} in meeting "${activeM.title}"`);
+      persistLocal();
+      updateStats();
+      renderMembersTable();
+      renderEcMeetingCheckinTable();
     }
 
     function downloadJsonBackup() {
       const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appState, null, 2));
       const a = document.createElement("a");
-      a.href = dataStr; a.download = `GDCDA_Backup.json`;
-      document.body.appendChild(a); a.click(); a.remove(); showToast("Backup Downloaded");
+      a.href = dataStr; a.download = `GDCDA_Vault_Backup_${new Date().toISOString().split("T")[0]}.json`;
+      document.body.appendChild(a); a.click(); a.remove();
+      logActivity("Downloaded Full JSON Vault Backup");
+      showToast("Vault Backup Downloaded!");
     }
 
     function exportAttendanceCSV() {
-      let csv = "ID,Firm,Status\n";
-      appState.members.forEach(m => { csv += `"${m.id}","${m.firm}","ABSENT"\n`; });
+      const activeM = appState.meetings.find(m => m.id === appState.activeMeetingId) || appState.meetings[0];
+      const meetAttendance = (activeM && activeM.attendance) ? activeM.attendance : {};
+      let csv = "ID,Firm,Proprietor,Pharmacist,Tahasil,Mobile,Status,Meeting\n";
+      appState.members.forEach(m => {
+        csv += `"${m.id}","${m.firm}","${m.owner||""}","${m.pharmacist||""}","${m.area}","${m.mobile||""}","${meetAttendance[m.id]||"ABSENT"}","${activeM.title}"\n`;
+      });
+      const blob = new Blob([csv], { type: "text/csv" });
       const a = document.createElement("a");
-      a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv" })); a.download = `Attendance.csv`;
-      document.body.appendChild(a); a.click(); a.remove(); showToast("CSV Exported");
+      a.href = URL.createObjectURL(blob); a.download = `GDCDA_Attendance.csv`;
+      document.body.appendChild(a); a.click(); a.remove();
+      logActivity("Exported Attendance CSV");
+      showToast("CSV Exported!");
     }
 
-    function updateStats() {
-      document.getElementById("stat-total").textContent = appState.members.length;
-      document.getElementById("stat-paid").textContent = appState.members.filter(m => m.feeStatus === "PAID").length;
-      document.getElementById("stat-pending").textContent = appState.members.filter(m => m.feeStatus !== "PAID").length;
-      const am = appState.meetings.find(m => m.id === appState.activeMeetingId) || appState.meetings[0];
-      const att = am.attendance || {};
-      document.getElementById("stat-attendance").textContent = `${Object.values(att).filter(v => v === 'PRESENT').length} Present`;
-    }
-
+    function inWords(num) { return "INR " + num + " Only"; }
     function showToast(msg) {
       const t = document.createElement("div");
       t.className = "fixed bottom-5 right-5 z-50 px-4 py-2.5 rounded-xl bg-slate-900 border border-teal-500/50 text-teal-300 text-xs font-semibold shadow-2xl";
-      t.textContent = msg; document.body.appendChild(t); setTimeout(() => t.remove(), 3000);
+      t.textContent = msg; document.body.appendChild(t);
+      setTimeout(() => t.remove(), 3000);
     }
+
+    window.addEventListener("keydown", (e) => {
+      if (e.key === "/" && document.activeElement.tagName !== "INPUT" && document.activeElement.tagName !== "TEXTAREA") {
+        e.preventDefault(); document.getElementById("member-search").focus();
+      } else if (e.altKey && (e.key === "s" || e.key === "S")) {
+        e.preventDefault(); openCloudConfigModal();
+      } else if (e.altKey && (e.key === "n" || e.key === "N")) {
+        e.preventDefault(); openAddMemberModal();
+      } else if (e.altKey && (e.key === "x" || e.key === "X")) {
+        e.preventDefault(); openEcPortalAuth();
+      } else if (e.altKey && (e.key === "e" || e.key === "E")) {
+        e.preventDefault(); exportAttendanceCSV();
+      }
+    });
 
     document.addEventListener("DOMContentLoaded", initSystem);
   </script>
