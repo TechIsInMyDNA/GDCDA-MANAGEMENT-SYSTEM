@@ -19,7 +19,7 @@
 </head>
 <body class="h-full flex flex-col font-sans bg-slate-950 text-slate-100 antialiased selection:bg-teal-500 selection:text-white">
 
-  <!-- TOP HEADER (EXACT PURANA LAYOUT) -->
+  <!-- TOP HEADER (EXACT ORIGINAL SIMPLE LAYOUT) -->
   <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-30">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
       
@@ -37,22 +37,16 @@
         </div>
       </div>
 
-      <!-- Header Action Toolbar -->
+      <!-- Action Toolbar (Purana Simple) -->
       <div class="flex items-center gap-2">
-        <!-- Cloud Sync & Token Settings Trigger (Alt+S) -->
-        <button onclick="openCloudSettingsModal()" title="Cloud Settings & Token (Alt+S)" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-800 bg-slate-900 hover:bg-slate-800 text-xs text-slate-300 transition">
-          <i data-lucide="settings" class="w-3.5 h-3.5 text-teal-400" id="sync-gear-icon"></i>
-          <span id="sync-status-text">Cloud Sync</span>
-        </button>
-
-        <!-- Fast Push to GitHub -->
-        <button onclick="pushToGitHubVault()" title="Live Push to data.json" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-teal-500/30 bg-teal-500/10 hover:bg-teal-500/20 text-xs font-semibold text-teal-300 transition">
-          <i data-lucide="cloud-upload" class="w-3.5 h-3.5 text-teal-400"></i>
-          <span class="hidden sm:inline">Push Live</span>
-        </button>
+        <!-- Live Status Pill -->
+        <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-800 bg-slate-900 text-xs text-slate-300">
+          <i data-lucide="cloud" class="w-3.5 h-3.5 text-teal-400" id="cloud-icon"></i>
+          <span id="sync-status-text">Synced</span>
+        </div>
 
         <!-- Backup JSON -->
-        <button onclick="downloadJsonBackup()" title="Download Full JSON Vault Backup" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-800 bg-slate-900 hover:bg-slate-800 text-xs text-slate-300 transition">
+        <button onclick="downloadJsonBackup()" title="Download Full JSON Vault Backup" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-teal-500/30 bg-teal-500/10 hover:bg-teal-500/20 text-xs font-semibold text-teal-300 transition">
           <i data-lucide="download" class="w-3.5 h-3.5 text-teal-400"></i>
           <span class="hidden sm:inline">Backup JSON</span>
         </button>
@@ -70,7 +64,7 @@
           <span>Export CSV</span>
         </button>
 
-        <!-- EC Portal Trigger (Alt+X) -->
+        <!-- EC Portal Trigger -->
         <button id="ec-auth-btn" onclick="openEcPortalAuth()" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-indigo-500/40 bg-indigo-500/10 hover:bg-indigo-500/20 text-xs font-semibold text-indigo-300 transition">
           <i data-lucide="shield" class="w-3.5 h-3.5 text-indigo-400" id="ec-shield-icon"></i>
           <span id="ec-auth-label">EC Portal (Alt+X)</span>
@@ -80,7 +74,7 @@
     </div>
   </header>
 
-  <!-- STATS CARDS -->
+  <!-- STATS BAR -->
   <section class="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 pt-5 pb-2">
     <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
       <div class="p-4 rounded-xl border border-slate-800 bg-slate-900/60 shadow-sm flex items-center justify-between">
@@ -201,64 +195,6 @@
   </main>
 
   <!-- ============================================================== -->
-  <!-- MODAL: CLOUD REST VAULT & GITHUB TOKEN CONFIGURATION (ALT+S)  -->
-  <!-- ============================================================== -->
-  <div id="cloud-settings-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md hidden flex items-center justify-center p-4">
-    <div class="w-full max-w-lg bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl p-6 space-y-4">
-      
-      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-        <div class="flex items-center gap-2.5">
-          <div class="w-9 h-9 rounded-lg bg-teal-500/10 border border-teal-500/20 text-teal-400 flex items-center justify-center">
-            <i data-lucide="cloud" class="w-5 h-5"></i>
-          </div>
-          <div>
-            <h3 class="text-sm font-bold text-white">GitHub Cloud Sync & Token Settings</h3>
-            <p class="text-xs text-slate-400">Zero-leak client-side AES-256 encrypted synchronization</p>
-          </div>
-        </div>
-        <button onclick="closeCloudSettingsModal()" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
-      </div>
-
-      <div class="space-y-3 text-xs">
-        <div>
-          <label class="block font-medium text-slate-300 mb-1">GitHub Personal Access Token (PAT) *</label>
-          <input type="password" id="cfg-token" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-100 font-mono focus:outline-none focus:border-teal-500">
-          <p class="text-[10px] text-slate-500 mt-0.5">Token sirf aapke browser ke localStorage me store hota hai, kabhi public leak nahi hota.</p>
-        </div>
-
-        <div class="grid grid-cols-2 gap-2">
-          <div>
-            <label class="block font-medium text-slate-300 mb-1">Repository (Owner/Repo) *</label>
-            <input type="text" id="cfg-repo" value="techisinmydna/GDCDA-MANAGEMENT-SYSTEM" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-100 font-mono focus:outline-none focus:border-teal-500">
-          </div>
-          <div>
-            <label class="block font-medium text-slate-300 mb-1">Vault Path *</label>
-            <input type="text" id="cfg-path" value="data.json" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-100 font-mono focus:outline-none focus:border-teal-500">
-          </div>
-        </div>
-
-        <div>
-          <label class="block font-medium text-slate-300 mb-1">Master Passphrase (AES-256-GCM Encryption Key) *</label>
-          <input type="password" id="cfg-passphrase" placeholder="Enter encryption passphrase..." class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-100 font-mono focus:outline-none focus:border-teal-500">
-          <p class="text-[10px] text-slate-500 mt-0.5">GitHub par `data.json` ke andar encrypted ciphertext jayega jise bina is key ke koi nahi padh sakta.</p>
-        </div>
-      </div>
-
-      <!-- Live Sync Actions -->
-      <div class="pt-2 border-t border-slate-800 flex flex-wrap gap-2">
-        <button onclick="saveCloudConfig()" class="flex-1 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs text-slate-200 font-semibold transition">Save Config</button>
-        <button onclick="pullFromGitHubVault()" class="flex-1 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-xs text-white font-semibold shadow-md shadow-indigo-600/20 transition flex items-center justify-center gap-1">
-          <i data-lucide="cloud-download" class="w-3.5 h-3.5"></i> Pull from Cloud
-        </button>
-        <button onclick="pushToGitHubVault()" class="flex-1 py-2 rounded-lg bg-teal-600 hover:bg-teal-500 text-xs text-white font-semibold shadow-md shadow-teal-600/20 transition flex items-center justify-center gap-1">
-          <i data-lucide="cloud-upload" class="w-3.5 h-3.5"></i> Push to Cloud
-        </button>
-      </div>
-
-    </div>
-  </div>
-
-  <!-- ============================================================== -->
   <!-- MODAL: EC PORTAL & EXECUTIVE COMMITTEE DASHBOARD (ALT+X)       -->
   <!-- ============================================================== -->
   <div id="ec-portal-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md hidden flex items-center justify-center p-2 sm:p-4">
@@ -301,9 +237,6 @@
         </button>
         <button onclick="switchEcTab('fees')" id="tab-btn-fees" class="py-3 px-3 text-slate-400 hover:text-slate-200 border-b-2 border-transparent flex items-center gap-1.5 whitespace-nowrap">
           <i data-lucide="wallet" class="w-4 h-4"></i> Member Fees Ledger
-        </button>
-        <button onclick="switchEcTab('backup')" id="tab-btn-backup" class="py-3 px-3 text-slate-400 hover:text-slate-200 border-b-2 border-transparent flex items-center gap-1.5 whitespace-nowrap">
-          <i data-lucide="database" class="w-4 h-4"></i> JSON Vault Safety
         </button>
       </div>
 
@@ -478,27 +411,6 @@
           </div>
         </div>
 
-        <!-- TAB 5: JSON VAULT SAFETY & BACKUP -->
-        <div id="ec-tab-backup" class="space-y-5 hidden">
-          <div class="p-4 rounded-xl border border-teal-500/30 bg-teal-500/10 space-y-3">
-            <div class="flex items-center gap-2">
-              <i data-lucide="shield-check" class="w-5 h-5 text-teal-400"></i>
-              <h4 class="text-sm font-bold text-teal-300">JSON Vault Backup & Restore Center</h4>
-            </div>
-            <p class="text-xs text-slate-300 leading-relaxed">
-              Aapka complete dataset local storage me persist hai. Extra safety ke liye yahan se kabhi bhi standalone JSON file download ya restore karein.
-            </p>
-            <div class="flex flex-wrap gap-3 pt-2">
-              <button onclick="downloadJsonBackup()" class="px-4 py-2 rounded-lg bg-teal-600 hover:bg-teal-500 text-white font-semibold text-xs shadow-md shadow-teal-600/20 transition flex items-center gap-1.5">
-                <i data-lucide="download" class="w-4 h-4"></i> Download Full JSON Backup File
-              </button>
-              <button onclick="document.getElementById('vault-restore-file').click()" class="px-4 py-2 rounded-lg bg-amber-600 hover:bg-amber-500 text-white font-semibold text-xs shadow-md shadow-amber-600/20 transition flex items-center gap-1.5">
-                <i data-lucide="upload" class="w-4 h-4"></i> Restore From JSON Backup File
-              </button>
-            </div>
-          </div>
-        </div>
-
       </div>
 
     </div>
@@ -614,38 +526,21 @@
     let appState = {
       members: [],
       vouchers: [DEFAULT_SHUBHAM_VOUCHER],
-      isEcAuthenticated: false,
-      cloudConfig: {
-        token: "",
-        repo: "techisinmydna/GDCDA-MANAGEMENT-SYSTEM",
-        path: "data.json",
-        passphrase: ""
-      }
+      isEcAuthenticated: false
     };
 
     function initSystem() {
-      // 1. Load Local Storage Vault
       const localVault = localStorage.getItem("GDCDA_APP_VAULT");
       if (localVault) {
         try {
           const parsed = JSON.parse(localVault);
           if (parsed.members && parsed.members.length > 0) appState.members = parsed.members;
           if (parsed.vouchers && parsed.vouchers.length > 0) appState.vouchers = parsed.vouchers;
-          if (parsed.cloudConfig) appState.cloudConfig = parsed.cloudConfig;
         } catch (e) {
           console.error("Local vault restore error:", e);
         }
       }
 
-      // 2. Load Cloud Config if present
-      const savedConfig = localStorage.getItem("GDCDA_CLOUD_CONFIG");
-      if (savedConfig) {
-        try {
-          appState.cloudConfig = Object.assign(appState.cloudConfig, JSON.parse(savedConfig));
-        } catch(e){}
-      }
-
-      // 3. Check Session EC Auth
       if (sessionStorage.getItem("GDCDA_EC_AUTH") === "TRUE") {
         appState.isEcAuthenticated = true;
         updateEcAuthUI();
@@ -663,194 +558,11 @@
       localStorage.setItem("GDCDA_APP_VAULT", JSON.stringify({
         members: appState.members,
         vouchers: appState.vouchers,
-        cloudConfig: appState.cloudConfig,
         lastUpdated: new Date().toISOString()
       }));
     }
 
-    // --- CLOUD SYNC & GITHUB REST API IMPLEMENTATION ---
-    function openCloudSettingsModal() {
-      document.getElementById("cfg-token").value = appState.cloudConfig.token || "";
-      document.getElementById("cfg-repo").value = appState.cloudConfig.repo || "techisinmydna/GDCDA-MANAGEMENT-SYSTEM";
-      document.getElementById("cfg-path").value = appState.cloudConfig.path || "data.json";
-      document.getElementById("cfg-passphrase").value = appState.cloudConfig.passphrase || "";
-      document.getElementById("cloud-settings-modal").classList.remove("hidden");
-    }
-
-    function closeCloudSettingsModal() {
-      document.getElementById("cloud-settings-modal").classList.add("hidden");
-    }
-
-    function saveCloudConfig() {
-      appState.cloudConfig.token = document.getElementById("cfg-token").value.trim();
-      appState.cloudConfig.repo = document.getElementById("cfg-repo").value.trim();
-      appState.cloudConfig.path = document.getElementById("cfg-path").value.trim();
-      appState.cloudConfig.passphrase = document.getElementById("cfg-passphrase").value.trim();
-
-      localStorage.setItem("GDCDA_CLOUD_CONFIG", JSON.stringify(appState.cloudConfig));
-      persistLocal();
-      closeCloudSettingsModal();
-      showToast("Cloud Configuration Saved in Browser!");
-    }
-
-    // AES-256 WebCrypto Helpers
-    async function getDerivedKey(passphrase, salt) {
-      const enc = new TextEncoder();
-      const keyMaterial = await crypto.subtle.importKey("raw", enc.encode(passphrase), "PBKDF2", false, ["deriveKey"]);
-      return await crypto.subtle.deriveKey(
-        { name: "PBKDF2", salt: salt, iterations: 100000, hash: "SHA-256" },
-        keyMaterial,
-        { name: "AES-GCM", length: 256 },
-        false,
-        ["encrypt", "decrypt"]
-      );
-    }
-
-    async function encryptPayload(dataObj, passphrase) {
-      const salt = crypto.getRandomValues(new Uint8Array(16));
-      const iv = crypto.getRandomValues(new Uint8Array(12));
-      const key = await getDerivedKey(passphrase, salt);
-      const encoded = new TextEncoder().encode(JSON.stringify(dataObj));
-      const ciphertext = await crypto.subtle.encrypt({ name: "AES-GCM", iv: iv }, key, encoded);
-
-      return JSON.stringify({
-        encrypted: true,
-        salt: btoa(String.fromCharCode(...salt)),
-        iv: btoa(String.fromCharCode(...iv)),
-        payload: btoa(String.fromCharCode(...new Uint8Array(ciphertext))),
-        timestamp: new Date().toISOString()
-      }, null, 2);
-    }
-
-    async function decryptPayload(jsonString, passphrase) {
-      const data = JSON.parse(jsonString);
-      if (!data.encrypted) return data; // plaintext fallback
-
-      const salt = Uint8Array.from(atob(data.salt), c => c.charCodeAt(0));
-      const iv = Uint8Array.from(atob(data.iv), c => c.charCodeAt(0));
-      const ciphertext = Uint8Array.from(atob(data.payload), c => c.charCodeAt(0));
-      const key = await getDerivedKey(passphrase, salt);
-      const decrypted = await crypto.subtle.decrypt({ name: "AES-GCM", iv: iv }, key, ciphertext);
-      return JSON.parse(new TextDecoder().decode(decrypted));
-    }
-
-    // Push to GitHub data.json
-    async function pushToGitHubVault() {
-      const cfg = appState.cloudConfig;
-      if (!cfg.token) {
-        openCloudSettingsModal();
-        alert("Please enter your GitHub Personal Access Token (PAT) first!");
-        return;
-      }
-
-      const gear = document.getElementById("sync-gear-icon");
-      const statusText = document.getElementById("sync-status-text");
-      gear.classList.add("animate-spin");
-      statusText.textContent = "Encrypting & Pushing...";
-
-      try {
-        // 1. Prepare Payload (Encrypt if passphrase is provided)
-        const rawVault = {
-          members: appState.members,
-          vouchers: appState.vouchers,
-          lastSync: new Date().toISOString()
-        };
-
-        let fileContent = "";
-        if (cfg.passphrase) {
-          fileContent = await encryptPayload(rawVault, cfg.passphrase);
-        } else {
-          fileContent = JSON.stringify(rawVault, null, 2);
-        }
-
-        // 2. Fetch existing file SHA
-        const url = `https://api.github.com/repos/${cfg.repo}/contents/${cfg.path}`;
-        const getRes = await fetch(url, {
-          headers: {
-            "Authorization": `token ${cfg.token}`,
-            "Accept": "application/vnd.github.v3+json"
-          }
-        });
-
-        let sha = null;
-        if (getRes.ok) {
-          const fileData = await getRes.json();
-          sha = fileData.sha;
-        }
-
-        // 3. Commit / Update data.json
-        const putRes = await fetch(url, {
-          method: "PUT",
-          headers: {
-            "Authorization": `token ${cfg.token}`,
-            "Content-Type": "application/json",
-            "Accept": "application/vnd.github.v3+json"
-          },
-          body: JSON.stringify({
-            message: `Update GDCDA Vault [${new Date().toLocaleString()}]`,
-            content: btoa(unescape(encodeURIComponent(fileContent))),
-            sha: sha
-          })
-        });
-
-        if (!putRes.ok) throw new Error("GitHub Push Failed: " + putRes.statusText);
-
-        statusText.textContent = "Synced";
-        showToast("GitHub Cloud data.json Updated Live!");
-      } catch (err) {
-        console.error(err);
-        alert("Cloud Sync Error: " + err.message);
-        statusText.textContent = "Sync Error";
-      } finally {
-        gear.classList.remove("animate-spin");
-      }
-    }
-
-    // Pull from GitHub data.json
-    async function pullFromGitHubVault() {
-      const cfg = appState.cloudConfig;
-      if (!cfg.token) {
-        alert("Please enter GitHub Token first!");
-        return;
-      }
-
-      try {
-        const url = `https://api.github.com/repos/${cfg.repo}/contents/${cfg.path}`;
-        const res = await fetch(url, {
-          headers: {
-            "Authorization": `token ${cfg.token}`,
-            "Accept": "application/vnd.github.v3+json"
-          }
-        });
-        if (!res.ok) throw new Error("Could not find data.json on GitHub");
-
-        const data = await res.json();
-        const contentStr = decodeURIComponent(escape(atob(data.content)));
-
-        let restoredVault = null;
-        if (cfg.passphrase) {
-          restoredVault = await decryptPayload(contentStr, cfg.passphrase);
-        } else {
-          restoredVault = JSON.parse(contentStr);
-        }
-
-        if (restoredVault.members) appState.members = restoredVault.members;
-        if (restoredVault.vouchers) appState.vouchers = restoredVault.vouchers;
-
-        persistLocal();
-        updateStats();
-        renderMembersTable();
-        renderVouchersLedger();
-        renderSettlementsLedger();
-        closeCloudSettingsModal();
-        showToast("Data Synced from Cloud Successfully!");
-      } catch (err) {
-        console.error(err);
-        alert("Pull Error: " + err.message);
-      }
-    }
-
-    // --- JSON VAULT BACKUP & RESTORE MODULE ---
+    // JSON Vault Backup
     function downloadJsonBackup() {
       const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appState, null, 2));
       const downloadAnchor = document.createElement("a");
@@ -863,6 +575,7 @@
       showToast("Vault Backup Downloaded!");
     }
 
+    // JSON Vault Restore
     function handleVaultRestore(event) {
       const file = event.target.files[0];
       if (!file) return;
@@ -894,7 +607,7 @@
       event.target.value = "";
     }
 
-    // --- EC AUTHENTICATION & RESTRICTION SYSTEM ---
+    // EC Authentication
     function openEcPortalAuth() {
       if (appState.isEcAuthenticated) {
         openEcPortalModal();
@@ -958,7 +671,7 @@
     }
 
     function switchEcTab(tabName) {
-      const tabs = ["creator", "vouchers", "settlements", "fees", "backup"];
+      const tabs = ["creator", "vouchers", "settlements", "fees"];
       tabs.forEach(t => {
         const btn = document.getElementById(`tab-btn-${t}`);
         const content = document.getElementById(`ec-tab-${t}`);
@@ -974,7 +687,7 @@
       lucide.createIcons();
     }
 
-    // --- ROSTER TABLE & RESTRICTED MEETING CHECK-IN ---
+    // Members Directory & Attendance
     function renderMembersTable() {
       const tbody = document.getElementById("members-table-body");
       const search = document.getElementById("member-search").value.toLowerCase().trim();
@@ -1034,7 +747,7 @@
             </td>
             <td class="py-2.5 px-3 text-center">
               ${appState.isEcAuthenticated ? `
-                <button onclick="toggleAttendance('${m.id}')" title="Toggle Check-In (EC Auth Active)" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-bold transition ${isPresent ? "bg-indigo-500/20 text-indigo-300 border border-indigo-500/40" : "bg-slate-800 text-slate-400 border border-slate-700"}">
+                <button onclick="toggleAttendance('${m.id}')" title="Toggle Check-In (EC Auth)" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-bold transition ${isPresent ? "bg-indigo-500/20 text-indigo-300 border border-indigo-500/40" : "bg-slate-800 text-slate-400 border border-slate-700"}">
                   <i data-lucide="${isPresent ? "check" : "circle"}" class="w-3 h-3"></i>
                   ${isPresent ? "PRESENT" : "ABSENT"}
                 </button>
@@ -1088,7 +801,7 @@
       showToast("Attendance CSV Exported!");
     }
 
-    // --- EXPENSE VOUCHER ENGINE ---
+    // Expense Voucher Engine
     let activeVoucherRows = [
       { desc: "HOTEL RIYA IMPERIAL EXECUTIVE ROOM 301 BOOKED", date: "2026-09-23", mode: "UPI", ref: "PAYTM/UJJIVAN/31535", amt: 1800 },
       { desc: "BALLAL SIR GND TO NGP VIDARBHA 2ND AC TKT", date: "2026-09-23", mode: "UPI", ref: "VIA IRCTC ID", amt: 794 },
@@ -1193,7 +906,6 @@
       persistLocal();
       renderVouchersLedger();
       renderSettlementsLedger();
-      if (appState.cloudConfig.token) pushToGitHubVault();
     }
 
     function renderVouchersLedger() {
@@ -1287,7 +999,6 @@
       renderVouchersLedger();
       renderSettlementsLedger();
       showToast("Settlement Payment Recorded!");
-      if (appState.cloudConfig.token) pushToGitHubVault();
     }
 
     function loadVoucherIntoCreator(vouchId) {
@@ -1302,7 +1013,7 @@
       showToast("Voucher loaded into editor!");
     }
 
-    // --- A6 PRINT ENGINE ---
+    // A6 Print
     function printCurrentA6Voucher() {
       const payer = document.getElementById("v-payer").value;
       const date = document.getElementById("v-date").value;
@@ -1412,7 +1123,7 @@
       }, 350);
     }
 
-    // --- MEMBER FEES MODAL LOGIC ---
+    // Member Fees Modal
     let activeFeeMemberId = null;
 
     function openFeePaymentModal(memberId) {
@@ -1459,7 +1170,6 @@
       renderMembersTable();
       renderEcFeesTable();
       showToast(`Fees Updated: ${mem.firm} (₹${amt})`);
-      if (appState.cloudConfig.token) pushToGitHubVault();
     }
 
     function renderEcFeesTable() {
@@ -1484,7 +1194,6 @@
       `).join("");
     }
 
-    // --- HELPERS ---
     function updateStats() {
       const total = appState.members.length;
       const paid = appState.members.filter(m => m.feeStatus === "PAID").length;
@@ -1534,9 +1243,6 @@
       if (e.key === "/" && document.activeElement.tagName !== "INPUT" && document.activeElement.tagName !== "TEXTAREA") {
         e.preventDefault();
         document.getElementById("member-search").focus();
-      } else if (e.altKey && (e.key === "s" || e.key === "S")) {
-        e.preventDefault();
-        openCloudSettingsModal();
       } else if (e.altKey && (e.key === "x" || e.key === "X")) {
         e.preventDefault();
         openEcPortalAuth();
