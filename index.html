@@ -23,7 +23,6 @@
   <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-30">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
       
-      <!-- Brand & Title -->
       <div class="flex items-center gap-3">
         <div class="w-10 h-10 rounded-xl bg-teal-600 flex items-center justify-center text-slate-950 font-black text-xl shadow-lg shadow-teal-500/20">
           G
@@ -37,40 +36,34 @@
         </div>
       </div>
 
-      <!-- Quick Action Toolbar -->
+      <!-- Action Toolbar -->
       <div class="flex items-center gap-2">
-        <!-- Live Cloud Sync Settings (Alt+S) -->
-        <button onclick="openCloudConfigModal()" title="Cloud Sync & GitHub Token Settings (Alt+S)" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-800 bg-slate-900 hover:bg-slate-800 text-xs text-slate-300 transition">
+        <button onclick="openCloudConfigModal()" title="Live Sync Config (Alt+S)" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-800 bg-slate-900 hover:bg-slate-800 text-xs text-slate-300 transition">
           <i data-lucide="settings" class="w-3.5 h-3.5 text-teal-400" id="sync-gear-icon"></i>
-          <span id="sync-status-text">Cloud Sync</span>
+          <span id="sync-status-text">Live Sync</span>
         </button>
 
-        <!-- New Member Trigger (Alt+N) -->
-        <button onclick="openAddMemberModal()" title="Add New Chemist Member (Alt+N)" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-teal-500/40 bg-teal-500/10 hover:bg-teal-500/20 text-xs font-semibold text-teal-300 transition">
+        <button onclick="openAddMemberModal()" title="Add Member (Alt+N)" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-teal-500/40 bg-teal-500/10 hover:bg-teal-500/20 text-xs font-semibold text-teal-300 transition">
           <i data-lucide="user-plus" class="w-3.5 h-3.5 text-teal-400"></i>
           <span class="hidden sm:inline">+ Member</span>
         </button>
 
-        <!-- Backup JSON -->
-        <button onclick="downloadJsonBackup()" title="Download Full JSON Vault Backup" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-800 bg-slate-900 hover:bg-slate-800 text-xs text-slate-300 transition">
+        <button onclick="downloadJsonBackup()" title="Backup JSON" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-800 bg-slate-900 hover:bg-slate-800 text-xs text-slate-300 transition">
           <i data-lucide="download" class="w-3.5 h-3.5 text-teal-400"></i>
           <span class="hidden sm:inline">Backup JSON</span>
         </button>
 
-        <!-- Restore Vault -->
-        <button onclick="document.getElementById('vault-restore-file').click()" title="Restore Vault from JSON" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-amber-500/30 bg-amber-500/10 hover:bg-amber-500/20 text-xs font-semibold text-amber-300 transition">
+        <button onclick="document.getElementById('vault-restore-file').click()" title="Restore Vault" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-amber-500/30 bg-amber-500/10 hover:bg-amber-500/20 text-xs font-semibold text-amber-300 transition">
           <i data-lucide="upload" class="w-3.5 h-3.5 text-amber-400"></i>
           <span class="hidden sm:inline">Restore Vault</span>
         </button>
         <input type="file" id="vault-restore-file" accept=".json" class="hidden" onchange="handleVaultRestore(event)">
 
-        <!-- Export CSV Attendance (Alt+E) -->
-        <button onclick="exportAttendanceCSV()" title="Export Attendance CSV (Alt+E)" class="hidden md:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-800 bg-slate-900 hover:bg-slate-800 text-xs text-slate-300 transition">
+        <button onclick="exportAttendanceCSV()" title="Export CSV (Alt+E)" class="hidden md:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-800 bg-slate-900 hover:bg-slate-800 text-xs text-slate-300 transition">
           <i data-lucide="file-spreadsheet" class="w-3.5 h-3.5 text-emerald-400"></i>
           <span>Export CSV</span>
         </button>
 
-        <!-- EC Portal Trigger (Alt+X) -->
         <button id="ec-auth-btn" onclick="openEcPortalAuth()" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-indigo-500/40 bg-indigo-500/10 hover:bg-indigo-500/20 text-xs font-semibold text-indigo-300 transition">
           <i data-lucide="shield" class="w-3.5 h-3.5 text-indigo-400" id="ec-shield-icon"></i>
           <span id="ec-auth-label">EC Portal (Alt+X)</span>
@@ -80,7 +73,7 @@
     </div>
   </header>
 
-  <!-- STATS CARDS -->
+  <!-- STATS BAR -->
   <section class="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 pt-5 pb-2">
     <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
       <div class="p-4 rounded-xl border border-slate-800 bg-slate-900/60 shadow-sm flex items-center justify-between">
@@ -126,16 +119,14 @@
   <section class="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-3">
     <div class="p-3.5 rounded-xl border border-slate-800 bg-slate-900/70 flex flex-col md:flex-row items-center gap-3">
       
-      <!-- Instant Search -->
       <div class="relative w-full md:flex-1">
         <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
-        <input type="text" id="member-search" placeholder="Search by Firm Name, Owner, Pharmacist, Mobile, or Village... (Press '/' to focus)" 
+        <input type="text" id="member-search" placeholder="Search by Firm, Owner, Pharmacist, Mobile, Address... (Press '/' to focus)" 
           class="w-full pl-10 pr-12 py-2 bg-slate-950/80 border border-slate-800 rounded-lg text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition"
           oninput="renderMembersTable()">
         <kbd class="hidden sm:inline-block absolute right-3 top-1/2 -translate-y-1/2 text-[10px] bg-slate-800 border border-slate-700 text-slate-400 px-1.5 py-0.5 rounded font-mono">/</kbd>
       </div>
 
-      <!-- Filters -->
       <div class="flex items-center gap-2 w-full md:w-auto">
         <select id="filter-area" onchange="renderMembersTable()" class="w-full md:w-44 py-2 px-3 bg-slate-950/80 border border-slate-800 rounded-lg text-xs font-medium text-slate-200 focus:outline-none focus:border-teal-500">
           <option value="ALL">All Tahasils</option>
@@ -165,21 +156,19 @@
     </div>
   </section>
 
-  <!-- ROSTER TABLE (ENRICHED DETAILS & AUTHORIZED ATTENDANCE) -->
+  <!-- ROSTER TABLE -->
   <main class="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 pb-6 flex flex-col min-h-0">
     <div class="flex-1 border border-slate-800 rounded-xl bg-slate-900/50 backdrop-blur overflow-hidden flex flex-col shadow-xl">
       
-      <!-- Sub-header -->
       <div class="px-4 py-2.5 border-b border-slate-800 bg-slate-900/80 flex items-center justify-between">
         <span class="text-xs text-slate-400 font-medium" id="table-results-count">Showing 983 of 983 chemists</span>
         <div class="flex items-center gap-3">
-          <span class="text-[11px] text-slate-400 flex items-center gap-1.5" id="ec-lock-indicator">
-            <i data-lucide="lock" class="w-3.5 h-3.5 text-amber-400"></i> Attendance Authority: Restricted (Login via EC Portal to mark Present)
+          <span class="text-[11px] text-slate-400 flex items-center gap-1.5">
+            <i data-lucide="shield-alert" class="w-3.5 h-3.5 text-indigo-400"></i> Meeting Check-In: EC Authority inside EC Dashboard
           </span>
         </div>
       </div>
 
-      <!-- Data Grid -->
       <div class="flex-1 overflow-auto custom-scrollbar">
         <table class="w-full text-left border-collapse text-xs">
           <thead class="sticky top-0 bg-slate-900 border-b border-slate-800 text-slate-400 uppercase tracking-wider text-[11px] z-10">
@@ -189,12 +178,12 @@
               <th class="py-3 px-3">Tahasil & Address</th>
               <th class="py-3 px-3">Mobile Contact</th>
               <th class="py-3 px-3 text-center">2025-26 Fees</th>
-              <th class="py-3 px-3 text-center">Meeting Check-In</th>
+              <th class="py-3 px-3 text-center">Meeting Attendance</th>
               <th class="py-3 px-3 text-right">Actions</th>
             </tr>
           </thead>
           <tbody id="members-table-body" class="divide-y divide-slate-800/60 text-slate-300 font-normal">
-            <!-- Dynamically populated via renderMembersTable() -->
+            <!-- Dynamically populated -->
           </tbody>
         </table>
       </div>
@@ -203,7 +192,7 @@
   </main>
 
   <!-- ============================================================== -->
-  <!-- MODAL: CLOUD VAULT SETTINGS & GITHUB PAT CONFIG (ALT+S)        -->
+  <!-- MODAL: CLOUD REST VAULT & LIVE AUTO-SYNC CONFIG (ALT+S)        -->
   <!-- ============================================================== -->
   <div id="cloud-config-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md hidden flex items-center justify-center p-4">
     <div class="w-full max-w-lg bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl p-6 space-y-4">
@@ -214,8 +203,8 @@
             <i data-lucide="cloud" class="w-5 h-5"></i>
           </div>
           <div>
-            <h3 class="text-sm font-bold text-white">GitHub Cloud Vault & Live Sync</h3>
-            <p class="text-xs text-slate-400">Set credentials to sync GDCDA instantly across any computer</p>
+            <h3 class="text-sm font-bold text-white">GitHub Cloud Vault Live Sync Config</h3>
+            <p class="text-xs text-slate-400">Token, Repo, Username & Masterphrase save hote hi live auto-sync start ho jayega</p>
           </div>
         </div>
         <button onclick="closeCloudConfigModal()" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
@@ -225,7 +214,6 @@
         <div>
           <label class="block font-medium text-slate-300 mb-1">GitHub Personal Access Token (PAT) *</label>
           <input type="password" id="cfg-token" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-100 font-mono focus:outline-none focus:border-teal-500">
-          <p class="text-[10px] text-slate-500 mt-0.5">Token aapke computer ke browser storage me save rehta hai, repository me expose nahi hota.</p>
         </div>
 
         <div class="grid grid-cols-2 gap-2">
@@ -239,31 +227,16 @@
           </div>
         </div>
 
-        <div class="grid grid-cols-2 gap-2">
-          <div>
-            <label class="block font-medium text-slate-300 mb-1">Vault Path *</label>
-            <input type="text" id="cfg-path" value="data.json" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-100 font-mono focus:outline-none focus:border-teal-500">
-          </div>
-          <div>
-            <label class="block font-medium text-slate-300 mb-1">Branch *</label>
-            <input type="text" id="cfg-branch" value="main" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-100 font-mono focus:outline-none focus:border-teal-500">
-          </div>
-        </div>
-
         <div>
-          <label class="block font-medium text-slate-300 mb-1">Master Passphrase (AES-256 Military Encryption Key) *</label>
-          <input type="password" id="cfg-passphrase" placeholder="Enter master passphrase..." class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-100 font-mono focus:outline-none focus:border-teal-500">
-          <p class="text-[10px] text-slate-500 mt-0.5">Is master key se live cloud data encrypt hota hai taaki koi unauthorized access na kar sake.</p>
+          <label class="block font-medium text-slate-300 mb-1">Master Passphrase (AES-256-GCM Military Encryption Key) *</label>
+          <input type="password" id="cfg-passphrase" placeholder="Enter master secret passphrase..." class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-100 font-mono focus:outline-none focus:border-teal-500">
         </div>
       </div>
 
-      <div class="pt-2 border-t border-slate-800 flex flex-wrap gap-2">
-        <button onclick="saveCloudConfig()" class="flex-1 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs text-slate-200 font-semibold transition">Save Config</button>
-        <button onclick="pullFromGitHubVault()" class="flex-1 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-xs text-white font-semibold shadow-md shadow-indigo-600/20 transition flex items-center justify-center gap-1">
-          <i data-lucide="cloud-download" class="w-3.5 h-3.5"></i> Pull Live
-        </button>
-        <button onclick="pushToGitHubVault()" class="flex-1 py-2 rounded-lg bg-teal-600 hover:bg-teal-500 text-xs text-white font-semibold shadow-md shadow-teal-600/20 transition flex items-center justify-center gap-1">
-          <i data-lucide="cloud-upload" class="w-3.5 h-3.5"></i> Push Live
+      <div class="pt-2 border-t border-slate-800 flex gap-2">
+        <button onclick="closeCloudConfigModal()" class="flex-1 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs text-slate-300 font-semibold transition">Cancel</button>
+        <button onclick="saveAndLiveSyncCloud()" class="flex-1 py-2 rounded-lg bg-teal-600 hover:bg-teal-500 text-xs text-white font-semibold shadow-md shadow-teal-600/20 transition flex items-center justify-center gap-1.5">
+          <i data-lucide="check" class="w-4 h-4"></i> Save & Auto-Sync Live
         </button>
       </div>
 
@@ -271,18 +244,19 @@
   </div>
 
   <!-- ============================================================== -->
-  <!-- MODAL: ADD / EDIT CHEMIST MEMBER (ALT+N)                       -->
+  <!-- MODAL: ADD / EDIT CHEMIST MEMBER                               -->
   <!-- ============================================================== -->
-  <div id="add-member-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md hidden flex items-center justify-center p-4">
+  <div id="member-form-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md hidden flex items-center justify-center p-4">
     <div class="w-full max-w-md bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl p-5 space-y-4">
       <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-        <h3 class="text-sm font-bold text-white flex items-center gap-2">
-          <i data-lucide="store" class="w-4 h-4 text-teal-400"></i> Add Chemist Medical Store
+        <h3 class="text-sm font-bold text-white flex items-center gap-2" id="member-modal-title">
+          <i data-lucide="store" class="w-4 h-4 text-teal-400"></i> Chemist Member Form
         </h3>
-        <button onclick="closeAddMemberModal()" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-4 h-4"></i></button>
+        <button onclick="closeMemberFormModal()" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-4 h-4"></i></button>
       </div>
 
       <div class="space-y-2.5 text-xs">
+        <input type="hidden" id="mem-in-id">
         <div>
           <label class="block text-slate-400 mb-0.5">Chemist / Firm Name *</label>
           <input type="text" id="mem-in-firm" placeholder="e.g. SHREE GANESH MEDICALS" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-100 uppercase">
@@ -336,8 +310,33 @@
       </div>
 
       <div class="flex gap-2 pt-2">
-        <button onclick="closeAddMemberModal()" class="flex-1 py-2 rounded-lg bg-slate-800 text-xs font-semibold text-slate-300">Cancel</button>
-        <button onclick="saveNewMember()" class="flex-1 py-2 rounded-lg bg-teal-600 hover:bg-teal-500 text-xs font-semibold text-white shadow-md shadow-teal-600/20">Save Member</button>
+        <button onclick="closeMemberFormModal()" class="flex-1 py-2 rounded-lg bg-slate-800 text-xs font-semibold text-slate-300">Cancel</button>
+        <button onclick="saveMemberRecord()" class="flex-1 py-2 rounded-lg bg-teal-600 hover:bg-teal-500 text-xs font-semibold text-white shadow-md shadow-teal-600/20">Save Member</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- MODAL: PIN VERIFICATION GATE (FOR EDIT / DELETE - PIN: 1441)   -->
+  <!-- ============================================================== -->
+  <div id="pin-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <div class="w-full max-w-xs bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl p-5 space-y-4">
+      <div class="text-center space-y-1">
+        <div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 mx-auto flex items-center justify-center">
+          <i data-lucide="key-round" class="w-5 h-5"></i>
+        </div>
+        <h4 class="text-sm font-bold text-white">Security PIN Verification</h4>
+        <p class="text-[11px] text-slate-400">Enter authorized 4-digit PIN to proceed.</p>
+      </div>
+
+      <div>
+        <input type="password" id="pin-input" maxlength="4" placeholder="••••" class="w-full text-center tracking-widest text-lg bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-100 font-mono focus:outline-none focus:border-amber-500">
+        <p id="pin-error" class="text-[11px] text-rose-400 hidden mt-1 text-center">Invalid Security PIN!</p>
+      </div>
+
+      <div class="flex gap-2">
+        <button onclick="closePinModal()" class="flex-1 py-2 rounded-lg bg-slate-800 text-xs font-semibold text-slate-300">Cancel</button>
+        <button onclick="submitPinVerification()" class="flex-1 py-2 rounded-lg bg-amber-600 hover:bg-amber-500 text-xs font-semibold text-white">Verify</button>
       </div>
     </div>
   </div>
@@ -359,7 +358,7 @@
               GDCDA Executive Committee (EC) Portal
               <span class="text-[10px] px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 font-mono">Authenticated</span>
             </h2>
-            <p class="text-xs text-slate-400">Expense reimbursement creator, itemized payment tracking & A6 portrait print</p>
+            <p class="text-xs text-slate-400">Expense reimbursement, Running Fees Ledger, Meeting Check-In & Creation</p>
           </div>
         </div>
         <div class="flex items-center gap-2">
@@ -374,7 +373,13 @@
 
       <!-- Navigation Tabs Inside EC Portal -->
       <div class="border-b border-slate-800 bg-slate-950/60 px-6 flex items-center gap-2 text-xs font-medium overflow-x-auto">
-        <button onclick="switchEcTab('creator')" id="tab-btn-creator" class="py-3 px-3 text-teal-400 border-b-2 border-teal-500 font-semibold flex items-center gap-1.5 whitespace-nowrap">
+        <button onclick="switchEcTab('fees')" id="tab-btn-fees" class="py-3 px-3 text-teal-400 border-b-2 border-teal-500 font-semibold flex items-center gap-1.5 whitespace-nowrap">
+          <i data-lucide="wallet" class="w-4 h-4"></i> Members Running Fee Ledger (<span id="ledger-total-count">983</span>)
+        </button>
+        <button onclick="switchEcTab('meetings')" id="tab-btn-meetings" class="py-3 px-3 text-slate-400 hover:text-slate-200 border-b-2 border-transparent flex items-center gap-1.5 whitespace-nowrap">
+          <i data-lucide="calendar-check" class="w-4 h-4"></i> Meeting Authority & Check-In
+        </button>
+        <button onclick="switchEcTab('creator')" id="tab-btn-creator" class="py-3 px-3 text-slate-400 hover:text-slate-200 border-b-2 border-transparent flex items-center gap-1.5 whitespace-nowrap">
           <i data-lucide="plus-circle" class="w-4 h-4"></i> Expense Creator
         </button>
         <button onclick="switchEcTab('vouchers')" id="tab-btn-vouchers" class="py-3 px-3 text-slate-400 hover:text-slate-200 border-b-2 border-transparent flex items-center gap-1.5 whitespace-nowrap">
@@ -383,16 +388,94 @@
         <button onclick="switchEcTab('settlements')" id="tab-btn-settlements" class="py-3 px-3 text-slate-400 hover:text-slate-200 border-b-2 border-transparent flex items-center gap-1.5 whitespace-nowrap">
           <i data-lucide="credit-card" class="w-4 h-4"></i> Reimbursements & Settlements
         </button>
-        <button onclick="switchEcTab('fees')" id="tab-btn-fees" class="py-3 px-3 text-slate-400 hover:text-slate-200 border-b-2 border-transparent flex items-center gap-1.5 whitespace-nowrap">
-          <i data-lucide="wallet" class="w-4 h-4"></i> Member Fees Ledger
-        </button>
       </div>
 
       <!-- Tab Content Area -->
       <div class="flex-1 overflow-y-auto p-4 sm:p-6 custom-scrollbar bg-slate-900/40">
 
-        <!-- TAB 1: EXPENSE CREATOR -->
-        <div id="ec-tab-creator" class="space-y-5">
+        <!-- TAB: MEMBER FEES RUNNING LEDGER (POORA DATA) -->
+        <div id="ec-tab-fees" class="space-y-4">
+          <div class="flex flex-col sm:flex-row items-center justify-between gap-3 pb-3 border-b border-slate-800">
+            <div>
+              <h3 class="text-sm font-semibold text-white">Chemists Master Fee Ledger (All 983 Records Active)</h3>
+              <p class="text-xs text-slate-400">Total Collection: <span class="text-emerald-400 font-bold" id="ec-ledger-total-amount">₹ 5,07,645.00</span></p>
+            </div>
+            <input type="text" id="ec-fees-search" placeholder="Search firm, mobile or tahasil..." oninput="renderEcFeesTable()" class="w-full sm:w-64 bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-teal-500">
+          </div>
+          <div class="border border-slate-800 rounded-xl overflow-hidden bg-slate-950/60 max-h-[60vh] overflow-y-auto custom-scrollbar">
+            <table class="w-full text-left text-xs">
+              <thead class="sticky top-0 bg-slate-900 border-b border-slate-800 text-slate-400 uppercase text-[11px]">
+                <tr>
+                  <th class="py-2.5 px-3">Chemist / Firm</th>
+                  <th class="py-2.5 px-3">Tahasil</th>
+                  <th class="py-2.5 px-3 text-center">Status</th>
+                  <th class="py-2.5 px-3 text-right">Fee Inflow (₹)</th>
+                  <th class="py-2.5 px-3">Receipt / Mode</th>
+                  <th class="py-2.5 px-3 text-right">Action</th>
+                </tr>
+              </thead>
+              <tbody id="ec-fees-tbody" class="divide-y divide-slate-800/60">
+                <!-- Dynamically Populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- TAB: MEETING AUTHORITY & CHECK-IN -->
+        <div id="ec-tab-meetings" class="space-y-5 hidden">
+          <!-- Create Meeting Banner -->
+          <div class="p-4 rounded-xl border border-indigo-500/30 bg-indigo-500/10 space-y-3">
+            <h4 class="text-xs font-bold text-indigo-300 uppercase tracking-wider flex items-center gap-1.5">
+              <i data-lucide="plus-circle" class="w-4 h-4"></i> Create & Activate Association Meeting
+            </h4>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
+              <div>
+                <label class="block text-slate-400 mb-0.5">Meeting Subject *</label>
+                <input type="text" id="ec-new-meet-title" placeholder="e.g. EC Meeting 2026" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-slate-100">
+              </div>
+              <div>
+                <label class="block text-slate-400 mb-0.5">Meeting Date *</label>
+                <input type="date" id="ec-new-meet-date" value="2026-09-26" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-slate-100">
+              </div>
+              <div class="flex items-end">
+                <button onclick="createNewMeetingFromEc()" class="w-full py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 font-semibold text-white shadow-md transition">
+                  Create Meeting
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Active Meeting Check-In Table -->
+          <div class="space-y-3">
+            <div class="flex items-center justify-between">
+              <div>
+                <h4 class="text-xs font-bold text-slate-200">Active Meeting Live Check-in Grid</h4>
+                <p class="text-[11px] text-slate-400" id="ec-current-meeting-label">Meeting: General Body Meeting - Pharmacist Day 2026</p>
+              </div>
+              <input type="text" id="ec-checkin-search" placeholder="Search chemist..." oninput="renderEcMeetingCheckinTable()" class="bg-slate-950 border border-slate-800 rounded-lg px-3 py-1 text-xs text-slate-200">
+            </div>
+
+            <div class="border border-slate-800 rounded-xl overflow-hidden bg-slate-950/60 max-h-[50vh] overflow-y-auto custom-scrollbar">
+              <table class="w-full text-left text-xs">
+                <thead class="sticky top-0 bg-slate-900 border-b border-slate-800 text-slate-400 uppercase text-[11px]">
+                  <tr>
+                    <th class="py-2.5 px-3">Chemist Firm</th>
+                    <th class="py-2.5 px-3">Tahasil</th>
+                    <th class="py-2.5 px-3">Mobile</th>
+                    <th class="py-2.5 px-3 text-center">Current Status</th>
+                    <th class="py-2.5 px-3 text-right">EC Check-In Action</th>
+                  </tr>
+                </thead>
+                <tbody id="ec-checkin-tbody" class="divide-y divide-slate-800/60">
+                  <!-- Dynamically populated -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB: EXPENSE CREATOR -->
+        <div id="ec-tab-creator" class="space-y-5 hidden">
           <div class="flex items-center justify-between pb-3 border-b border-slate-800">
             <h3 class="text-sm font-semibold text-white flex items-center gap-2">
               <i data-lucide="file-text" class="w-4 h-4 text-teal-400"></i> Create GDCDA Expense Reimbursement Voucher
@@ -402,7 +485,6 @@
             </button>
           </div>
 
-          <!-- Metadata -->
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div>
               <label class="block text-[11px] font-medium text-slate-400 mb-1">Paid By (EC Member) *</label>
@@ -453,7 +535,6 @@
             </div>
           </div>
 
-          <!-- Total & Actions -->
           <div class="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 rounded-xl border border-slate-800 bg-slate-950/80">
             <div>
               <span class="text-xs text-slate-400">Total Calculated Voucher Amount:</span>
@@ -470,7 +551,7 @@
           </div>
         </div>
 
-        <!-- TAB 2: SAVED VOUCHERS LEDGER -->
+        <!-- TAB: SAVED VOUCHERS LEDGER -->
         <div id="ec-tab-vouchers" class="space-y-4 hidden">
           <div class="flex items-center justify-between pb-3 border-b border-slate-800">
             <h3 class="text-sm font-semibold text-white">Registered Reimbursement Vouchers</h3>
@@ -494,7 +575,7 @@
           </div>
         </div>
 
-        <!-- TAB 3: REIMBURSEMENTS & SETTLEMENTS -->
+        <!-- TAB: REIMBURSEMENTS & SETTLEMENTS -->
         <div id="ec-tab-settlements" class="space-y-4 hidden">
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div class="p-3.5 rounded-xl border border-slate-800 bg-slate-950">
@@ -532,40 +613,13 @@
           </div>
         </div>
 
-        <!-- TAB 4: MEMBER FEES RUNNING LEDGER -->
-        <div id="ec-tab-fees" class="space-y-4 hidden">
-          <div class="flex flex-col sm:flex-row items-center justify-between gap-3 pb-3 border-b border-slate-800">
-            <div>
-              <h3 class="text-sm font-semibold text-white">Member Fees Running Collection Panel</h3>
-              <p class="text-xs text-slate-400">EC members can search any chemist and record payments directly</p>
-            </div>
-            <input type="text" id="ec-fees-search" placeholder="Search chemist..." oninput="renderEcFeesTable()" class="w-full sm:w-64 bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-teal-500">
-          </div>
-          <div class="border border-slate-800 rounded-xl overflow-hidden bg-slate-950/60 max-h-96 overflow-y-auto custom-scrollbar">
-            <table class="w-full text-left text-xs">
-              <thead class="sticky top-0 bg-slate-900 border-b border-slate-800 text-slate-400 uppercase text-[11px]">
-                <tr>
-                  <th class="py-2.5 px-3">Chemist Firm</th>
-                  <th class="py-2.5 px-3">Area</th>
-                  <th class="py-2.5 px-3">Fee Status</th>
-                  <th class="py-2.5 px-3 text-right">Amount Paid</th>
-                  <th class="py-2.5 px-3 text-right">Action</th>
-                </tr>
-              </thead>
-              <tbody id="ec-fees-tbody" class="divide-y divide-slate-800/60">
-                <!-- Populated via renderEcFeesTable() -->
-              </tbody>
-            </table>
-          </div>
-        </div>
-
       </div>
 
     </div>
   </div>
 
   <!-- ============================================================== -->
-  <!-- MODAL: EC AUTHENTICATION GATE (PASSWORD)                      -->
+  <!-- MODAL: EC AUTHENTICATION GATE (PASSWORD: GDCDARocks@144EC)     -->
   <!-- ============================================================== -->
   <div id="ec-login-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md hidden flex items-center justify-center p-4">
     <div class="w-full max-w-sm bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl p-6 space-y-4">
@@ -574,7 +628,7 @@
           <i data-lucide="lock" class="w-6 h-6"></i>
         </div>
         <h3 class="text-base font-bold text-white">EC Portal Authentication</h3>
-        <p class="text-xs text-slate-400">Enter master Executive Committee key to access payments and check-in controls.</p>
+        <p class="text-xs text-slate-400">Enter master Executive Committee key to unlock.</p>
       </div>
 
       <div class="space-y-2">
@@ -650,9 +704,7 @@
   <!-- PRINT STREAM IFRAME -->
   <iframe id="print-frame" class="hidden"></iframe>
 
-  <!-- ============================================================== -->
-  <!-- JAVASCRIPT APPLICATION CORE ENGINE                             -->
-  <!-- ============================================================== -->
+  <!-- SCRIPT ENGINE -->
   <script>
     const DEFAULT_SHUBHAM_VOUCHER = {
       id: "vouch-2026-001",
@@ -674,6 +726,10 @@
     let appState = {
       members: [],
       vouchers: [DEFAULT_SHUBHAM_VOUCHER],
+      meetings: [
+        { id: "meet-001", title: "General Body Meeting - Pharmacist Day 2026", date: "2026-09-24", venue: "Gondia", attendance: {} }
+      ],
+      activeMeetingId: "meet-001",
       isEcAuthenticated: false,
       cloudConfig: {
         token: "",
@@ -685,27 +741,29 @@
       }
     };
 
+    // Pending security action store
+    let pendingAction = null; // { type: 'EDIT'|'DELETE', id: '...' }
+
     function initSystem() {
-      // 1. Load Local Storage Vault
       const localVault = localStorage.getItem("GDCDA_APP_VAULT");
       if (localVault) {
         try {
           const parsed = JSON.parse(localVault);
           if (parsed.members && parsed.members.length > 0) appState.members = parsed.members;
           if (parsed.vouchers && parsed.vouchers.length > 0) appState.vouchers = parsed.vouchers;
+          if (parsed.meetings && parsed.meetings.length > 0) appState.meetings = parsed.meetings;
+          if (parsed.activeMeetingId) appState.activeMeetingId = parsed.activeMeetingId;
           if (parsed.cloudConfig) appState.cloudConfig = Object.assign(appState.cloudConfig, parsed.cloudConfig);
         } catch (e) {
-          console.error("Local vault restore error:", e);
+          console.error("Vault restore error:", e);
         }
       }
 
-      // 2. Load dedicated cloud config if saved
       const savedConfig = localStorage.getItem("GDCDA_CLOUD_CONFIG");
       if (savedConfig) {
         try { appState.cloudConfig = Object.assign(appState.cloudConfig, JSON.parse(savedConfig)); } catch(e){}
       }
 
-      // 3. Check Session EC Auth
       if (sessionStorage.getItem("GDCDA_EC_AUTH") === "TRUE") {
         appState.isEcAuthenticated = true;
         updateEcAuthUI();
@@ -716,26 +774,33 @@
       renderVoucherRows();
       renderVouchersLedger();
       renderSettlementsLedger();
+      renderEcFeesTable();
+      renderEcMeetingCheckinTable();
       lucide.createIcons();
+
+      // Trigger automatic silent live sync if credentials present
+      if (appState.cloudConfig.token && appState.cloudConfig.passphrase) {
+        autoSilentLiveSync();
+      }
     }
 
     function persistLocal() {
       localStorage.setItem("GDCDA_APP_VAULT", JSON.stringify({
         members: appState.members,
         vouchers: appState.vouchers,
+        meetings: appState.meetings,
+        activeMeetingId: appState.activeMeetingId,
         cloudConfig: appState.cloudConfig,
         lastUpdated: new Date().toISOString()
       }));
     }
 
-    // --- CLOUD CONFIGURATION & REST SYNC ENGINE (ALT+S) ---
+    // --- AUTOMATIC LIVE SYNC ENGINE ---
     function openCloudConfigModal() {
       const cfg = appState.cloudConfig;
       document.getElementById("cfg-token").value = cfg.token || "";
       document.getElementById("cfg-owner").value = cfg.owner || "techisinmydna";
       document.getElementById("cfg-repo").value = cfg.repo || "GDCDA-MANAGEMENT-SYSTEM";
-      document.getElementById("cfg-path").value = cfg.path || "data.json";
-      document.getElementById("cfg-branch").value = cfg.branch || "main";
       document.getElementById("cfg-passphrase").value = cfg.passphrase || "";
       document.getElementById("cloud-config-modal").classList.remove("hidden");
     }
@@ -744,22 +809,21 @@
       document.getElementById("cloud-config-modal").classList.add("hidden");
     }
 
-    function saveCloudConfig() {
+    async function saveAndLiveSyncCloud() {
       const cfg = appState.cloudConfig;
       cfg.token = document.getElementById("cfg-token").value.trim();
       cfg.owner = document.getElementById("cfg-owner").value.trim();
       cfg.repo = document.getElementById("cfg-repo").value.trim();
-      cfg.path = document.getElementById("cfg-path").value.trim();
-      cfg.branch = document.getElementById("cfg-branch").value.trim();
       cfg.passphrase = document.getElementById("cfg-passphrase").value.trim();
 
       localStorage.setItem("GDCDA_CLOUD_CONFIG", JSON.stringify(cfg));
       persistLocal();
       closeCloudConfigModal();
-      showToast("Cloud Credentials Saved Locally!");
+      showToast("Credentials Saved. Starting Live Auto-Sync...");
+      await autoSilentLiveSync();
     }
 
-    // WebCrypto AES-256-GCM
+    // WebCrypto AES-256
     async function getDerivedKey(passphrase, salt) {
       const enc = new TextEncoder();
       const keyMaterial = await crypto.subtle.importKey("raw", enc.encode(passphrase), "PBKDF2", false, ["deriveKey"]);
@@ -788,45 +852,27 @@
       }, null, 2);
     }
 
-    async function decryptPayload(jsonString, passphrase) {
-      const data = JSON.parse(jsonString);
-      if (!data.encrypted) return data;
-      const salt = Uint8Array.from(atob(data.salt), c => c.charCodeAt(0));
-      const iv = Uint8Array.from(atob(data.iv), c => c.charCodeAt(0));
-      const ciphertext = Uint8Array.from(atob(data.payload), c => c.charCodeAt(0));
-      const key = await getDerivedKey(passphrase, salt);
-      const decrypted = await crypto.subtle.decrypt({ name: "AES-GCM", iv: iv }, key, ciphertext);
-      return JSON.parse(new TextDecoder().decode(decrypted));
-    }
-
-    async function pushToGitHubVault() {
+    async function autoSilentLiveSync() {
       const cfg = appState.cloudConfig;
-      if (!cfg.token) {
-        openCloudConfigModal();
-        alert("Please configure your GitHub Token first!");
-        return;
-      }
+      if (!cfg.token || !cfg.passphrase) return;
 
       const gear = document.getElementById("sync-gear-icon");
       const statusText = document.getElementById("sync-status-text");
       gear.classList.add("animate-spin");
-      statusText.textContent = "Syncing...";
+      statusText.textContent = "Live Syncing...";
 
       try {
         const rawVault = {
           members: appState.members,
           vouchers: appState.vouchers,
+          meetings: appState.meetings,
+          activeMeetingId: appState.activeMeetingId,
           timestamp: new Date().toISOString()
         };
 
-        let fileContent = "";
-        if (cfg.passphrase) {
-          fileContent = await encryptPayload(rawVault, cfg.passphrase);
-        } else {
-          fileContent = JSON.stringify(rawVault, null, 2);
-        }
-
+        const fileContent = await encryptPayload(rawVault, cfg.passphrase);
         const url = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${cfg.path}`;
+
         const getRes = await fetch(url, {
           headers: {
             "Authorization": `token ${cfg.token}`,
@@ -848,87 +894,110 @@
             "Accept": "application/vnd.github.v3+json"
           },
           body: JSON.stringify({
-            message: `Update GDCDA Vault [${new Date().toLocaleString()}]`,
+            message: `Auto Live Sync GDCDA Vault [${new Date().toLocaleString()}]`,
             content: btoa(unescape(encodeURIComponent(fileContent))),
             sha: sha,
             branch: cfg.branch || "main"
           })
         });
 
-        if (!putRes.ok) throw new Error("GitHub Error: " + putRes.statusText);
-
-        statusText.textContent = "Synced";
-        showToast("Live data.json Encrypted & Pushed to GitHub!");
+        if (putRes.ok) {
+          statusText.textContent = "Synced Live";
+          showToast("Live Auto-Synced to GitHub data.json!");
+        } else {
+          statusText.textContent = "Sync Offline";
+        }
       } catch (err) {
-        console.error(err);
-        alert("Push Failed: " + err.message);
-        statusText.textContent = "Sync Error";
+        console.warn("Silent sync notice:", err);
+        statusText.textContent = "Local Vault";
       } finally {
         gear.classList.remove("animate-spin");
       }
     }
 
-    async function pullFromGitHubVault() {
-      const cfg = appState.cloudConfig;
-      if (!cfg.token) {
-        openCloudConfigModal();
-        alert("Please configure your GitHub Token first!");
-        return;
-      }
+    // --- PIN GATEWAY (1441) FOR EDIT / DELETE ---
+    function triggerProtectedAction(actionType, memberId) {
+      pendingAction = { type: actionType, id: memberId };
+      document.getElementById("pin-input").value = "";
+      document.getElementById("pin-error").classList.add("hidden");
+      document.getElementById("pin-modal").classList.remove("hidden");
+      document.getElementById("pin-input").focus();
+    }
 
-      try {
-        const url = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${cfg.path}?ref=${cfg.branch || "main"}`;
-        const res = await fetch(url, {
-          headers: {
-            "Authorization": `token ${cfg.token}`,
-            "Accept": "application/vnd.github.v3+json"
-          }
-        });
-        if (!res.ok) throw new Error("Could not find data.json on GitHub");
+    function closePinModal() {
+      document.getElementById("pin-modal").classList.add("hidden");
+      pendingAction = null;
+    }
 
-        const data = await res.json();
-        const contentStr = decodeURIComponent(escape(atob(data.content)));
-
-        let restoredVault = null;
-        if (cfg.passphrase) {
-          restoredVault = await decryptPayload(contentStr, cfg.passphrase);
-        } else {
-          restoredVault = JSON.parse(contentStr);
+    function submitPinVerification() {
+      const enteredPin = document.getElementById("pin-input").value.trim();
+      if (enteredPin === "1441") {
+        const action = pendingAction;
+        closePinModal();
+        if (action.type === "EDIT") {
+          executeMemberEdit(action.id);
+        } else if (action.type === "DELETE") {
+          executeMemberDelete(action.id);
         }
-
-        if (restoredVault.members) appState.members = restoredVault.members;
-        if (restoredVault.vouchers) appState.vouchers = restoredVault.vouchers;
-
-        persistLocal();
-        updateStats();
-        renderMembersTable();
-        renderVouchersLedger();
-        renderSettlementsLedger();
-        closeCloudConfigModal();
-        showToast("Data Pulled from Cloud Successfully!");
-      } catch (err) {
-        console.error(err);
-        alert("Pull Error: " + err.message);
+      } else {
+        document.getElementById("pin-error").classList.remove("hidden");
       }
     }
 
-    // --- MEMBER CREATOR (ALT+N) ---
+    function executeMemberEdit(memberId) {
+      const m = appState.members.find(x => x.id === memberId);
+      if (!m) return;
+      document.getElementById("mem-in-id").value = m.id;
+      document.getElementById("mem-in-firm").value = m.firm || "";
+      document.getElementById("mem-in-owner").value = m.owner || "";
+      document.getElementById("mem-in-pharmacist").value = m.pharmacist || "";
+      document.getElementById("mem-in-area").value = m.area || "Gondia";
+      document.getElementById("mem-in-mobile").value = m.mobile || "";
+      document.getElementById("mem-in-address").value = m.address || "";
+      document.getElementById("mem-in-fee-status").value = m.feeStatus || "PENDING";
+      document.getElementById("mem-in-fee-amt").value = m.feeAmount || 0;
+      document.getElementById("member-modal-title").innerHTML = `<i data-lucide="edit-3" class="w-4 h-4 text-teal-400"></i> Edit Chemist Member`;
+      document.getElementById("member-form-modal").classList.remove("hidden");
+      lucide.createIcons();
+    }
+
+    function executeMemberDelete(memberId) {
+      const m = appState.members.find(x => x.id === memberId);
+      if (!m) return;
+      if (confirm(`Are you sure you want to delete "${m.firm}" permanently?`)) {
+        appState.members = appState.members.filter(x => x.id !== memberId);
+        persistLocal();
+        updateStats();
+        renderMembersTable();
+        renderEcFeesTable();
+        showToast(`Member Deleted: ${m.firm}`);
+        autoSilentLiveSync();
+      }
+    }
+
+    // --- ADD / SAVE MEMBER ---
     function openAddMemberModal() {
+      document.getElementById("mem-in-id").value = "";
       document.getElementById("mem-in-firm").value = "";
       document.getElementById("mem-in-owner").value = "";
       document.getElementById("mem-in-pharmacist").value = "";
       document.getElementById("mem-in-mobile").value = "";
       document.getElementById("mem-in-address").value = "";
-      document.getElementById("add-member-modal").classList.remove("hidden");
+      document.getElementById("mem-in-fee-status").value = "PAID";
+      document.getElementById("mem-in-fee-amt").value = "251";
+      document.getElementById("member-modal-title").innerHTML = `<i data-lucide="store" class="w-4 h-4 text-teal-400"></i> Add Chemist Medical Store`;
+      document.getElementById("member-form-modal").classList.remove("hidden");
+      lucide.createIcons();
     }
 
-    function closeAddMemberModal() {
-      document.getElementById("add-member-modal").classList.add("hidden");
+    function closeMemberFormModal() {
+      document.getElementById("member-form-modal").classList.add("hidden");
     }
 
-    function saveNewMember() {
+    function saveMemberRecord() {
+      const id = document.getElementById("mem-in-id").value;
       const firm = document.getElementById("mem-in-firm").value.trim().toUpperCase();
-      if (!firm) { alert("Please enter Chemist / Firm Name"); return; }
+      if (!firm) { alert("Please enter Chemist Firm Name"); return; }
       const owner = document.getElementById("mem-in-owner").value.trim();
       const pharmacist = document.getElementById("mem-in-pharmacist").value.trim();
       const area = document.getElementById("mem-in-area").value;
@@ -937,75 +1006,50 @@
       const feeStatus = document.getElementById("mem-in-fee-status").value;
       const feeAmt = parseFloat(document.getElementById("mem-in-fee-amt").value) || 0;
 
-      const newMember = {
-        id: `mem-gdcda-${String(appState.members.length + 1).padStart(4, '0')}`,
-        firm: firm,
-        owner: owner,
-        pharmacist: pharmacist,
-        mobile: mobile,
-        phone: "",
-        area: area,
-        address: address,
-        feeStatus: feeStatus,
-        feeAmount: feeAmt,
-        feeNote: feeAmt > 0 ? `₹${feeAmt} (2025-26 Fees)` : "Fees Due 2025-26",
-        feeHistory: feeAmt > 0 ? [{ receiptNo: "REC-NEW", date: new Date().toISOString().split("T")[0], amount: feeAmt, mode: "CASH", ref: "New Member Registration", collector: "Association Admin", year: "2025-26" }] : []
-      };
+      if (id) {
+        // Update existing
+        const m = appState.members.find(x => x.id === id);
+        if (m) {
+          m.firm = firm;
+          m.owner = owner;
+          m.pharmacist = pharmacist;
+          m.area = area;
+          m.mobile = mobile;
+          m.address = address;
+          m.feeStatus = feeStatus;
+          m.feeAmount = feeAmt;
+          m.feeNote = feeAmt > 0 ? `₹${feeAmt} (2025-26 Fees)` : "Fees Due 2025-26";
+          showToast(`Updated: ${firm}`);
+        }
+      } else {
+        // Create New
+        const newM = {
+          id: `mem-gdcda-${String(appState.members.length + 1).padStart(4, '0')}`,
+          firm: firm,
+          owner: owner,
+          pharmacist: pharmacist,
+          mobile: mobile,
+          phone: "",
+          area: area,
+          address: address,
+          feeStatus: feeStatus,
+          feeAmount: feeAmt,
+          feeNote: feeAmt > 0 ? `₹${feeAmt} (2025-26 Fees)` : "Fees Due 2025-26",
+          feeHistory: feeAmt > 0 ? [{ receiptNo: "REC-NEW", date: new Date().toISOString().split("T")[0], amount: feeAmt, mode: "CASH", ref: "Registration", collector: "Admin", year: "2025-26" }] : []
+        };
+        appState.members.unshift(newM);
+        showToast(`Registered: ${firm}`);
+      }
 
-      appState.members.unshift(newMember);
       persistLocal();
-      closeAddMemberModal();
+      closeMemberFormModal();
       updateStats();
       renderMembersTable();
-      showToast(`Member Added: ${firm}`);
-      if (appState.cloudConfig.token) pushToGitHubVault();
+      renderEcFeesTable();
+      autoSilentLiveSync();
     }
 
-    // --- JSON VAULT BACKUP & RESTORE MODULE ---
-    function downloadJsonBackup() {
-      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appState, null, 2));
-      const downloadAnchor = document.createElement("a");
-      const dateTag = new Date().toISOString().split("T")[0];
-      downloadAnchor.setAttribute("href", dataStr);
-      downloadAnchor.setAttribute("download", `GDCDA_VAULT_BACKUP_${dateTag}.json`);
-      document.body.appendChild(downloadAnchor);
-      downloadAnchor.click();
-      downloadAnchor.remove();
-      showToast("Vault Backup Downloaded!");
-    }
-
-    function handleVaultRestore(event) {
-      const file = event.target.files[0];
-      if (!file) return;
-
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        try {
-          const importedData = JSON.parse(e.target.result);
-          if (importedData.members && Array.isArray(importedData.members)) {
-            appState.members = importedData.members;
-          } else if (Array.isArray(importedData)) {
-            appState.members = importedData;
-          }
-          if (importedData.vouchers && Array.isArray(importedData.vouchers)) {
-            appState.vouchers = importedData.vouchers;
-          }
-
-          persistLocal();
-          updateStats();
-          renderMembersTable();
-          renderVouchersLedger();
-          renderSettlementsLedger();
-          showToast(`Vault Restored: ${appState.members.length} Members Loaded!`);
-        } catch (err) {
-          alert("Invalid JSON file! Please select a valid GDCDA JSON file.");
-        }
-      };
-      reader.readAsText(file);
-      event.target.value = "";
-    }
-
-    // --- EC AUTHENTICATION ---
+    // --- EC AUTHENTICATION GATE (PASSWORD: GDCDARocks@144EC) ---
     function openEcPortalAuth() {
       if (appState.isEcAuthenticated) {
         openEcPortalModal();
@@ -1030,7 +1074,7 @@
         updateEcAuthUI();
         renderMembersTable();
         openEcPortalModal();
-        showToast("EC Member Authentication Granted!");
+        showToast("EC Authentication Granted!");
       } else {
         document.getElementById("ec-login-error").classList.remove("hidden");
       }
@@ -1042,27 +1086,25 @@
       updateEcAuthUI();
       closeEcPortalModal();
       renderMembersTable();
-      showToast("EC Portal Locked. Attendance restricted.");
+      showToast("EC Portal Locked.");
     }
 
     function updateEcAuthUI() {
       const label = document.getElementById("ec-auth-label");
       const shield = document.getElementById("ec-shield-icon");
-      const ind = document.getElementById("ec-lock-indicator");
       if (appState.isEcAuthenticated) {
         label.textContent = "EC Dashboard";
         shield.classList.replace("text-indigo-400", "text-emerald-400");
-        ind.innerHTML = `<i data-lucide="unlock" class="w-3.5 h-3.5 text-emerald-400"></i> <span class="text-emerald-300 font-semibold">Attendance Authority: Active (EC Member Mode)</span>`;
       } else {
         label.textContent = "EC Portal (Alt+X)";
         shield.classList.replace("text-emerald-400", "text-indigo-400");
-        ind.innerHTML = `<i data-lucide="lock" class="w-3.5 h-3.5 text-amber-400"></i> <span>Attendance Authority: Restricted (Login via EC Portal)</span>`;
       }
-      lucide.createIcons();
     }
 
     function openEcPortalModal() {
       document.getElementById("ec-portal-modal").classList.remove("hidden");
+      renderEcFeesTable();
+      renderEcMeetingCheckinTable();
       renderVouchersLedger();
       renderSettlementsLedger();
       lucide.createIcons();
@@ -1073,7 +1115,7 @@
     }
 
     function switchEcTab(tabName) {
-      const tabs = ["creator", "vouchers", "settlements", "fees"];
+      const tabs = ["fees", "meetings", "creator", "vouchers", "settlements"];
       tabs.forEach(t => {
         const btn = document.getElementById(`tab-btn-${t}`);
         const content = document.getElementById(`ec-tab-${t}`);
@@ -1086,16 +1128,134 @@
         }
       });
       if (tabName === "fees") renderEcFeesTable();
+      if (tabName === "meetings") renderEcMeetingCheckinTable();
       lucide.createIcons();
     }
 
-    // --- ROSTER TABLE (ENRICHED DETAILS & RESTRICTED CHECK-IN) ---
+    // --- MEMBERS MASTER RUNNING FEE LEDGER ---
+    function renderEcFeesTable() {
+      const tbody = document.getElementById("ec-fees-tbody");
+      const search = (document.getElementById("ec-fees-search").value || "").toLowerCase().trim();
+      const list = appState.members.filter(m => !search || 
+        m.firm.toLowerCase().includes(search) || 
+        (m.mobile && m.mobile.includes(search)) || 
+        (m.area && m.area.toLowerCase().includes(search))
+      );
+
+      document.getElementById("ledger-total-count").textContent = appState.members.length;
+      const totalCol = appState.members.reduce((acc, m) => acc + (parseFloat(m.feeAmount) || 0), 0);
+      document.getElementById("ec-ledger-total-amount").textContent = "₹ " + totalCol.toLocaleString("en-IN", { minimumFractionDigits: 2 });
+
+      tbody.innerHTML = list.map(m => {
+        const isPaid = m.feeStatus === "PAID";
+        const hist = (m.feeHistory && m.feeHistory.length > 0) ? m.feeHistory[m.feeHistory.length - 1] : null;
+
+        return `
+          <tr class="hover:bg-slate-900/80 transition">
+            <td class="py-2.5 px-3">
+              <div class="font-bold text-slate-200">${escapeHtml(m.firm)}</div>
+              <div class="text-[10px] text-slate-400 font-mono">ID: ${m.id}</div>
+            </td>
+            <td class="py-2.5 px-3">
+              <span class="px-2 py-0.5 rounded text-[10px] bg-slate-800 text-slate-300 font-medium">${escapeHtml(m.area || "Gondia")}</span>
+            </td>
+            <td class="py-2.5 px-3 text-center">
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold ${isPaid ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/30" : "bg-amber-500/10 text-amber-400 border border-amber-500/30"}">
+                ${m.feeStatus}
+              </span>
+            </td>
+            <td class="py-2.5 px-3 text-right font-mono text-teal-400 font-bold">
+              ₹ ${parseFloat(m.feeAmount || 0).toLocaleString("en-IN", { minimumFractionDigits: 2 })}
+            </td>
+            <td class="py-2.5 px-3 text-slate-400 text-[11px]">
+              ${hist ? `<span class="font-mono text-slate-300">${hist.receiptNo}</span> • <span class="text-teal-400">${hist.mode}</span>` : `<span class="italic text-slate-600">Pending</span>`}
+            </td>
+            <td class="py-2.5 px-3 text-right">
+              <button onclick="openFeePaymentModal('${m.id}')" class="px-2.5 py-1 rounded bg-teal-500/10 hover:bg-teal-500/20 text-teal-300 border border-teal-500/30 text-[11px] font-medium">
+                Record Payment
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+    // --- MEETING MANAGEMENT & LIVE CHECKIN INSIDE EC DASHBOARD ---
+    function createNewMeetingFromEc() {
+      const title = document.getElementById("ec-new-meet-title").value.trim();
+      const date = document.getElementById("ec-new-meet-date").value;
+      if (!title) { alert("Please enter meeting title"); return; }
+
+      const newM = {
+        id: "meet-" + Date.now(),
+        title: title,
+        date: date,
+        attendance: {}
+      };
+
+      appState.meetings.unshift(newM);
+      appState.activeMeetingId = newM.id;
+      persistLocal();
+      updateStats();
+      renderMembersTable();
+      renderEcMeetingCheckinTable();
+      showToast(`Meeting Created: ${title}`);
+      autoSilentLiveSync();
+    }
+
+    function renderEcMeetingCheckinTable() {
+      const tbody = document.getElementById("ec-checkin-tbody");
+      const search = (document.getElementById("ec-checkin-search").value || "").toLowerCase().trim();
+      const activeM = appState.meetings.find(m => m.id === appState.activeMeetingId) || appState.meetings[0];
+      const meetAttendance = (activeM && activeM.attendance) ? activeM.attendance : {};
+
+      document.getElementById("ec-current-meeting-label").textContent = `Active Meeting: ${activeM.title} (${activeM.date})`;
+
+      const list = appState.members.filter(m => !search || m.firm.toLowerCase().includes(search));
+
+      tbody.innerHTML = list.map(m => {
+        const isPres = meetAttendance[m.id] === "PRESENT";
+        return `
+          <tr class="hover:bg-slate-900/80 transition">
+            <td class="py-2 px-3 font-semibold text-slate-200">${escapeHtml(m.firm)}</td>
+            <td class="py-2 px-3 text-slate-400">${escapeHtml(m.area || "Gondia")}</td>
+            <td class="py-2 px-3 font-mono text-slate-300">${m.mobile || "N/A"}</td>
+            <td class="py-2 px-3 text-center">
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold ${isPres ? "bg-indigo-500/20 text-indigo-300" : "bg-slate-800 text-slate-500"}">
+                ${isPres ? "PRESENT" : "ABSENT"}
+              </span>
+            </td>
+            <td class="py-2 px-3 text-right">
+              <button onclick="toggleEcCheckin('${m.id}')" class="px-3 py-1 rounded text-[11px] font-bold transition ${isPres ? "bg-rose-500/10 text-rose-400 border border-rose-500/30 hover:bg-rose-500/20" : "bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/20"}">
+                ${isPres ? "Mark Absent" : "Mark Present"}
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+    function toggleEcCheckin(memberId) {
+      const activeM = appState.meetings.find(m => m.id === appState.activeMeetingId) || appState.meetings[0];
+      if (!activeM.attendance) activeM.attendance = {};
+
+      activeM.attendance[memberId] = activeM.attendance[memberId] === "PRESENT" ? "ABSENT" : "PRESENT";
+      persistLocal();
+      updateStats();
+      renderMembersTable();
+      renderEcMeetingCheckinTable();
+    }
+
+    // --- MAIN ROSTER TABLE RENDER ---
     function renderMembersTable() {
       const tbody = document.getElementById("members-table-body");
       const search = document.getElementById("member-search").value.toLowerCase().trim();
       const areaFilter = document.getElementById("filter-area").value;
       const feeFilter = document.getElementById("filter-fee").value;
       const attendanceFilter = document.getElementById("filter-attendance").value;
+
+      const activeM = appState.meetings.find(m => m.id === appState.activeMeetingId) || appState.meetings[0];
+      const meetAttendance = (activeM && activeM.attendance) ? activeM.attendance : {};
 
       const filtered = appState.members.filter(m => {
         const matchSearch = !search || 
@@ -1109,7 +1269,7 @@
         const matchArea = areaFilter === "ALL" || m.area === areaFilter;
         const matchFee = feeFilter === "ALL" || m.feeStatus === feeFilter;
 
-        const isPres = m.attendance === "PRESENT";
+        const isPres = meetAttendance[m.id] === "PRESENT";
         const matchAttendance = attendanceFilter === "ALL" || 
           (attendanceFilter === "PRESENT" && isPres) ||
           (attendanceFilter === "ABSENT" && !isPres);
@@ -1126,15 +1286,15 @@
 
       tbody.innerHTML = filtered.map((m, idx) => {
         const isPaid = m.feeStatus === "PAID";
-        const isPresent = m.attendance === "PRESENT";
+        const isPresent = meetAttendance[m.id] === "PRESENT";
 
         return `
-          <tr class="hover:bg-slate-800/40 transition group">
+          <tr class="hover:bg-slate-800/40 transition">
             <td class="py-2.5 px-3 text-center text-slate-500 font-mono text-[11px]">${idx + 1}</td>
             <td class="py-2.5 px-3">
               <div class="font-bold text-slate-100 text-xs tracking-wide">${escapeHtml(m.firm)}</div>
               <div class="flex flex-wrap items-center gap-1.5 mt-0.5 text-[10px]">
-                ${m.owner ? `<span class="text-slate-400">Owner: <strong class="text-slate-300 font-medium">${escapeHtml(m.owner)}</strong></span>` : ""}
+                ${m.owner ? `<span class="text-slate-400">Prop: <strong class="text-slate-300 font-medium">${escapeHtml(m.owner)}</strong></span>` : ""}
                 ${m.owner && m.pharmacist ? `<span class="text-slate-600">•</span>` : ""}
                 ${m.pharmacist ? `<span class="text-teal-400 font-medium flex items-center gap-0.5"><i data-lucide="award" class="w-3 h-3"></i> ${escapeHtml(m.pharmacist)}</span>` : ""}
               </div>
@@ -1159,23 +1319,20 @@
               </span>
             </td>
             <td class="py-2.5 px-3 text-center">
-              ${appState.isEcAuthenticated ? `
-                <!-- Clickable when EC authenticated -->
-                <button onclick="toggleAttendance('${m.id}')" title="Click to Toggle Attendance (EC Authority Active)" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[10px] font-bold transition ${isPresent ? "bg-indigo-500/20 text-indigo-300 border border-indigo-500/40 hover:bg-indigo-500/30" : "bg-slate-800 text-slate-400 border border-slate-700 hover:bg-slate-750"}">
-                  <i data-lucide="${isPresent ? "check" : "circle"}" class="w-3 h-3"></i>
-                  ${isPresent ? "PRESENT" : "ABSENT"}
-                </button>
-              ` : `
-                <!-- Read-Only pill when not authenticated -->
-                <span class="inline-flex items-center gap-1 text-[11px] font-medium ${isPresent ? "text-indigo-400 font-semibold" : "text-slate-500"}">
-                  <i data-lucide="${isPresent ? "check-circle" : "minus"}" class="w-3 h-3"></i>
-                  ${isPresent ? "Present" : "Absent"}
-                </span>
-              `}
+              <!-- Strictly read-only in main roster; EC authority toggle is inside EC Dashboard -->
+              <span class="inline-flex items-center gap-1 text-[11px] font-medium ${isPresent ? "text-indigo-400 font-semibold" : "text-slate-500"}">
+                <i data-lucide="${isPresent ? "check-circle" : "minus"}" class="w-3 h-3"></i>
+                ${isPresent ? "Present" : "Absent"}
+              </span>
             </td>
-            <td class="py-2.5 px-3 text-right">
-              <button onclick="openFeePaymentModal('${m.id}')" title="Record Fee Payment (EC)" class="px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition">
-                <i data-lucide="receipt" class="w-3.5 h-3.5"></i>
+            <td class="py-2.5 px-3 text-right space-x-1 whitespace-nowrap">
+              <!-- Edit Protected with 1441 -->
+              <button onclick="triggerProtectedAction('EDIT', '${m.id}')" title="Edit Member (PIN 1441)" class="p-1 rounded bg-slate-800 hover:bg-slate-700 text-amber-400 transition">
+                <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
+              </button>
+              <!-- Delete Protected with 1441 -->
+              <button onclick="triggerProtectedAction('DELETE', '${m.id}')" title="Delete Member (PIN 1441)" class="p-1 rounded bg-slate-800 hover:bg-slate-700 text-rose-400 transition">
+                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
               </button>
             </td>
           </tr>
@@ -1183,39 +1340,6 @@
       }).join("");
 
       lucide.createIcons();
-    }
-
-    function toggleAttendance(memberId) {
-      if (!appState.isEcAuthenticated) {
-        openEcPortalAuth();
-        return;
-      }
-      const member = appState.members.find(m => m.id === memberId);
-      if (member) {
-        member.attendance = member.attendance === "PRESENT" ? "ABSENT" : "PRESENT";
-        persistLocal();
-        updateStats();
-        renderMembersTable();
-        showToast(`${member.firm}: Marked ${member.attendance}`);
-      }
-    }
-
-    function exportAttendanceCSV() {
-      const today = new Date().toISOString().split("T")[0];
-      let csv = "ID,Chemist Firm Name,Proprietor,Pharmacist,Tahasil,Address,Mobile,Attendance Status,Date\n";
-      appState.members.forEach(m => {
-        const st = m.attendance === "PRESENT" ? "PRESENT" : "ABSENT";
-        csv += `"${m.id}","${(m.firm||"").replace(/"/g, '""')}","${(m.owner||"").replace(/"/g, '""')}","${(m.pharmacist||"").replace(/"/g, '""')}","${m.area||""}","${(m.address||"").replace(/"/g, '""')}","${m.mobile||""}","${st}","${today}"\n`;
-      });
-
-      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-      const a = document.createElement("a");
-      a.href = URL.createObjectURL(blob);
-      a.download = `GDCDA_Attendance_${today}.csv`;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      showToast("Attendance CSV Exported!");
     }
 
     // --- EXPENSE VOUCHER ENGINE ---
@@ -1323,7 +1447,7 @@
       persistLocal();
       renderVouchersLedger();
       renderSettlementsLedger();
-      if (appState.cloudConfig.token) pushToGitHubVault();
+      autoSilentLiveSync();
     }
 
     function renderVouchersLedger() {
@@ -1417,7 +1541,7 @@
       renderVouchersLedger();
       renderSettlementsLedger();
       showToast("Settlement Payment Recorded!");
-      if (appState.cloudConfig.token) pushToGitHubVault();
+      autoSilentLiveSync();
     }
 
     function loadVoucherIntoCreator(vouchId) {
@@ -1432,7 +1556,7 @@
       showToast("Voucher loaded into editor!");
     }
 
-    // --- A6 PRINT ENGINE ---
+    // A6 Print Stream
     function printCurrentA6Voucher() {
       const payer = document.getElementById("v-payer").value;
       const date = document.getElementById("v-date").value;
@@ -1542,14 +1666,10 @@
       }, 350);
     }
 
-    // --- MEMBER FEES MODAL LOGIC ---
+    // --- MEMBER FEE RECORD MODAL ---
     let activeFeeMemberId = null;
 
     function openFeePaymentModal(memberId) {
-      if (!appState.isEcAuthenticated) {
-        openEcPortalAuth();
-        return;
-      }
       activeFeeMemberId = memberId;
       const mem = appState.members.find(m => m.id === memberId);
       if (!mem) return;
@@ -1589,37 +1709,86 @@
       renderMembersTable();
       renderEcFeesTable();
       showToast(`Fees Updated: ${mem.firm} (₹${amt})`);
-      if (appState.cloudConfig.token) pushToGitHubVault();
+      autoSilentLiveSync();
     }
 
-    function renderEcFeesTable() {
-      const tbody = document.getElementById("ec-fees-tbody");
-      const search = (document.getElementById("ec-fees-search").value || "").toLowerCase().trim();
-      const list = appState.members.filter(m => !search || m.firm.toLowerCase().includes(search));
-
-      tbody.innerHTML = list.slice(0, 40).map(m => `
-        <tr class="hover:bg-slate-900/60 transition">
-          <td class="py-2 px-3 font-semibold text-slate-200">${escapeHtml(m.firm)}</td>
-          <td class="py-2 px-3 text-slate-400">${escapeHtml(m.area || "Gondia")}</td>
-          <td class="py-2 px-3">
-            <span class="px-2 py-0.5 rounded text-[10px] font-bold ${m.feeStatus === "PAID" ? "bg-emerald-500/10 text-emerald-400" : "bg-amber-500/10 text-amber-400"}">
-              ${m.feeStatus}
-            </span>
-          </td>
-          <td class="py-2 px-3 text-right font-mono text-teal-400 font-bold">₹ ${m.feeAmount || 0}</td>
-          <td class="py-2 px-3 text-right">
-            <button onclick="openFeePaymentModal('${m.id}')" class="px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-teal-300 text-[11px]">Update</button>
-          </td>
-        </tr>
-      `).join("");
+    // JSON Vault Backup & Restore
+    function downloadJsonBackup() {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appState, null, 2));
+      const downloadAnchor = document.createElement("a");
+      const dateTag = new Date().toISOString().split("T")[0];
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", `GDCDA_VAULT_BACKUP_${dateTag}.json`);
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+      showToast("Vault Backup Downloaded!");
     }
 
-    // --- HELPERS ---
+    function handleVaultRestore(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const importedData = JSON.parse(e.target.result);
+          if (importedData.members && Array.isArray(importedData.members)) {
+            appState.members = importedData.members;
+          } else if (Array.isArray(importedData)) {
+            appState.members = importedData;
+          }
+          if (importedData.vouchers && Array.isArray(importedData.vouchers)) {
+            appState.vouchers = importedData.vouchers;
+          }
+          if (importedData.meetings && Array.isArray(importedData.meetings)) {
+            appState.meetings = importedData.meetings;
+          }
+
+          persistLocal();
+          updateStats();
+          renderMembersTable();
+          renderEcFeesTable();
+          renderEcMeetingCheckinTable();
+          renderVouchersLedger();
+          renderSettlementsLedger();
+          showToast(`Vault Restored: ${appState.members.length} Members Loaded!`);
+        } catch (err) {
+          alert("Invalid JSON file! Please select a valid GDCDA JSON file.");
+        }
+      };
+      reader.readAsText(file);
+      event.target.value = "";
+    }
+
+    function exportAttendanceCSV() {
+      const activeM = appState.meetings.find(m => m.id === appState.activeMeetingId) || appState.meetings[0];
+      const meetAttendance = (activeM && activeM.attendance) ? activeM.attendance : {};
+
+      let csv = "ID,Chemist Firm Name,Proprietor,Pharmacist,Tahasil,Address,Mobile,Attendance Status,Meeting Title,Meeting Date\n";
+      appState.members.forEach(m => {
+        const st = meetAttendance[m.id] === "PRESENT" ? "PRESENT" : "ABSENT";
+        csv += `"${m.id}","${(m.firm||"").replace(/"/g, '""')}","${(m.owner||"").replace(/"/g, '""')}","${(m.pharmacist||"").replace(/"/g, '""')}","${m.area||""}","${(m.address||"").replace(/"/g, '""')}","${m.mobile||""}","${st}","${(activeM.title||"").replace(/"/g, '""')}","${activeM.date||""}"\n`;
+      });
+
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = `GDCDA_Attendance_${activeM.date}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      showToast("Attendance CSV Exported!");
+    }
+
     function updateStats() {
       const total = appState.members.length;
       const paid = appState.members.filter(m => m.feeStatus === "PAID").length;
       const pending = total - paid;
-      const present = appState.members.filter(m => m.attendance === "PRESENT").length;
+
+      const activeM = appState.meetings.find(m => m.id === appState.activeMeetingId) || appState.meetings[0];
+      const meetAttendance = (activeM && activeM.attendance) ? activeM.attendance : {};
+      const present = Object.values(meetAttendance).filter(v => v === "PRESENT").length;
 
       document.getElementById("stat-total").textContent = total;
       document.getElementById("stat-paid").textContent = paid;
