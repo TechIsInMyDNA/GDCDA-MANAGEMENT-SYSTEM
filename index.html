@@ -928,18 +928,65 @@
         }
 
         const url = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${cfg.path}`;
-        const getRes = await fetch(url, { headers: { "Authorization": `token ${cfg.token}`, "Accept": "application/vnd.github.v3+json" } });
-        let sha = getRes.ok ? (await getRes.json()).sha : null;
+        
+        // Step 1: Always get the fresh, non-cached latest SHA from GitHub
+        let sha = null;
+        try {
+          const getRes = await fetch(`${url}?ref=${cfg.branch || 'main'}&t=${Date.now()}`, {
+            headers: { 
+              "Authorization": `token ${cfg.token}`, 
+              "Accept": "application/vnd.github.v3+json" 
+            },
+            cache: "no-store"
+          });
+          if (getRes.ok) {
+            const fileData = await getRes.json();
+            sha = fileData.sha;
+          }
+        } catch(e) {}
 
-        const putRes = await fetch(url, {
+        // Step 2: PUT request with exact SHA
+        let putRes = await fetch(url, {
           method: "PUT",
-          headers: { "Authorization": `token ${cfg.token}`, "Content-Type": "application/json" },
-          body: JSON.stringify({ message: `Vault Sync [${new Date().toLocaleString()}]`, content: btoa(unescape(encodeURIComponent(fileContent))), sha, branch: cfg.branch || "main" })
+          headers: { 
+            "Authorization": `token ${cfg.token}`, 
+            "Content-Type": "application/json",
+            "Accept": "application/vnd.github.v3+json"
+          },
+          body: JSON.stringify({ 
+            message: `Vault Sync [${new Date().toLocaleString()}]`, 
+            content: btoa(unescape(encodeURIComponent(fileContent))), 
+            sha: sha, 
+            branch: cfg.branch || "main" 
+          })
         });
+
+        // Step 3: Handle 409 Conflict Auto-Retry
+        if (putRes.status === 409) {
+          const refetch = await fetch(`${url}?ref=${cfg.branch || 'main'}&t=${Date.now()}`, {
+            headers: { "Authorization": `token ${cfg.token}`, "Accept": "application/vnd.github.v3+json" },
+            cache: "no-store"
+          });
+          if (refetch.ok) {
+            const refData = await refetch.json();
+            putRes = await fetch(url, {
+              method: "PUT",
+              headers: { "Authorization": `token ${cfg.token}`, "Content-Type": "application/json" },
+              body: JSON.stringify({
+                message: `Vault Sync (Resolved Conflict) [${new Date().toLocaleString()}]`,
+                content: btoa(unescape(encodeURIComponent(fileContent))),
+                sha: refData.sha,
+                branch: cfg.branch || "main"
+              })
+            });
+          }
+        }
 
         if (putRes.ok) {
           st.textContent = "Synced Live";
           showToast(`Successfully Pushed ${appState.members.length} Members to data.json!`);
+        } else {
+          st.textContent = "Sync Offline";
         }
       } catch(e) {
         st.textContent = "Sync Offline";
