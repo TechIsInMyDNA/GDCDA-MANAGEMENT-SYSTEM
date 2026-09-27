@@ -1083,7 +1083,7 @@
           <td class="py-2 px-3 text-slate-300 font-semibold">${escapeHtml(v.purpose)}</td>
           <td class="py-2 px-3 text-right font-mono text-teal-400 font-bold">₹ ${parseFloat(v.total).toLocaleString("en-IN", {minimumFractionDigits: 2})}</td>
           <td class="py-2 px-3 text-center"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/10 text-amber-400">PENDING</span></td>
-          <td class="py-2 px-3 text-right"><button onclick="printSavedA6Voucher('${v.id}')" title="Print Voucher" class="p-1 rounded bg-slate-800 text-indigo-400 cursor-pointer"><i data-lucide="printer" class="w-3.5 h-3.5"></i></button></td>
+          <td class="py-2 px-3 text-right"><button onclick="printSavedA6Voucher('${v.id}')" title="Print Detailed Voucher" class="p-1 rounded bg-slate-800 text-indigo-400 hover:text-indigo-300 cursor-pointer"><i data-lucide="printer" class="w-3.5 h-3.5"></i></button></td>
         </tr>
       `).join("");
       lucide.createIcons();
@@ -1131,7 +1131,7 @@
       autoPushToGitHub();
     }
 
-    // A6 PORTRAIT PRINT ENGINE
+    // UNIFIED FULL-DETAIL A6 VOUCHER PRINT ENGINE
     function printCurrentA6Voucher() {
       executeA6PrintStream({
         payer: document.getElementById("v-payer").value,
@@ -1144,31 +1144,122 @@
 
     function printSavedA6Voucher(vouchId) {
       const v = appState.vouchers.find(x => x.id === vouchId);
-      if (v) executeA6PrintStream(v);
+      if (!v) return;
+      executeA6PrintStream(v);
     }
 
     function executeA6PrintStream(voucher) {
       const iframe = document.getElementById("print-frame");
-      const numInWords = "INR " + Math.round(voucher.total) + " Only";
+      const numInWords = "INR " + Math.round(voucher.total || 0) + " Only";
+      
       const printHtml = `
         <!DOCTYPE html>
         <html>
         <head>
           <meta charset="utf-8">
-          <title>GDCDA Voucher</title>
+          <title>GDCDA Reimbursement Voucher</title>
           <style>
-            @page { size: 105mm 148mm portrait; margin: 4mm; }
-            body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 8pt; color: #000; margin: 0; padding: 0; }
-            .box { border: 1.5pt solid #000; padding: 4mm; height: 138mm; box-sizing: border-box; display: flex; flex-direction: column; justify-content: space-between; }
-            .header { text-align: center; border-bottom: 1pt solid #000; padding-bottom: 2mm; margin-bottom: 2mm; }
-            .header h1 { font-size: 11pt; margin: 0; font-weight: 800; letter-spacing: 0.5px; }
-            .header p { font-size: 7pt; margin: 1mm 0 0; }
-            .meta { font-size: 7.5pt; margin-bottom: 2mm; line-height: 1.3; }
-            table { width: 100%; border-collapse: collapse; font-size: 7pt; margin-top: 1mm; }
-            th { border-top: 1pt solid #000; border-bottom: 1pt solid #000; padding: 2pt; text-align: left; }
-            td { border-bottom: 0.5pt dashed #aaa; padding: 2.5pt 2pt; }
-            .total-row { border-top: 1pt solid #000; border-bottom: 1pt solid #000; font-weight: bold; }
-            .signatures { display: flex; justify-content: space-between; font-size: 7pt; margin-top: 4mm; }
+            @page { 
+              size: 105mm 148mm portrait; 
+              margin: 3.5mm; 
+            }
+            * { box-sizing: border-box; }
+            body { 
+              font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; 
+              font-size: 8pt; 
+              color: #000; 
+              margin: 0; 
+              padding: 0; 
+              background: #fff;
+            }
+            .box { 
+              border: 1.5pt solid #000; 
+              padding: 3.5mm; 
+              height: 140mm; 
+              display: flex; 
+              flex-direction: column; 
+              justify-content: space-between; 
+            }
+            .header { 
+              text-align: center; 
+              border-bottom: 1.2pt solid #000; 
+              padding-bottom: 1.5mm; 
+              margin-bottom: 2mm; 
+            }
+            .header h1 { 
+              font-size: 10pt; 
+              margin: 0; 
+              font-weight: 800; 
+              letter-spacing: 0.3px; 
+              text-transform: uppercase; 
+            }
+            .header p { 
+              font-size: 6.5pt; 
+              margin: 1mm 0 0; 
+              font-weight: bold; 
+              letter-spacing: 0.2px; 
+            }
+            .meta { 
+              font-size: 7.5pt; 
+              margin-bottom: 2mm; 
+              line-height: 1.35; 
+              border-bottom: 0.5pt dashed #444; 
+              padding-bottom: 1.5mm; 
+            }
+            table { 
+              width: 100%; 
+              border-collapse: collapse; 
+              font-size: 7pt; 
+            }
+            th { 
+              border-top: 1pt solid #000; 
+              border-bottom: 1pt solid #000; 
+              padding: 2.5pt 2pt; 
+              text-align: left; 
+              text-transform: uppercase; 
+              font-size: 6.5pt; 
+            }
+            td { 
+              border-bottom: 0.5pt dashed #aaa; 
+              padding: 2.5pt 2pt; 
+              vertical-align: top; 
+            }
+            .item-desc { 
+              font-weight: 600; 
+              color: #000; 
+              text-transform: uppercase; 
+            }
+            .item-subtext { 
+              font-size: 6.2pt; 
+              color: #333; 
+              margin-top: 0.5mm; 
+              font-family: monospace; 
+            }
+            .total-row td { 
+              border-top: 1.2pt solid #000; 
+              border-bottom: 1.2pt solid #000; 
+              font-weight: 800; 
+              font-size: 8pt; 
+              padding: 3pt 2pt; 
+            }
+            .in-words { 
+              font-size: 6.8pt; 
+              margin-top: 2mm; 
+              font-weight: 600; 
+            }
+            .signatures { 
+              display: flex; 
+              justify-content: space-between; 
+              font-size: 6.8pt; 
+              font-weight: bold; 
+              border-top: 0.5pt solid #000; 
+              padding-top: 4mm; 
+              margin-top: 2mm; 
+            }
+            .sig-block { 
+              text-align: center; 
+              width: 30%; 
+            }
           </style>
         </head>
         <body>
@@ -1178,43 +1269,59 @@
                 <h1>GONDIA DISTRICT CHEMIST & DRUGGIST ASSOCIATION</h1>
                 <p>AFFILIATED TO MSCDA | EXPENSE REIMBURSEMENT VOUCHER</p>
               </div>
+              
               <div class="meta">
-                <div><strong>Claimant:</strong> ${voucher.payer}</div>
-                <div><strong>Date:</strong> ${voucher.date} | <strong>Purpose:</strong> ${voucher.purpose}</div>
+                <div><strong>Claimant:</strong> ${escapeHtml(voucher.payer || "")}</div>
+                <div><strong>Date:</strong> ${voucher.date || ""} | <strong>Purpose:</strong> ${escapeHtml(voucher.purpose || "")}</div>
               </div>
+
               <table>
                 <thead>
                   <tr>
-                    <th style="width: 8%;">#</th>
-                    <th>Particulars / Details</th>
-                    <th style="width: 15%; text-align: right;">Amount (₹)</th>
+                    <th style="width: 7%; text-align: center;">#</th>
+                    <th>Particulars & Remarks / UTR</th>
+                    <th style="width: 20%; text-align: right;">Amount (₹)</th>
                   </tr>
                 </thead>
                 <tbody>
-                  ${voucher.items.map((it, i) => `
+                  ${(voucher.items || []).map((it, i) => `
                     <tr>
-                      <td>${i + 1}</td>
-                      <td>${it.desc} ${it.ref ? `<br><small style="color:#444">Ref: ${it.ref}</small>` : ''}</td>
-                      <td style="text-align: right;">${parseFloat(it.amt).toFixed(2)}</td>
+                      <td style="text-align: center; font-weight: bold;">${i + 1}</td>
+                      <td>
+                        <div class="item-desc">${escapeHtml(it.desc || "")}</div>
+                        ${(it.date || it.mode || it.ref) ? `
+                          <div class="item-subtext">
+                            ${it.date ? `Date: ${it.date}` : ''} 
+                            ${it.mode ? `| Mode: ${it.mode}` : ''} 
+                            ${it.ref ? `| Ref/UTR: ${escapeHtml(it.ref)}` : ''}
+                          </div>
+                        ` : ''}
+                      </td>
+                      <td style="text-align: right; font-weight: bold; font-family: monospace;">
+                        ${parseFloat(it.amt || 0).toFixed(2)}
+                      </td>
                     </tr>
                   `).join("")}
                   <tr class="total-row">
-                    <td colspan="2" style="text-align: right;">TOTAL:</td>
-                    <td style="text-align: right;">₹ ${parseFloat(voucher.total).toFixed(2)}</td>
+                    <td colspan="2" style="text-align: right;">TOTAL PAYABLE:</td>
+                    <td style="text-align: right; font-family: monospace;">₹ ${parseFloat(voucher.total || 0).toFixed(2)}</td>
                   </tr>
                 </tbody>
               </table>
-              <p style="font-size: 7pt; margin-top: 3mm;"><strong>In Words:</strong> ${numInWords}</p>
+
+              <div class="in-words"><strong>In Words:</strong> ${numInWords}</div>
             </div>
+
             <div class="signatures">
-              <div>Claimant Signature</div>
-              <div>Treasurer Signature</div>
-              <div>President Signature</div>
+              <div class="sig-block">Claimant Signature</div>
+              <div class="sig-block">Treasurer Signature</div>
+              <div class="sig-block">President Signature</div>
             </div>
           </div>
         </body>
         </html>
       `;
+
       const doc = iframe.contentWindow.document;
       doc.open();
       doc.write(printHtml);
@@ -1515,9 +1622,9 @@
         let sha = null;
         try {
           const getRes = await fetch(`${url}?ref=${cfg.branch || 'main'}&_nocache=${Date.now()}`, {
-            headers: {
-              "Authorization": `Bearer ${cfg.token}`,
-              "Accept": "application/vnd.github.v3+json"
+            headers: { 
+              "Authorization": `Bearer ${cfg.token}`, 
+              "Accept": "application/vnd.github.v3+json" 
             },
             cache: "no-store"
           });
@@ -1550,10 +1657,7 @@
         // Step 3: Handle 409 Conflict Retry
         if (putRes.status === 409) {
           const refetch = await fetch(`${url}?ref=${cfg.branch || 'main'}&_nocache=${Date.now()}`, {
-            headers: {
-              "Authorization": `Bearer ${cfg.token}`,
-              "Accept": "application/vnd.github.v3+json"
-            },
+            headers: { "Authorization": `Bearer ${cfg.token}`, "Accept": "application/vnd.github.v3+json" },
             cache: "no-store"
           });
           if (refetch.ok) {
@@ -1561,11 +1665,7 @@
             putBody.sha = refData.sha;
             putRes = await fetch(url, {
               method: "PUT",
-              headers: {
-                "Authorization": `Bearer ${cfg.token}`,
-                "Content-Type": "application/json",
-                "Accept": "application/vnd.github.v3+json"
-              },
+              headers: { "Authorization": `Bearer ${cfg.token}`, "Content-Type": "application/json" },
               body: JSON.stringify(putBody)
             });
           }
@@ -1587,7 +1687,7 @@
       }
     }
 
-    // WEBCRYPTO AES-256-GCM CLEAN ENGINE
+    // WEBCRYPTO AES-256-GCM ENGINE
     async function getDerivedKey(passphrase, salt) {
       const enc = new TextEncoder();
       const km = await crypto.subtle.importKey("raw", enc.encode(passphrase), "PBKDF2", false, ["deriveKey"]);
