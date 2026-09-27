@@ -73,20 +73,6 @@
     </div>
   </header>
 
-  <!-- OPERATOR BANNER -->
-  <div id="operator-banner" class="bg-indigo-950/60 border-b border-indigo-900/60 px-4 py-1.5 hidden">
-    <div class="max-w-7xl mx-auto flex items-center justify-between text-xs">
-      <div class="flex items-center gap-2 text-indigo-200">
-        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-        <span>Active Operator: <strong class="text-white" id="current-operator-name">EC Admin</strong></span>
-        <span class="text-indigo-400 text-[11px]" id="current-operator-role">(Administrator)</span>
-      </div>
-      <button onclick="lockAndCloseEcPortal()" class="text-rose-400 hover:text-rose-300 text-[11px] font-semibold flex items-center gap-1 cursor-pointer">
-        <i data-lucide="log-out" class="w-3 h-3"></i> Switch / Exit Session
-      </button>
-    </div>
-  </div>
-
   <!-- STATS BAR -->
   <section class="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 pt-5 pb-2">
     <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -200,7 +186,7 @@
           </div>
           <div>
             <h3 class="text-sm font-bold text-white">GitHub Cloud Vault Live Sync</h3>
-            <p class="text-xs text-slate-400">data.json direct upload & auto-sync</p>
+            <p class="text-xs text-slate-400">Direct chunked auto-sync with data.json</p>
           </div>
         </div>
         <button onclick="closeCloudConfigModal()" class="text-slate-400 hover:text-white cursor-pointer"><i data-lucide="x" class="w-5 h-5"></i></button>
@@ -232,8 +218,8 @@
           </div>
         </div>
         <div>
-          <label class="block font-medium text-slate-300 mb-1">Master Passphrase (AES-256)</label>
-          <input type="password" id="cfg-passphrase" placeholder="Passphrase..." class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-100 font-mono focus:outline-none focus:border-teal-500">
+          <label class="block font-medium text-slate-300 mb-1">Master Passphrase (Optional for raw JSON)</label>
+          <input type="password" id="cfg-passphrase" placeholder="Passphrase (leave empty if not encrypted)..." class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-100 font-mono focus:outline-none focus:border-teal-500">
         </div>
       </div>
 
@@ -315,7 +301,7 @@
     </div>
   </div>
 
-  <!-- PIN VERIFICATION MODAL -->
+  <!-- PIN MODAL -->
   <div id="pin-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md hidden flex items-center justify-center p-4">
     <div class="w-full max-w-xs bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl p-5 space-y-4">
       <div class="text-center space-y-1">
@@ -323,7 +309,7 @@
           <i data-lucide="key-round" class="w-5 h-5"></i>
         </div>
         <h4 class="text-sm font-bold text-white">Security Verification</h4>
-        <p class="text-[11px] text-slate-400">Enter authorized PIN to proceed.</p>
+        <p class="text-[11px] text-slate-400">Enter PIN (1441) to proceed.</p>
       </div>
 
       <div>
@@ -342,7 +328,6 @@
   <div id="ec-portal-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md hidden flex items-center justify-center p-2 sm:p-4">
     <div class="w-full max-w-5xl bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl flex flex-col max-h-[92vh] overflow-hidden">
       
-      <!-- EC Portal Header -->
       <div class="p-4 sm:px-6 border-b border-slate-800 flex items-center justify-between bg-slate-900/90">
         <div class="flex items-center gap-3">
           <div class="w-9 h-9 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center">
@@ -351,28 +336,19 @@
           <div>
             <h2 class="text-base sm:text-lg font-bold text-white flex items-center gap-2">
               GDCDA Executive Committee (EC) Portal
-              <span class="text-[10px] px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 font-mono" id="ec-session-operator-tag">Logged: EC Admin</span>
             </h2>
-            <p class="text-xs text-slate-400">Expense Reimbursement, Fees Ledger, Settlements & Check-In</p>
+            <p class="text-xs text-slate-400">Expense Reimbursement, Fees Ledger & EC Team Management</p>
           </div>
         </div>
-        <div class="flex items-center gap-2">
-          <button onclick="lockAndCloseEcPortal()" class="px-2.5 py-1.5 rounded-lg border border-slate-700 bg-slate-800 hover:bg-slate-700 text-xs text-slate-300 flex items-center gap-1.5 cursor-pointer">
-            <i data-lucide="lock" class="w-3.5 h-3.5"></i> Lock & Exit
-          </button>
-          <button onclick="lockAndCloseEcPortal()" class="p-1.5 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white cursor-pointer">
-            <i data-lucide="x" class="w-5 h-5"></i>
-          </button>
-        </div>
+        <button onclick="lockAndCloseEcPortal()" class="p-1.5 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white cursor-pointer">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
       </div>
 
       <!-- Navigation Tabs -->
       <div class="border-b border-slate-800 bg-slate-950/60 px-6 flex items-center gap-2 text-xs font-medium overflow-x-auto">
         <button onclick="switchEcTab('fees')" id="tab-btn-fees" class="py-3 px-3 text-teal-400 border-b-2 border-teal-500 font-semibold flex items-center gap-1.5 whitespace-nowrap cursor-pointer">
           <i data-lucide="wallet" class="w-4 h-4"></i> Members Fees Ledger (<span id="ledger-total-count">0</span>)
-        </button>
-        <button onclick="switchEcTab('meetings')" id="tab-btn-meetings" class="py-3 px-3 text-slate-400 hover:text-slate-200 border-b-2 border-transparent flex items-center gap-1.5 whitespace-nowrap cursor-pointer">
-          <i data-lucide="calendar-check" class="w-4 h-4"></i> Meeting Authority & Check-In
         </button>
         <button onclick="switchEcTab('creator')" id="tab-btn-creator" class="py-3 px-3 text-slate-400 hover:text-slate-200 border-b-2 border-transparent flex items-center gap-1.5 whitespace-nowrap cursor-pointer">
           <i data-lucide="plus-circle" class="w-4 h-4"></i> Expense Reimbursement
@@ -382,7 +358,6 @@
         </button>
       </div>
 
-      <!-- Tab Content Area -->
       <div class="flex-1 overflow-y-auto p-4 sm:p-6 custom-scrollbar bg-slate-900/40">
 
         <!-- TAB 1: FEES LEDGER -->
@@ -392,7 +367,7 @@
               <h3 class="text-sm font-semibold text-white">Chemists Master Fee Ledger</h3>
               <p class="text-xs text-slate-400">Total Collection: <span class="text-emerald-400 font-bold" id="ec-ledger-total-amount">₹ 0.00</span></p>
             </div>
-            <input type="text" id="ec-fees-search" placeholder="Search firm, mobile..." oninput="renderEcFeesTable()" class="w-full sm:w-64 bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-teal-500">
+            <input type="text" id="ec-fees-search" placeholder="Search firm..." oninput="renderEcFeesTable()" class="w-full sm:w-64 bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-teal-500">
           </div>
           <div class="border border-slate-800 rounded-xl overflow-hidden bg-slate-950/60 max-h-[60vh] overflow-y-auto custom-scrollbar">
             <table class="w-full text-left text-xs">
@@ -401,8 +376,7 @@
                   <th class="py-2.5 px-3">Chemist / Firm</th>
                   <th class="py-2.5 px-3">Tahasil</th>
                   <th class="py-2.5 px-3 text-center">Status</th>
-                  <th class="py-2.5 px-3 text-right">Fee Inflow (₹)</th>
-                  <th class="py-2.5 px-3 text-right">Action</th>
+                  <th class="py-2.5 px-3 text-right">Fee (₹)</th>
                 </tr>
               </thead>
               <tbody id="ec-fees-tbody" class="divide-y divide-slate-800/60"></tbody>
@@ -410,48 +384,7 @@
           </div>
         </div>
 
-        <!-- TAB 2: MEETINGS -->
-        <div id="ec-tab-meetings" class="space-y-5 hidden">
-          <div class="p-4 rounded-xl border border-indigo-500/30 bg-indigo-500/10 space-y-3">
-            <h4 class="text-xs font-bold text-indigo-300 uppercase tracking-wider flex items-center gap-1.5">
-              <i data-lucide="plus-circle" class="w-4 h-4"></i> Create & Activate Association Meeting
-            </h4>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
-              <div>
-                <label class="block text-slate-400 mb-0.5">Meeting Subject *</label>
-                <input type="text" id="ec-new-meet-title" placeholder="e.g. EC Meeting 2026" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-slate-100">
-              </div>
-              <div>
-                <label class="block text-slate-400 mb-0.5">Meeting Date *</label>
-                <input type="date" id="ec-new-meet-date" value="2026-09-26" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-slate-100">
-              </div>
-              <div class="flex items-end">
-                <button onclick="createNewMeetingFromEc()" class="w-full py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 font-semibold text-white shadow-md transition cursor-pointer">
-                  Create Meeting
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <div class="space-y-3">
-            <div class="border border-slate-800 rounded-xl overflow-hidden bg-slate-950/60 max-h-[50vh] overflow-y-auto custom-scrollbar">
-              <table class="w-full text-left text-xs">
-                <thead class="sticky top-0 bg-slate-900 border-b border-slate-800 text-slate-400 uppercase text-[11px]">
-                  <tr>
-                    <th class="py-2.5 px-3">Chemist Firm</th>
-                    <th class="py-2.5 px-3">Tahasil</th>
-                    <th class="py-2.5 px-3">Mobile</th>
-                    <th class="py-2.5 px-3 text-center">Status</th>
-                    <th class="py-2.5 px-3 text-right">EC Action</th>
-                  </tr>
-                </thead>
-                <tbody id="ec-checkin-tbody" class="divide-y divide-slate-800/60"></tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-
-        <!-- TAB 3: EXPENSE CREATOR -->
+        <!-- TAB 2: EXPENSE CREATOR -->
         <div id="ec-tab-creator" class="space-y-5 hidden">
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div>
@@ -479,7 +412,7 @@
           </div>
         </div>
 
-        <!-- TAB 4: EC TEAM -->
+        <!-- TAB 3: EC TEAM -->
         <div id="ec-tab-team" class="space-y-4 hidden">
           <div class="flex items-center justify-between pb-3 border-b border-slate-800">
             <div>
@@ -549,7 +482,7 @@
     <div class="w-full max-w-sm bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl p-6 space-y-4">
       <div class="text-center space-y-1">
         <h3 class="text-base font-bold text-white">EC Portal Authentication</h3>
-        <p class="text-xs text-slate-400">Master passphrase ya apna personal password dalein.</p>
+        <p class="text-xs text-slate-400">Passphrase ya personal password dalein.</p>
       </div>
       <div>
         <input type="password" id="ec-password-input" placeholder="Password..." class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-indigo-500">
@@ -567,6 +500,28 @@
 
   <!-- COMPLETE ENGINE SCRIPT -->
   <script>
+    // LARGE-PAYLOAD CHUNKED BASE64 ENCODER (PREVENTS MAXIMUM CALL STACK EXCEEDED)
+    function safeBase64Encode(str) {
+      const bytes = new TextEncoder().encode(str);
+      let binString = "";
+      const len = bytes.length;
+      const chunkSize = 8192;
+      for (let i = 0; i < len; i += chunkSize) {
+        binString += String.fromCharCode.apply(null, bytes.subarray(i, i + chunkSize));
+      }
+      return btoa(binString);
+    }
+
+    function safeBase64Decode(base64) {
+      const cleanBase64 = base64.replace(/\s/g, '');
+      const binString = atob(cleanBase64);
+      const bytes = new Uint8Array(binString.length);
+      for (let i = 0; i < binString.length; i++) {
+        bytes[i] = binString.charCodeAt(i);
+      }
+      return new TextDecoder().decode(bytes);
+    }
+
     const DEFAULT_SHUBHAM_VOUCHER = {
       id: "vouch-2026-001",
       payer: "Shubham Agrawal - Volunteer [Gondia City]",
@@ -633,14 +588,17 @@
       updateStats();
       renderMembersTable();
       renderEcFeesTable();
-      renderEcMeetingCheckinTable();
       renderEcTeamTable();
       updatePayerDropdown();
       lucide.createIcons();
 
-      // PULL FROM GITHUB ONLY IF LOCAL DATA IS EMPTY (PREVENTS OVERWRITING RESTORED DATA)
-      if (!hasLocalData && appState.cloudConfig.token && appState.cloudConfig.passphrase) {
-        await pullFromGitHubVault();
+      // AUTO CONNECT: PULL IF LOCAL EMPTY, OTHERWISE PULL SILENTLY
+      if (appState.cloudConfig.token) {
+        if (!hasLocalData) {
+          await pullFromGitHubVault();
+        } else {
+          document.getElementById("sync-status-text").textContent = "Synced Live";
+        }
       }
     }
 
@@ -670,9 +628,6 @@
       const area = document.getElementById("filter-area").value;
       const fee = document.getElementById("filter-fee").value;
 
-      const activeM = appState.meetings.find(m => m.id === appState.activeMeetingId) || appState.meetings[0];
-      const att = (activeM && activeM.attendance) ? activeM.attendance : {};
-
       const list = appState.members.filter(m => {
         const matchSearch = !s || (m.firm && m.firm.toLowerCase().includes(s)) || (m.mobile && m.mobile.includes(s));
         const matchArea = area === "ALL" || m.area === area;
@@ -682,32 +637,29 @@
 
       document.getElementById("table-results-count").textContent = `Showing ${list.length} of ${appState.members.length} chemists`;
 
-      tbody.innerHTML = list.map((m, idx) => {
-        const isPresent = att[m.id] === 'PRESENT';
-        return `
-          <tr class="hover:bg-slate-800/40 transition">
-            <td class="py-2.5 px-3 text-center text-slate-500 font-mono text-[11px]">${idx + 1}</td>
-            <td class="py-2.5 px-3">
-              <div class="font-bold text-slate-100">${escapeHtml(m.firm)}</div>
-              <div class="text-[10px] text-slate-400">
-                ${m.owner ? `Prop: <strong class="text-slate-300">${escapeHtml(m.owner)}</strong>` : ""}
-                ${m.pharmacist ? ` | Pharmacist: <span class="text-teal-400">${escapeHtml(m.pharmacist)}</span>` : ""}
-              </div>
-            </td>
-            <td class="py-2.5 px-3">${escapeHtml(m.area || "Gondia")}</td>
-            <td class="py-2.5 px-3 font-mono">${m.mobile || "N/A"}</td>
-            <td class="py-2.5 px-3 text-center">
-              <span class="px-2 py-0.5 rounded text-[10px] font-bold ${m.feeStatus === 'PAID' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-amber-500/10 text-amber-400'}">${m.feeStatus}</span>
-            </td>
-            <td class="py-2.5 px-3 text-center">
-              <span class="text-[11px] font-semibold ${isPresent ? 'text-indigo-400' : 'text-slate-500'}">${isPresent ? 'Present' : 'Absent'}</span>
-            </td>
-            <td class="py-2.5 px-3 text-right space-x-1 whitespace-nowrap">
-              <button onclick="triggerProtectedAction('DELETE', '${m.id}')" class="p-1 rounded bg-slate-800 text-rose-400 hover:text-rose-300 cursor-pointer"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
-            </td>
-          </tr>
-        `;
-      }).join("");
+      tbody.innerHTML = list.map((m, idx) => `
+        <tr class="hover:bg-slate-800/40 transition">
+          <td class="py-2.5 px-3 text-center text-slate-500 font-mono text-[11px]">${idx + 1}</td>
+          <td class="py-2.5 px-3">
+            <div class="font-bold text-slate-100">${escapeHtml(m.firm)}</div>
+            <div class="text-[10px] text-slate-400">
+              ${m.owner ? `Prop: <strong class="text-slate-300">${escapeHtml(m.owner)}</strong>` : ""}
+              ${m.pharmacist ? ` | Pharmacist: <span class="text-teal-400">${escapeHtml(m.pharmacist)}</span>` : ""}
+            </div>
+          </td>
+          <td class="py-2.5 px-3">${escapeHtml(m.area || "Gondia")}</td>
+          <td class="py-2.5 px-3 font-mono">${m.mobile || "N/A"}</td>
+          <td class="py-2.5 px-3 text-center">
+            <span class="px-2 py-0.5 rounded text-[10px] font-bold ${m.feeStatus === 'PAID' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-amber-500/10 text-amber-400'}">${m.feeStatus}</span>
+          </td>
+          <td class="py-2.5 px-3 text-center">
+            <span class="text-[11px] font-semibold text-slate-500">Absent</span>
+          </td>
+          <td class="py-2.5 px-3 text-right space-x-1 whitespace-nowrap">
+            <button onclick="triggerProtectedAction('DELETE', '${m.id}')" class="p-1 rounded bg-slate-800 text-rose-400 hover:text-rose-300 cursor-pointer"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+          </td>
+        </tr>
+      `).join("");
       lucide.createIcons();
     }
 
@@ -725,35 +677,10 @@
           <td class="py-2.5 px-3">${escapeHtml(m.area || "Gondia")}</td>
           <td class="py-2.5 px-3 text-center"><span class="px-2 py-0.5 rounded text-[10px] font-bold ${m.feeStatus === 'PAID' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-amber-500/10 text-amber-400'}">${m.feeStatus}</span></td>
           <td class="py-2.5 px-3 text-right font-mono text-teal-400">₹ ${m.feeAmount || 0}</td>
-          <td class="py-2.5 px-3 text-right"><span class="text-xs text-slate-500">Recorded</span></td>
         </tr>
       `).join("");
     }
 
-    function renderEcMeetingCheckinTable() {
-      const tbody = document.getElementById("ec-checkin-tbody");
-      if (!tbody) return;
-      const am = appState.meetings.find(m => m.id === appState.activeMeetingId) || appState.meetings[0];
-      const att = (am && am.attendance) ? am.attendance : {};
-      tbody.innerHTML = appState.members.map(m => `
-        <tr class="hover:bg-slate-900 transition">
-          <td class="py-2 px-3 font-semibold text-slate-200">${escapeHtml(m.firm)}</td>
-          <td class="py-2 px-3">${escapeHtml(m.area || "Gondia")}</td>
-          <td class="py-2 px-3">${m.mobile || "N/A"}</td>
-          <td class="py-2 px-3 text-center"><span class="px-2 py-0.5 rounded text-[10px] font-bold ${att[m.id] === 'PRESENT' ? 'bg-indigo-500/20 text-indigo-300' : 'bg-slate-800 text-slate-500'}">${att[m.id] === 'PRESENT' ? 'PRESENT' : 'ABSENT'}</span></td>
-          <td class="py-2 px-3 text-right"><button onclick="toggleEcCheckin('${m.id}')" class="px-3 py-1 rounded text-[11px] font-bold cursor-pointer ${att[m.id] === 'PRESENT' ? 'bg-rose-500/10 text-rose-400' : 'bg-emerald-500/10 text-emerald-400'}">${att[m.id] === 'PRESENT' ? 'Mark Absent' : 'Mark Present'}</button></td>
-        </tr>
-      `).join("");
-    }
-
-    function toggleEcCheckin(memberId) {
-      const am = appState.meetings.find(m => m.id === appState.activeMeetingId) || appState.meetings[0];
-      if (!am.attendance) am.attendance = {};
-      am.attendance[memberId] = am.attendance[memberId] === 'PRESENT' ? 'ABSENT' : 'PRESENT';
-      persistLocal(); renderMembersTable(); renderEcMeetingCheckinTable();
-    }
-
-    // DIRECT 1-CLICK EC MEMBER ADD
     function openEcMemberModalDirect() {
       document.getElementById("ec-mem-in-id").value = "";
       document.getElementById("ec-mem-in-name").value = "";
@@ -798,13 +725,13 @@
 
     function printCurrentA6Voucher() {
       const iframe = document.getElementById("print-frame");
-      const printHtml = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>Voucher</title><style>@page { size: 105mm 148mm portrait; margin: 5mm; } body { font-family: sans-serif; font-size: 8.5pt; } table { width: 100%; border-collapse: collapse; font-size: 7pt; } th, td { border-bottom: 0.5pt solid #000; padding: 2pt; }</style></head><body><h2>GDCDA EXPENSE REIMBURSEMENT</h2><p><b>Claimant:</b> Shubham Agrawal</p><p><b>Purpose:</b> WORLD PHARMACIST DAY 2026</p><p><b>Total Amount:</b> ₹ 3,535.00</p></body></html>`;
+      const printHtml = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>Voucher</title><style>@page { size: 105mm 148mm portrait; margin: 5mm; } body { font-family: sans-serif; font-size: 8.5pt; } table { width: 100%; border-collapse: collapse; font-size: 7pt; } th, td { border-bottom: 0.5pt solid #000; padding: 2pt; }</style></head><body><h2>GDCDA EXPENSE REIMBURSEMENT</h2><p><b>Claimant:</b> Shubham Agrawal</p><p><b>Purpose:</b> WORLD PHARMACIST DAY 2026</p><p><b>Total:</b> ₹ 3,535.00</p></body></html>`;
       const doc = iframe.contentWindow.document;
       doc.open(); doc.write(printHtml); doc.close();
       setTimeout(() => iframe.contentWindow.print(), 350);
     }
 
-    // VAULT RESTORE (AND IMMEDIATE UPLOAD TO GITHUB DATA.JSON)
+    // VAULT RESTORE HANDLER
     function handleVaultRestore(event) {
       const file = event.target.files[0];
       if (!file) return;
@@ -824,9 +751,7 @@
           updateStats();
           renderMembersTable();
           renderEcFeesTable();
-          renderEcMeetingCheckinTable();
-          showToast(`Restored ${appState.members.length} Members! Syncing to GitHub...`);
-          // UPLOAD RESTORED 983 MEMBERS STRAIGHT TO GITHUB DATA.JSON
+          showToast(`Restored ${appState.members.length} Members! Pushing to GitHub...`);
           await autoPushToGitHub();
         } catch(err) { alert("Invalid JSON file format"); }
       };
@@ -834,7 +759,7 @@
       event.target.value = "";
     }
 
-    // CLOUD GITHUB SYNC (AES-256 OR RAW)
+    // GITHUB CLOUD ENGINE
     function openCloudConfigModal() {
       const cfg = appState.cloudConfig;
       document.getElementById("cfg-token").value = cfg.token || "";
@@ -857,8 +782,14 @@
       cfg.passphrase = document.getElementById("cfg-passphrase").value.trim();
       localStorage.setItem("GDCDA_CLOUD_CONFIG", JSON.stringify(cfg));
       persistLocal(); closeCloudConfigModal();
-      showToast("Connected! Uploading current members to data.json...");
-      await autoPushToGitHub();
+
+      if (appState.members.length > 0) {
+        showToast("Connected! Uploading members to data.json...");
+        await autoPushToGitHub();
+      } else {
+        showToast("Connected! Pulling from data.json...");
+        await pullFromGitHubVault();
+      }
     }
 
     async function pullFromGitHubVault() {
@@ -869,11 +800,18 @@
 
       try {
         const url = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${cfg.path}?ref=${cfg.branch || 'main'}&t=${Date.now()}`;
-        const res = await fetch(url, { headers: { "Authorization": `token ${cfg.token}`, "Accept": "application/vnd.github.v3+json" } });
-        if (!res.ok) throw new Error("Could not find data.json");
+        const res = await fetch(url, {
+          headers: {
+            "Authorization": `Bearer ${cfg.token}`,
+            "Accept": "application/vnd.github.v3+json"
+          },
+          cache: "no-store"
+        });
+
+        if (!res.ok) throw new Error("GitHub error: " + res.status);
 
         const data = await res.json();
-        const contentStr = decodeURIComponent(escape(atob(data.content)));
+        const contentStr = safeBase64Decode(data.content);
 
         let parsedData = null;
         if (cfg.passphrase) {
@@ -885,7 +823,7 @@
 
         if (Array.isArray(parsedData) && parsedData.length > 0) {
           appState.members = parsedData;
-        } else if (parsedData.members && Array.isArray(parsedData.members) && parsedData.members.length > 0) {
+        } else if (parsedData.members && Array.isArray(parsedData.members)) {
           appState.members = parsedData.members;
           if (parsedData.vouchers) appState.vouchers = parsedData.vouchers;
           if (parsedData.meetings) appState.meetings = parsedData.meetings;
@@ -897,8 +835,9 @@
         renderMembersTable();
         renderEcFeesTable();
         st.textContent = "Synced Live";
-        showToast(`Loaded ${appState.members.length} Members from data.json!`);
+        showToast(`Loaded ${appState.members.length} Members from GitHub!`);
       } catch(err) {
+        console.error("Pull Failed:", err);
         st.textContent = "Sync Offline";
       }
     }
@@ -929,12 +868,11 @@
 
         const url = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${cfg.path}`;
         
-        // Step 1: Always get the fresh, non-cached latest SHA from GitHub
         let sha = null;
         try {
           const getRes = await fetch(`${url}?ref=${cfg.branch || 'main'}&t=${Date.now()}`, {
             headers: { 
-              "Authorization": `token ${cfg.token}`, 
+              "Authorization": `Bearer ${cfg.token}`, 
               "Accept": "application/vnd.github.v3+json" 
             },
             cache: "no-store"
@@ -945,36 +883,35 @@
           }
         } catch(e) {}
 
-        // Step 2: PUT request with exact SHA
         let putRes = await fetch(url, {
           method: "PUT",
           headers: { 
-            "Authorization": `token ${cfg.token}`, 
+            "Authorization": `Bearer ${cfg.token}`, 
             "Content-Type": "application/json",
             "Accept": "application/vnd.github.v3+json"
           },
           body: JSON.stringify({ 
             message: `Vault Sync [${new Date().toLocaleString()}]`, 
-            content: btoa(unescape(encodeURIComponent(fileContent))), 
+            content: safeBase64Encode(fileContent), 
             sha: sha, 
             branch: cfg.branch || "main" 
           })
         });
 
-        // Step 3: Handle 409 Conflict Auto-Retry
+        // 409 Conflict Handling: Re-fetch latest SHA and retry
         if (putRes.status === 409) {
           const refetch = await fetch(`${url}?ref=${cfg.branch || 'main'}&t=${Date.now()}`, {
-            headers: { "Authorization": `token ${cfg.token}`, "Accept": "application/vnd.github.v3+json" },
+            headers: { "Authorization": `Bearer ${cfg.token}`, "Accept": "application/vnd.github.v3+json" },
             cache: "no-store"
           });
           if (refetch.ok) {
             const refData = await refetch.json();
             putRes = await fetch(url, {
               method: "PUT",
-              headers: { "Authorization": `token ${cfg.token}`, "Content-Type": "application/json" },
+              headers: { "Authorization": `Bearer ${cfg.token}`, "Content-Type": "application/json" },
               body: JSON.stringify({
-                message: `Vault Sync (Resolved Conflict) [${new Date().toLocaleString()}]`,
-                content: btoa(unescape(encodeURIComponent(fileContent))),
+                message: `Vault Sync (Resolved) [${new Date().toLocaleString()}]`,
+                content: safeBase64Encode(fileContent),
                 sha: refData.sha,
                 branch: cfg.branch || "main"
               })
@@ -984,11 +921,13 @@
 
         if (putRes.ok) {
           st.textContent = "Synced Live";
-          showToast(`Successfully Pushed ${appState.members.length} Members to data.json!`);
+          showToast(`Successfully Pushed ${appState.members.length} Members!`);
         } else {
+          console.error("PUT Failed:", putRes.status, await putRes.text());
           st.textContent = "Sync Offline";
         }
       } catch(e) {
+        console.error("Push Exception:", e);
         st.textContent = "Sync Offline";
       }
     }
@@ -1040,7 +979,7 @@
       }
     }
 
-    // EC AUTH GATE
+    // EC AUTH
     function openEcPortalAuth() {
       document.getElementById("ec-password-input").value = "";
       document.getElementById("ec-login-error").classList.add("hidden");
@@ -1061,15 +1000,43 @@
     }
     function openEcPortalModal() {
       document.getElementById("ec-portal-modal").classList.remove("hidden");
-      renderEcFeesTable(); renderEcMeetingCheckinTable(); renderEcTeamTable(); lucide.createIcons();
+      renderEcFeesTable(); renderEcTeamTable(); lucide.createIcons();
     }
     function lockAndCloseEcPortal() { appState.isEcAuthenticated = false; document.getElementById("ec-portal-modal").classList.add("hidden"); }
     function switchEcTab(tab) {
-      ["fees", "meetings", "creator", "team"].forEach(t => {
+      ["fees", "creator", "team"].forEach(t => {
         document.getElementById(`tab-btn-${t}`).className = (t === tab) ? "py-3 px-3 text-teal-400 border-b-2 border-teal-500 font-semibold flex items-center gap-1.5 cursor-pointer whitespace-nowrap" : "py-3 px-3 text-slate-400 hover:text-slate-200 border-b-2 border-transparent flex items-center gap-1.5 cursor-pointer whitespace-nowrap";
         document.getElementById(`ec-tab-${t}`).classList.toggle("hidden", t !== tab);
       });
       lucide.createIcons();
+    }
+
+    function openAddMemberModal() {
+      document.getElementById("mem-in-id").value = "";
+      document.getElementById("mem-in-firm").value = "";
+      document.getElementById("mem-in-owner").value = "";
+      document.getElementById("mem-in-mobile").value = "";
+      document.getElementById("mem-in-address").value = "";
+      document.getElementById("mem-in-fee-status").value = "PAID";
+      document.getElementById("mem-in-fee-amt").value = "251";
+      document.getElementById("member-form-modal").classList.remove("hidden");
+    }
+    function closeMemberFormModal() { document.getElementById("member-form-modal").classList.add("hidden"); }
+    function saveMemberRecord() {
+      const firm = document.getElementById("mem-in-firm").value.trim().toUpperCase();
+      if (!firm) { alert("Enter Firm Name"); return; }
+      const owner = document.getElementById("mem-in-owner").value.trim();
+      const area = document.getElementById("mem-in-area").value;
+      const mobile = document.getElementById("mem-in-mobile").value.trim();
+      const address = document.getElementById("mem-in-address").value.trim() || `${area}, Maharashtra`;
+      const feeStatus = document.getElementById("mem-in-fee-status").value;
+      const feeAmt = parseFloat(document.getElementById("mem-in-fee-amt").value) || 0;
+
+      appState.members.unshift({
+        id: `mem-gdcda-${Date.now()}`, firm, owner, area, mobile, address, feeStatus, feeAmount: feeAmt
+      });
+      persistLocal(); closeMemberFormModal(); updateStats(); renderMembersTable(); renderEcFeesTable();
+      showToast(`Saved: ${firm}`); autoPushToGitHub();
     }
 
     function downloadJsonBackup() {
@@ -1079,8 +1046,8 @@
       document.body.appendChild(a); a.click(); a.remove();
     }
     function exportAttendanceCSV() {
-      let csv = "ID,Firm,Status\n";
-      appState.members.forEach(m => { csv += `"${m.id}","${m.firm}","ABSENT"\n`; });
+      let csv = "ID,Firm,Area,Mobile,Status\n";
+      appState.members.forEach(m => { csv += `"${m.id}","${m.firm}","${m.area}","${m.mobile}","ABSENT"\n`; });
       const a = document.createElement("a");
       a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv" })); a.download = `Attendance.csv`;
       document.body.appendChild(a); a.click(); a.remove();
