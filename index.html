@@ -213,7 +213,7 @@
           </div>
           <div>
             <h3 class="text-sm font-bold text-white">GitHub Cloud Vault Live Sync Config</h3>
-            <p class="text-xs text-slate-400">Raw & AES-256 Encrypted Dual Engine</p>
+            <p class="text-xs text-slate-400">Direct GitHub REST API Engine</p>
           </div>
         </div>
         <button onclick="closeCloudConfigModal()" class="text-slate-400 hover:text-white cursor-pointer"><i data-lucide="x" class="w-5 h-5"></i></button>
@@ -885,26 +885,23 @@
     ];
 
     async function initSystem() {
-      const local = localStorage.getItem("GDCDA_APP_VAULT");
-      let hasLocalData = false;
-      if (local) {
-        try {
-          const parsed = JSON.parse(local);
-          if (parsed.members && parsed.members.length > 0) {
-            appState.members = parsed.members;
-            hasLocalData = true;
-          }
-          if (parsed.vouchers && parsed.vouchers.length > 0) appState.vouchers = parsed.vouchers;
-          if (parsed.meetings && parsed.meetings.length > 0) appState.meetings = parsed.meetings;
-          if (parsed.activeMeetingId) appState.activeMeetingId = parsed.activeMeetingId;
-          if (parsed.ecMembers && parsed.ecMembers.length > 0) appState.ecMembers = parsed.ecMembers;
-          if (parsed.cloudConfig) appState.cloudConfig = Object.assign(appState.cloudConfig, parsed.cloudConfig);
-        } catch(e) {}
-      }
-
+      // 1. Load saved cloud credentials
       const savedCfg = localStorage.getItem("GDCDA_CLOUD_CONFIG");
       if (savedCfg) {
         try { appState.cloudConfig = Object.assign(appState.cloudConfig, JSON.parse(savedCfg)); } catch(e){}
+      }
+
+      // 2. Load cached local vault temporarily for instant UI display
+      const local = localStorage.getItem("GDCDA_APP_VAULT");
+      if (local) {
+        try {
+          const parsed = JSON.parse(local);
+          if (parsed.members) appState.members = parsed.members;
+          if (parsed.vouchers) appState.vouchers = parsed.vouchers;
+          if (parsed.meetings) appState.meetings = parsed.meetings;
+          if (parsed.activeMeetingId) appState.activeMeetingId = parsed.activeMeetingId;
+          if (parsed.ecMembers) appState.ecMembers = parsed.ecMembers;
+        } catch(e) {}
       }
 
       updateStats();
@@ -918,12 +915,9 @@
       updatePayerDropdown();
       lucide.createIcons();
 
+      // 3. ALWAYS PULL FRESH CLOUD DATA DIRECTLY FROM GITHUB DATA.JSON
       if (appState.cloudConfig.token) {
-        if (!hasLocalData) {
-          await pullFromGitHubVault();
-        } else {
-          document.getElementById("sync-status-text").textContent = "Synced Live";
-        }
+        await pullFromGitHubVault();
       }
     }
 
@@ -1487,7 +1481,7 @@
       ps.innerHTML = appState.ecMembers.map(m => `<option value="${escapeHtml(m.name)} - ${escapeHtml(m.role)}">${escapeHtml(m.name)} - ${escapeHtml(m.role)}</option>`).join("");
     }
 
-    // GITHUB CLOUD SYNC ENGINE
+    // GITHUB CLOUD SYNC ENGINE (ALWAYS DIRECT GITHUB SYNC)
     function openCloudConfigModal() {
       const cfg = appState.cloudConfig;
       document.getElementById("cfg-token").value = cfg.token || "";
@@ -1516,13 +1510,8 @@
       persistLocal();
       closeCloudConfigModal();
 
-      if (appState.members.length > 0) {
-        showToast("Connected! Pushing 983 members to data.json...");
-        await autoPushToGitHub();
-      } else {
-        showToast("Connected! Pulling from data.json...");
-        await pullFromGitHubVault();
-      }
+      showToast("Connecting to GitHub data.json...");
+      await pullFromGitHubVault();
     }
 
     async function pullFromGitHubVault() {
@@ -1665,7 +1654,11 @@
             putBody.sha = refData.sha;
             putRes = await fetch(url, {
               method: "PUT",
-              headers: { "Authorization": `Bearer ${cfg.token}`, "Content-Type": "application/json" },
+              headers: {
+                "Authorization": `Bearer ${cfg.token}`,
+                "Content-Type": "application/json",
+                "Accept": "application/vnd.github.v3+json"
+              },
               body: JSON.stringify(putBody)
             });
           }
