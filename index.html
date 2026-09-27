@@ -1437,19 +1437,31 @@
         const contentStr = safeBase64Decode(data.content);
 
         let parsedData = null;
-        if (cfg.passphrase) {
-          try {
-            parsedData = await decryptPayload(contentStr, cfg.passphrase);
-          } catch(e) {
-            parsedData = JSON.parse(contentStr);
+        let isEncryptedPayload = false;
+
+        // Check whether remote file is already encrypted or raw JSON
+        try {
+          const testObj = JSON.parse(contentStr);
+          if (testObj && testObj.encrypted === true && testObj.payload) {
+            isEncryptedPayload = true;
+          } else {
+            parsedData = testObj;
           }
-        } else {
-          parsedData = JSON.parse(contentStr);
+        } catch(e) {
+          isEncryptedPayload = true;
+        }
+
+        // Decrypt only if it is actually encrypted
+        if (isEncryptedPayload) {
+          if (!cfg.passphrase) {
+            throw new Error("Passphrase required for encrypted vault!");
+          }
+          parsedData = await decryptPayload(contentStr, cfg.passphrase);
         }
 
         if (Array.isArray(parsedData) && parsedData.length > 0) {
           appState.members = parsedData;
-        } else if (parsedData.members && Array.isArray(parsedData.members) && parsedData.members.length > 0) {
+        } else if (parsedData && parsedData.members && Array.isArray(parsedData.members)) {
           appState.members = parsedData.members;
           if (parsedData.vouchers) appState.vouchers = parsedData.vouchers;
           if (parsedData.meetings) appState.meetings = parsedData.meetings;
