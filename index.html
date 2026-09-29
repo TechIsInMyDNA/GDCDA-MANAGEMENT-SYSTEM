@@ -1734,106 +1734,82 @@
       }
     }
 
-    async function autoPushToGitHub() {
+    async function pullFromGitHubVault() {
       const cfg = appState.cloudConfig;
       if (!cfg.token) {
         document.getElementById("sync-status-text").textContent = "Sync Offline";
         return;
       }
-
       const st = document.getElementById("sync-status-text");
-      st.textContent = "Pushing Live...";
+      st.textContent = "Pulling Live...";
 
       try {
-        const rawVault = {
-          members: appState.members,
-          vouchers: appState.vouchers,
-          meetings: appState.meetings,
-          activeMeetingId: appState.activeMeetingId,
-          ecMembers: appState.ecMembers,
-          timestamp: new Date().toISOString()
-        };
+        const cleanToken = cfg.token.trim();
+        const cleanPath = (cfg.path || 'data.json').trim();
+        const cleanOwner = (cfg.owner || 'techisinmydna').trim();
+        const cleanRepo = (cfg.repo || 'GDCDA-MANAGEMENT-SYSTEM').trim();
+        const cleanBranch = (cfg.branch || 'main').trim();
 
-        let fileContent = "";
-        if (cfg.passphrase && cfg.passphrase.trim() !== "") {
-          fileContent = await encryptPayload(rawVault, cfg.passphrase.trim());
-        } else {
-          fileContent = JSON.stringify(rawVault, null, 2);
-        }
-
-        const encodedContent = await safeBase64Encode(fileContent);
-        const url = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${cfg.path}`;
-
-        // Step 1: Force fetch live fresh SHA from GitHub
-        let sha = null;
-        try {
-          const getRes = await fetch(`${url}?ref=${cfg.branch || 'main'}&_nocache=${Date.now()}`, {
-            headers: { 
-              "Authorization": `Bearer ${cfg.token}`, 
-              "Accept": "application/vnd.github.v3+json" 
-            },
-            cache: "no-store"
-          });
-          if (getRes.ok) {
-            const fileData = await getRes.json();
-            sha = fileData.sha;
-          }
-        } catch (e) {
-          console.warn("SHA lookup skip:", e);
-        }
-
-        // Step 2: Push commit with live SHA
-        const putBody = {
-          message: `Vault Sync [${new Date().toLocaleString()}]`,
-          content: encodedContent,
-          branch: cfg.branch || "main"
-        };
-        if (sha) putBody.sha = sha;
-
-        let putRes = await fetch(url, {
-          method: "PUT",
+        const url = `https://api.github.com/repos/${cleanOwner}/${cleanRepo}/contents/${cleanPath}?ref=${cleanBranch}&_nocache=${Date.now()}`;
+        
+        const res = await fetch(url, {
           headers: {
-            "Authorization": `Bearer ${cfg.token}`,
-            "Content-Type": "application/json",
+            "Authorization": `Bearer ${cleanToken}`,
             "Accept": "application/vnd.github.v3+json"
           },
-          body: JSON.stringify(putBody)
+          cache: "no-store"
         });
 
-        // Step 3: Handle 409 Conflict Retry
-        if (putRes.status === 409) {
-          const refetch = await fetch(`${url}?ref=${cfg.branch || 'main'}&_nocache=${Date.now()}`, {
-            headers: { "Authorization": `Bearer ${cfg.token}`, "Accept": "application/vnd.github.v3+json" },
-            cache: "no-store"
-          });
-          if (refetch.ok) {
-            const refData = await refetch.json();
-            putBody.sha = refData.sha;
-            putRes = await fetch(url, {
-              method: "PUT",
-              headers: {
-                "Authorization": `Bearer ${cfg.token}`,
-                "Content-Type": "application/json",
-                "Accept": "application/vnd.github.v3+json"
-              },
-              body: JSON.stringify(putBody)
-            });
-          }
+        if (!res.ok) {
+          const errStatus = res.status;
+          throw new Error(`GitHub HTTP ${errStatus}`);
         }
 
-        if (putRes.ok) {
-          st.textContent = "Synced Live";
-          showToast(`Encrypted & Pushed ${appState.members.length} Members!`);
-        } else {
-          const errDetail = await putRes.text();
-          console.error("GitHub Commit Failed:", putRes.status, errDetail);
-          st.textContent = "Sync Offline";
-          showToast(`Sync Failed: HTTP ${putRes.status}`);
+        const data = await res.json();
+        const contentStr = safeBase64Decode(data.content);
+
+        let parsedData = null;
+        let isEncrypted = false;
+        try {
+          const test = JSON.parse(contentStr);
+          if (test && test.encrypted === true && test.payload) {
+            isEncrypted = true;
+          } else {
+            parsedData = test;
+          }
+        } catch(e) {
+          isEncrypted = true;
         }
-      } catch (err) {
-        console.error("AutoPush Exception:", err);
+
+        if (isEncrypted) {
+          if (!cfg.passphrase || cfg.passphrase.trim() === "") {
+            throw new Error("Master Passphrase Required!");
+          }
+          parsedData = await decryptPayload(contentStr, cfg.passphrase.trim());
+        }
+
+        if (Array.isArray(parsedData) && parsedData.length > 0) {
+          appState.members = parsedData;
+        } else if (parsedData && parsedData.members && Array.isArray(parsedData.members)) {
+          appState.members = parsedData.members;
+          if (parsedData.vouchers) appState.vouchers = parsedData.vouchers;
+          if (parsedData.meetings) appState.meetings = parsedData.meetings;
+          if (parsedData.ecMembers) appState.ecMembers = parsedData.ecMembers;
+        }
+
+        persistLocal();
+        updateStats();
+        renderMembersTable();
+        renderEcFeesTable();
+        renderEcMeetingCheckinTable();
+        renderVouchersLedger();
+        renderSettlementsLedger();
+        st.textContent = "Synced Live";
+        showToast(`Loaded ${appState.members.length} Members from GitHub!`);
+      } catch(err) {
+        console.error("Pull Failed:", err);
         st.textContent = "Sync Offline";
-        showToast("Encryption or Network Error");
+        showToast(`Error: ${err.message || 'Decryption/Network Failed'}`);
       }
     }
 
