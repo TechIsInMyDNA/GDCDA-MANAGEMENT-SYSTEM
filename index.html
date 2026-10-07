@@ -38,9 +38,9 @@
 
       <!-- Action Toolbar -->
       <div class="flex items-center gap-2">
-        <!-- NEW: FDA Audit Vault Quick Access Button -->
+        <!-- FDA Audit Vault Action -->
         <button onclick="openFdaAuditModal()" title="FDA Regulatory Cross-Audit" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-rose-500/40 bg-rose-500/10 hover:bg-rose-500/20 text-xs font-semibold text-rose-300 transition cursor-pointer shadow-sm">
-          <i data-lucide="shield-alert" class="w-3.5 h-3.5 text-rose-400"></i>
+          <i data-lucide="shield-check" class="w-3.5 h-3.5 text-rose-400"></i>
           <span>FDA Audit Vault</span>
         </button>
 
@@ -231,7 +231,7 @@
     </div>
   </main>
 
-  <!-- FDA REGULATORY AUDIT VAULT MODAL (ZERO RISK INTACT ADDITION) -->
+  <!-- FDA REGULATORY AUDIT VAULT MODAL -->
   <div id="fdaAuditModal" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 hidden flex items-center justify-center p-2 sm:p-4">
     <div class="bg-slate-900 w-full max-w-6xl h-[92vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-slate-800">
       
@@ -244,7 +244,7 @@
           <div>
             <h2 class="text-base font-bold text-slate-100 flex items-center gap-2">
               FDA Regulatory Cross-Audit (Gondia District)
-              <span id="fdaSyncStatus" class="text-[10px] bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded border border-emerald-500/30">Live Reconciliation</span>
+              <span id="fdaSyncStatus" class="text-[10px] bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded border border-emerald-500/30">Accurate Taluka Sync</span>
             </h2>
             <p class="text-xs text-slate-400">Authentic FDA Maharashtra Portal vs GDCDA Directory Reconciliation</p>
           </div>
@@ -257,34 +257,34 @@
         <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 shadow-sm">
           <div class="text-[11px] font-semibold text-slate-400 uppercase">Total FDA Licenses</div>
           <div id="fdaStatTotal" class="text-xl font-black text-slate-100">0</div>
-          <div class="text-[10px] text-slate-500">District snapshot count</div>
+          <div class="text-[10px] text-slate-500">Government Portal Master</div>
         </div>
         <div class="bg-slate-950 p-3 rounded-xl border border-emerald-500/30 bg-emerald-950/10 shadow-sm">
-          <div class="text-[11px] font-semibold text-emerald-400 uppercase">Verified Active</div>
+          <div class="text-[11px] font-semibold text-emerald-400 uppercase">Verified Active Members</div>
           <div id="fdaStatMatched" class="text-xl font-black text-emerald-400">0</div>
-          <div class="text-[10px] text-emerald-500/70">FDA & GDCDA Match</div>
+          <div class="text-[10px] text-emerald-500/70">FDA & Association Matched</div>
         </div>
         <div class="bg-slate-950 p-3 rounded-xl border border-rose-500/30 bg-rose-950/10 shadow-sm">
-          <div class="text-[11px] font-semibold text-rose-400 uppercase">Non-Member / Bogus Suspect</div>
+          <div class="text-[11px] font-semibold text-rose-400 uppercase">Non-Member / Bogus Flags</div>
           <div id="fdaStatUnmatched" class="text-xl font-black text-rose-400">0</div>
-          <div class="text-[10px] text-rose-400/70">FDA par active, GDCDA me missing</div>
+          <div class="text-[10px] text-rose-400/70">FDA par hain par GDCDA me nahi</div>
         </div>
         <div class="bg-slate-950 p-3 rounded-xl border border-amber-500/30 bg-amber-950/10 shadow-sm">
-          <div class="text-[11px] font-semibold text-amber-400 uppercase">GDCDA Missing in FDA</div>
+          <div class="text-[11px] font-semibold text-amber-400 uppercase">Missing in FDA Master</div>
           <div id="fdaStatGhost" class="text-xl font-black text-amber-400">0</div>
-          <div class="text-[10px] text-amber-400/70">License expired / Surrendered</div>
+          <div class="text-[10px] text-amber-400/70">GDCDA member but no active FDA DL</div>
         </div>
       </div>
 
       <!-- Filter Controls & Actions -->
       <div class="p-3 bg-slate-900 border-b border-slate-800 flex flex-wrap gap-2 justify-between items-center">
         <div class="flex items-center gap-2">
-          <button onclick="setFdaAuditTab('unmatched')" id="tabBtnUnmatched" class="px-3 py-1.5 text-xs font-bold rounded-lg bg-teal-600 text-white transition cursor-pointer">Non-Member Flags (0)</button>
-          <button onclick="setFdaAuditTab('matched')" id="tabBtnMatched" class="px-3 py-1.5 text-xs font-bold rounded-lg bg-slate-800 text-slate-400 hover:text-white transition cursor-pointer">Matched Active (0)</button>
+          <button onclick="setFdaAuditTab('matched')" id="tabBtnMatched" class="px-3 py-1.5 text-xs font-bold rounded-lg bg-teal-600 text-white transition cursor-pointer">Verified Active (0)</button>
+          <button onclick="setFdaAuditTab('unmatched')" id="tabBtnUnmatched" class="px-3 py-1.5 text-xs font-bold rounded-lg bg-slate-800 text-slate-400 hover:text-white transition cursor-pointer">Non-Member Flags (0)</button>
           <button onclick="setFdaAuditTab('ghost')" id="tabBtnGhost" class="px-3 py-1.5 text-xs font-bold rounded-lg bg-slate-800 text-slate-400 hover:text-white transition cursor-pointer">Missing in FDA (0)</button>
         </div>
         <div class="flex items-center gap-2">
-          <input type="text" id="fdaSearchFilter" oninput="renderFdaAuditList()" placeholder="Filter shop, pharmacist, taluka..." class="border border-slate-800 bg-slate-950 text-slate-100 rounded-lg px-3 py-1 text-xs w-64 focus:outline-none focus:border-teal-500">
+          <input type="text" id="fdaSearchFilter" oninput="renderFdaAuditList()" placeholder="Filter firm, pharmacist, DL, taluka..." class="border border-slate-800 bg-slate-950 text-slate-100 rounded-lg px-3 py-1 text-xs w-64 focus:outline-none focus:border-teal-500">
           <button onclick="exportFdaAuditReport()" class="px-3 py-1 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-xs font-medium flex items-center gap-1.5 shadow cursor-pointer">
             <i data-lucide="file-spreadsheet" class="w-3.5 h-3.5 text-teal-400"></i> Export CSV
           </button>
@@ -301,12 +301,12 @@
                 <th class="p-2.5">Firm Name</th>
                 <th class="p-2.5">Address</th>
                 <th class="p-2.5">Registered Pharmacist (FDA)</th>
-                <th class="p-2.5 text-right">Audit Status</th>
+                <th class="p-2.5 text-right">Reconcile / Actions</th>
               </tr>
             </thead>
             <tbody id="fdaAuditRows" class="divide-y divide-slate-800/60 text-slate-300">
               <tr>
-                <td colspan="5" class="p-8 text-center text-slate-400">Click to load and reconcile audit records...</td>
+                <td colspan="5" class="p-8 text-center text-slate-400">Loading FDA Master Audit...</td>
               </tr>
             </tbody>
           </table>
@@ -1032,20 +1032,17 @@
     let activeFeeMemberId = null;
     let selectedMemberIds = new Set();
 
-    // EXPENSE CREATOR INITIALIZED AS BLANK / FRESH
     const todayStr = new Date().toISOString().split("T")[0];
     let activeVoucherRows = [
       { desc: "", date: todayStr, mode: "UPI", ref: "", amt: 0 }
     ];
 
     async function initSystem() {
-      // 1. Load saved cloud credentials
       const savedCfg = localStorage.getItem("GDCDA_CLOUD_CONFIG");
       if (savedCfg) {
         try { appState.cloudConfig = Object.assign(appState.cloudConfig, JSON.parse(savedCfg)); } catch(e){}
       }
 
-      // 2. Load cached local vault temporarily for instant UI display
       const local = localStorage.getItem("GDCDA_APP_VAULT");
       if (local) {
         try {
@@ -1058,7 +1055,6 @@
         } catch(e) {}
       }
 
-      // Initial clean setup for Expense Creator inputs
       const vDateEl = document.getElementById("v-date");
       if (vDateEl) vDateEl.value = todayStr;
       const vPurpEl = document.getElementById("v-purpose");
@@ -1075,7 +1071,6 @@
       updatePayerDropdown();
       lucide.createIcons();
 
-      // 3. ALWAYS PULL FRESH CLOUD DATA DIRECTLY FROM GITHUB DATA.JSON
       if (appState.cloudConfig.token) {
         await pullFromGitHubVault();
       }
@@ -1107,7 +1102,7 @@
       document.getElementById("stat-attendance").textContent = `${present} Present`;
     }
 
-    // MAIN ROSTER RENDER (SHOWS TAHASIL AND ADDRESS TOGETHER)
+    // MAIN ROSTER RENDER
     function renderMembersTable() {
       const tbody = document.getElementById("members-table-body");
       const s = (document.getElementById("member-search").value || "").toLowerCase();
@@ -1310,7 +1305,6 @@
       autoPushToGitHub();
     }
 
-    // SAVED VOUCHERS TABLE
     function renderVouchersLedger() {
       const tbody = document.getElementById("vouchers-ledger-body");
       if (!tbody) return;
@@ -1373,7 +1367,7 @@
       autoPushToGitHub();
     }
 
-    // UNIFIED FULL-DETAIL A6 VOUCHER PRINT ENGINE
+    // A6 PRINT ENGINE
     function printCurrentA6Voucher() {
       executeA6PrintStream({
         payer: document.getElementById("v-payer").value,
@@ -1401,107 +1395,23 @@
           <meta charset="utf-8">
           <title>GDCDA Reimbursement Voucher</title>
           <style>
-            @page { 
-              size: 105mm 148mm portrait; 
-              margin: 3.5mm; 
-            }
+            @page { size: 105mm 148mm portrait; margin: 3.5mm; }
             * { box-sizing: border-box; }
-            body { 
-              font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; 
-              font-size: 8pt; 
-              color: #000; 
-              margin: 0; 
-              padding: 0; 
-              background: #fff;
-            }
-            .box { 
-              border: 1.5pt solid #000; 
-              padding: 3.5mm; 
-              height: 140mm; 
-              display: flex; 
-              flex-direction: column; 
-              justify-content: space-between; 
-            }
-            .header { 
-              text-align: center; 
-              border-bottom: 1.2pt solid #000; 
-              padding-bottom: 1.5mm; 
-              margin-bottom: 2mm; 
-            }
-            .header h1 { 
-              font-size: 10pt; 
-              margin: 0; 
-              font-weight: 800; 
-              letter-spacing: 0.3px; 
-              text-transform: uppercase; 
-            }
-            .header p { 
-              font-size: 6.5pt; 
-              margin: 1mm 0 0; 
-              font-weight: bold; 
-              letter-spacing: 0.2px; 
-            }
-            .meta { 
-              font-size: 7.5pt; 
-              margin-bottom: 2mm; 
-              line-height: 1.35; 
-              border-bottom: 0.5pt dashed #444; 
-              padding-bottom: 1.5mm; 
-            }
-            table { 
-              width: 100%; 
-              border-collapse: collapse; 
-              font-size: 7pt; 
-            }
-            th { 
-              border-top: 1pt solid #000; 
-              border-bottom: 1pt solid #000; 
-              padding: 2.5pt 2pt; 
-              text-align: left; 
-              text-transform: uppercase; 
-              font-size: 6.5pt; 
-            }
-            td { 
-              border-bottom: 0.5pt dashed #aaa; 
-              padding: 2.5pt 2pt; 
-              vertical-align: top; 
-            }
-            .item-desc { 
-              font-weight: 600; 
-              color: #000; 
-              text-transform: uppercase; 
-            }
-            .item-subtext { 
-              font-size: 6.2pt; 
-              color: #333; 
-              margin-top: 0.5mm; 
-              font-family: monospace; 
-            }
-            .total-row td { 
-              border-top: 1.2pt solid #000; 
-              border-bottom: 1.2pt solid #000; 
-              font-weight: 800; 
-              font-size: 8pt; 
-              padding: 3pt 2pt; 
-            }
-            .in-words { 
-              font-size: 6.8pt; 
-              margin-top: 2mm; 
-              font-weight: 600; 
-            }
-            .signatures { 
-              display: flex; 
-              justify-content: space-between; 
-              font-size: 6.8pt; 
-              font-weight: bold; 
-              border-top: 0.5pt solid #000; 
-              padding-top: 4mm; 
-              margin-top: 2mm; 
-            }
-            .sig-block { 
-              text-align: center; 
-              width: 30%; 
-            }
+            body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; font-size: 8pt; color: #000; margin: 0; padding: 0; background: #fff; }
+            .box { border: 1.5pt solid #000; padding: 3.5mm; height: 140mm; display: flex; flex-direction: column; justify-content: space-between; }
+            .header { text-align: center; border-bottom: 1.2pt solid #000; padding-bottom: 1.5mm; margin-bottom: 2mm; }
+            .header h1 { font-size: 10pt; margin: 0; font-weight: 800; letter-spacing: 0.3px; text-transform: uppercase; }
+            .header p { font-size: 6.5pt; margin: 1mm 0 0; font-weight: bold; letter-spacing: 0.2px; }
+            .meta { font-size: 7.5pt; margin-bottom: 2mm; line-height: 1.35; border-bottom: 0.5pt dashed #444; padding-bottom: 1.5mm; }
+            table { width: 100%; border-collapse: collapse; font-size: 7pt; }
+            th { border-top: 1pt solid #000; border-bottom: 1pt solid #000; padding: 2.5pt 2pt; text-align: left; text-transform: uppercase; font-size: 6.5pt; }
+            td { border-bottom: 0.5pt dashed #aaa; padding: 2.5pt 2pt; vertical-align: top; }
+            .item-desc { font-weight: 600; color: #000; text-transform: uppercase; }
+            .item-subtext { font-size: 6.2pt; color: #333; margin-top: 0.5mm; font-family: monospace; }
+            .total-row td { border-top: 1.2pt solid #000; border-bottom: 1.2pt solid #000; font-weight: 800; font-size: 8pt; padding: 3pt 2pt; }
+            .in-words { font-size: 6.8pt; margin-top: 2mm; font-weight: 600; }
+            .signatures { display: flex; justify-content: space-between; font-size: 6.8pt; font-weight: bold; border-top: 0.5pt solid #000; padding-top: 4mm; margin-top: 2mm; }
+            .sig-block { text-align: center; width: 30%; }
           </style>
         </head>
         <body>
@@ -1511,12 +1421,10 @@
                 <h1>GONDIA DISTRICT CHEMIST & DRUGGIST ASSOCIATION</h1>
                 <p>AFFILIATED TO MSCDA | EXPENSE REIMBURSEMENT VOUCHER</p>
               </div>
-              
               <div class="meta">
                 <div><strong>Claimant:</strong> ${escapeHtml(voucher.payer || "")}</div>
                 <div><strong>Date:</strong> ${voucher.date || ""} | <strong>Purpose:</strong> ${escapeHtml(voucher.purpose || "")}</div>
               </div>
-
               <table>
                 <thead>
                   <tr>
@@ -1550,10 +1458,8 @@
                   </tr>
                 </tbody>
               </table>
-
               <div class="in-words"><strong>In Words:</strong> ${numInWords}</div>
             </div>
-
             <div class="signatures">
               <div class="sig-block">Claimant Signature</div>
               <div class="sig-block">Treasurer Signature</div>
@@ -1588,7 +1494,7 @@
       if (!tbody) return;
       const s = (document.getElementById("ec-checkin-search").value || "").toLowerCase();
       const am = appState.meetings.find(m => m.id === appState.activeMeetingId) || appState.meetings[0];
-      const att = (am && am.attendance) ? activeMeetingAttendance(am) : {};
+      const att = (am && am.attendance) ? am.attendance : {};
       tbody.innerHTML = appState.members.filter(m => !s || (m.firm && m.firm.toLowerCase().includes(s))).map(m => `
         <tr class="hover:bg-slate-900 transition">
           <td class="py-2 px-3 font-semibold text-slate-200">${escapeHtml(m.firm)}</td>
@@ -1598,10 +1504,6 @@
           <td class="py-2 px-3 text-right"><button onclick="toggleEcCheckin('${m.id}')" class="px-3 py-1 rounded text-[11px] font-bold cursor-pointer ${att[m.id] === 'PRESENT' ? 'bg-rose-500/10 text-rose-400' : 'bg-emerald-500/10 text-emerald-400'}">${att[m.id] === 'PRESENT' ? 'Mark Absent' : 'Mark Present'}</button></td>
         </tr>
       `).join("");
-    }
-
-    function activeMeetingAttendance(m) {
-      return (m && m.attendance) ? m.attendance : {};
     }
 
     function toggleEcCheckin(memberId) {
@@ -1792,10 +1694,7 @@
           cache: "no-store"
         });
 
-        if (!res.ok) {
-          const errStatus = res.status;
-          throw new Error(`GitHub HTTP ${errStatus}`);
-        }
+        if (!res.ok) throw new Error(`GitHub HTTP ${res.status}`);
 
         const data = await res.json();
         const contentStr = safeBase64Decode(data.content);
@@ -1804,19 +1703,12 @@
         let isEncrypted = false;
         try {
           const test = JSON.parse(contentStr);
-          if (test && test.encrypted === true && test.payload) {
-            isEncrypted = true;
-          } else {
-            parsedData = test;
-          }
-        } catch(e) {
-          isEncrypted = true;
-        }
+          if (test && test.encrypted === true && test.payload) isEncrypted = true;
+          else parsedData = test;
+        } catch(e) { isEncrypted = true; }
 
         if (isEncrypted) {
-          if (!cfg.passphrase || cfg.passphrase.trim() === "") {
-            throw new Error("Master Passphrase Required!");
-          }
+          if (!cfg.passphrase || cfg.passphrase.trim() === "") throw new Error("Master Passphrase Required!");
           parsedData = await decryptPayload(contentStr, cfg.passphrase.trim());
         }
 
@@ -2229,7 +2121,7 @@
     }
 
     // ==========================================
-    // FDA REGULATORY CROSS-AUDIT ENGINE (BUILT-IN)
+    // PRECISE FDA REGULATORY CROSS-AUDIT ENGINE
     // ==========================================
     let fdaMasterList = [];
     let fdaAuditResults = {
@@ -2237,14 +2129,35 @@
       unmatched: [],
       ghost: []
     };
-    let activeFdaTab = 'unmatched';
+    let activeFdaTab = 'matched';
 
-    function normalizeFirmName(str) {
+    // Standardized normalizers
+    function normalizeTalukaName(t) {
+      if (!t) return "";
+      const s = t.toLowerCase().replace(/[^a-z]/g, "");
+      if (s.includes("gondia")) return "gondia";
+      if (s.includes("tirora") || s.includes("tiroda")) return "tirora";
+      if (s.includes("amgaon")) return "amgaon";
+      if (s.includes("goregaon")) return "goregaon";
+      if (s.includes("deori")) return "deori";
+      if (s.includes("salekasa")) return "salekasa";
+      if (s.includes("morgaon") || s.includes("arjuni") && !s.includes("sadak")) return "morgaon arjuni";
+      if (s.includes("sadak")) return "sadak arjuni";
+      return s;
+    }
+
+    function cleanAlphaNumeric(str) {
       if (!str) return "";
+      return str.toLowerCase().replace(/[^a-z0-9]/g, "").trim();
+    }
+
+    // Core business token extractor without losing distinguishing words
+    function getBusinessTokens(str) {
+      if (!str) return [];
       return str.toLowerCase()
-        .replace(/\b(m\/s|ms|shree|shri|medical|medicals|chemist|chemists|druggist|druggists|agency|agencies|pharma|pharmacy|store|stores|hospital|pvt|ltd)\b/gi, "")
-        .replace(/[^a-z0-9]/gi, "")
-        .trim();
+        .replace(/[^a-z0-9\s]/g, " ")
+        .split(/\s+/)
+        .filter(w => w.length > 1 && !["and", "the", "for", "m", "s", "dr"].includes(w));
     }
 
     async function openFdaAuditModal() {
@@ -2254,11 +2167,11 @@
       if (fdaMasterList.length === 0) {
         try {
           const res = await fetch("FDA_Gondia_Master_Full.json?v=" + Date.now());
-          if (!res.ok) throw new Error("FDA_Gondia_Master_Full.json file repository root me nahi mili.");
+          if (!res.ok) throw new Error("FDA_Gondia_Master_Full.json not found in repository root.");
           fdaMasterList = await res.json();
           executeRegulatoryReconciliation();
         } catch (e) {
-          alert("Notice: " + e.message + "\nEnsure file repository me uploaded hai.");
+          alert("Notice: " + e.message + "\nEnsure FDA_Gondia_Master_Full.json is pushed to GitHub.");
         }
       } else {
         executeRegulatoryReconciliation();
@@ -2278,39 +2191,78 @@
 
       const matchedMemberIds = new Set();
 
-      // Match FDA records against GDCDA members
+      // Loop through each official FDA record
       fdaMasterList.forEach(fda => {
-        const fdaNorm = normalizeFirmName(fda.firm);
+        const fdaTalukaNorm = normalizeTalukaName(fda.taluka);
+        const fdaFirmClean = cleanAlphaNumeric(fda.firm);
+        const fdaTokens = getBusinessTokens(fda.firm);
+        const fdaPharmaClean = cleanAlphaNumeric(fda.pharmacist);
 
-        const match = gdcdaMembers.find(m => {
-          const gdcdaNorm = normalizeFirmName(m.firm);
-          if (!fdaNorm || !gdcdaNorm) return false;
-          return fdaNorm === gdcdaNorm || fdaNorm.includes(gdcdaNorm) || gdcdaNorm.includes(fdaNorm);
-        });
+        let bestMatch = null;
 
-        if (match) {
-          matchedMemberIds.add(match.id);
-          fdaAuditResults.matched.push({ fda, gdcda: match });
+        // 1. Strict Taluka Match First
+        for (const m of gdcdaMembers) {
+          const memTalukaNorm = normalizeTalukaName(m.area);
+          if (fdaTalukaNorm && memTalukaNorm && fdaTalukaNorm !== memTalukaNorm) {
+            continue; // Taluka isolation prevents wrong cross-city matches
+          }
+
+          const memFirmClean = cleanAlphaNumeric(m.firm);
+
+          // Direct Exact Clean Match
+          if (fdaFirmClean && memFirmClean && fdaFirmClean === memFirmClean) {
+            bestMatch = m;
+            break;
+          }
+
+          // Exact DL No Match
+          if (m.dlNo && fda.license && cleanAlphaNumeric(m.dlNo) === cleanAlphaNumeric(fda.license)) {
+            bestMatch = m;
+            break;
+          }
+
+          // High-precision Token Jaccard Match (handles spacing/slight differences)
+          const memTokens = getBusinessTokens(m.firm);
+          if (fdaTokens.length > 0 && memTokens.length > 0) {
+            const common = fdaTokens.filter(t => memTokens.includes(t));
+            const tokenScore = common.length / Math.max(fdaTokens.length, memTokens.length);
+            if (tokenScore >= 0.70) {
+              bestMatch = m;
+              break;
+            }
+          }
+
+          // Fallback Registered Pharmacist Name Match
+          const memPharmaClean = cleanAlphaNumeric(m.pharmacist || "");
+          if (fdaPharmaClean && memPharmaClean && memPharmaClean.length > 6 && fdaPharmaClean.includes(memPharmaClean)) {
+            bestMatch = m;
+            break;
+          }
+        }
+
+        if (bestMatch) {
+          matchedMemberIds.add(bestMatch.id);
+          fdaAuditResults.matched.push({ fda, gdcda: bestMatch });
         } else {
           fdaAuditResults.unmatched.push({ fda });
         }
       });
 
-      // Find GDCDA members missing in FDA
+      // Calculate accurately which GDCDA members are missing in FDA Active master
       gdcdaMembers.forEach(m => {
         if (!matchedMemberIds.has(m.id)) {
           fdaAuditResults.ghost.push({ gdcda: m });
         }
       });
 
-      // Update counters
+      // Update UI Counters
       document.getElementById("fdaStatTotal").textContent = fdaMasterList.length;
       document.getElementById("fdaStatMatched").textContent = fdaAuditResults.matched.length;
       document.getElementById("fdaStatUnmatched").textContent = fdaAuditResults.unmatched.length;
       document.getElementById("fdaStatGhost").textContent = fdaAuditResults.ghost.length;
 
+      document.getElementById("tabBtnMatched").textContent = `Verified Active (${fdaAuditResults.matched.length})`;
       document.getElementById("tabBtnUnmatched").textContent = `Non-Member Flags (${fdaAuditResults.unmatched.length})`;
-      document.getElementById("tabBtnMatched").textContent = `Matched Active (${fdaAuditResults.matched.length})`;
       document.getElementById("tabBtnGhost").textContent = `Missing in FDA (${fdaAuditResults.ghost.length})`;
 
       renderFdaAuditList();
@@ -2318,7 +2270,7 @@
 
     function setFdaAuditTab(tab) {
       activeFdaTab = tab;
-      ['unmatched', 'matched', 'ghost'].forEach(t => {
+      ['matched', 'unmatched', 'ghost'].forEach(t => {
         const btn = document.getElementById("tabBtn" + t.charAt(0).toUpperCase() + t.slice(1));
         if (!btn) return;
         if (t === tab) {
@@ -2341,12 +2293,12 @@
 
       const filtered = list.filter(item => {
         const t = item.fda || item.gdcda;
-        const str = `${t.firm || ''} ${t.pharmacist || t.owner || ''} ${t.taluka || t.area || ''} ${t.address || ''}`.toLowerCase();
+        const str = `${t.firm || ''} ${t.pharmacist || t.owner || ''} ${t.taluka || t.area || ''} ${t.address || ''} ${t.license || t.dlNo || ''}`.toLowerCase();
         return str.includes(q);
       });
 
       if (filtered.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="5" class="p-8 text-center text-slate-500 font-medium">No audit discrepancy found matching filter.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="5" class="p-8 text-center text-slate-500 font-medium">No records found matching current query.</td></tr>`;
         return;
       }
 
@@ -2354,21 +2306,40 @@
         if (activeFdaTab === 'matched') {
           return `
             <tr class="hover:bg-slate-900/60 transition">
-              <td class="p-2.5 font-semibold text-slate-300">${escapeHtml(item.fda.taluka || '-')}<br><span class="text-[10px] text-slate-500 font-mono">${escapeHtml(item.fda.license || '')}</span></td>
-              <td class="p-2.5 font-bold text-slate-100">${escapeHtml(item.fda.firm)}<br><span class="text-[10px] text-teal-400 font-medium">GDCDA: ${escapeHtml(item.gdcda.firm)}</span></td>
+              <td class="p-2.5 font-semibold text-slate-300">
+                ${escapeHtml(item.fda.taluka || '-')}<br>
+                <span class="text-[10px] text-teal-400 font-mono">${escapeHtml(item.fda.license || '')}</span>
+              </td>
+              <td class="p-2.5 font-bold text-slate-100">
+                ${escapeHtml(item.fda.firm)}<br>
+                <span class="text-[10px] text-slate-400 font-medium">GDCDA Roster: ${escapeHtml(item.gdcda.firm)}</span>
+              </td>
               <td class="p-2.5 text-slate-400 text-[11px] max-w-xs truncate">${escapeHtml(item.fda.address || '')}</td>
               <td class="p-2.5 text-slate-300 text-[11px]">${escapeHtml(item.fda.pharmacist || '-')}</td>
-              <td class="p-2.5 text-right"><span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">🟢 Verified Active</span></td>
+              <td class="p-2.5 text-right space-y-1">
+                <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 inline-block">🟢 Verified Active</span>
+                <br>
+                <button onclick="syncFdaDetailsToMember('${item.gdcda.id}', '${escapeHtml(item.fda.firm)}', '${escapeHtml(item.fda.address)}', '${escapeHtml(item.fda.pharmacist)}', '${escapeHtml(item.fda.license)}')" class="text-[10px] text-teal-400 hover:text-teal-300 underline cursor-pointer">
+                  Sync FDA Details
+                </button>
+              </td>
             </tr>`;
         } else if (activeFdaTab === 'unmatched') {
           return `
             <tr class="hover:bg-slate-900/60 transition">
-              <td class="p-2.5 font-semibold text-slate-300">${escapeHtml(item.fda.taluka || '-')}<br><span class="text-[10px] text-slate-500 font-mono">${escapeHtml(item.fda.license || '')}</span></td>
+              <td class="p-2.5 font-semibold text-slate-300">
+                ${escapeHtml(item.fda.taluka || '-')}<br>
+                <span class="text-[10px] text-rose-400 font-mono">${escapeHtml(item.fda.license || '')}</span>
+              </td>
               <td class="p-2.5 font-bold text-rose-400">${escapeHtml(item.fda.firm)}</td>
               <td class="p-2.5 text-slate-400 text-[11px] max-w-xs truncate">${escapeHtml(item.fda.address || '')}</td>
               <td class="p-2.5 text-slate-300 text-[11px]">${escapeHtml(item.fda.pharmacist || '-')}</td>
-              <td class="p-2.5 text-right">
-                <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-500/10 text-rose-400 border border-rose-500/20">🔴 Non-Member Suspect</span>
+              <td class="p-2.5 text-right space-y-1">
+                <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-500/10 text-rose-400 border border-rose-500/20 inline-block">🔴 Non-Member Suspect</span>
+                <br>
+                <button onclick="importFdaShopAsMember('${escapeHtml(item.fda.firm)}', '${escapeHtml(item.fda.taluka)}', '${escapeHtml(item.fda.address)}', '${escapeHtml(item.fda.pharmacist)}', '${escapeHtml(item.fda.license)}')" class="text-[10px] text-teal-400 hover:text-teal-300 underline cursor-pointer">
+                  + Import to GDCDA
+                </button>
               </td>
             </tr>`;
         } else {
@@ -2378,10 +2349,67 @@
               <td class="p-2.5 font-bold text-amber-400">${escapeHtml(item.gdcda.firm)}</td>
               <td class="p-2.5 text-slate-400 text-[11px] max-w-xs truncate">${escapeHtml(item.gdcda.address || '-')}</td>
               <td class="p-2.5 text-slate-300 text-[11px]">${escapeHtml(item.gdcda.pharmacist || item.gdcda.owner || '-')}</td>
-              <td class="p-2.5 text-right"><span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20">🟡 Missing in FDA Active</span></td>
+              <td class="p-2.5 text-right">
+                <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20">🟡 Missing in FDA Active</span>
+              </td>
             </tr>`;
         }
       }).join("");
+    }
+
+    // 1-Click Action: Sync Government Standard Data to GDCDA Member Record
+    function syncFdaDetailsToMember(memId, fdaFirm, fdaAddr, fdaPharma, fdaLic) {
+      const m = appState.members.find(x => x.id === memId);
+      if (!m) return;
+      if (confirm(`Do you want to update ${m.firm} with official FDA records?\n\nFDA Firm: ${fdaFirm}\nFDA Address: ${fdaAddr}`)) {
+        m.firm = fdaFirm.toUpperCase();
+        if (fdaAddr) m.address = fdaAddr;
+        if (fdaLic && !m.dlNo) m.dlNo = fdaLic;
+        
+        // Extract pharmacist name
+        const cleanPhName = fdaPharma.split(',')[0].trim();
+        if (cleanPhName) {
+          m.pharmacist = cleanPhName;
+          if (!m.pharmacists || m.pharmacists.length === 0) m.pharmacists = [cleanPhName];
+        }
+
+        persistLocal();
+        updateStats();
+        renderMembersTable();
+        executeRegulatoryReconciliation();
+        showToast(`Reconciled & Synchronized: ${m.firm}`);
+        autoPushToGitHub();
+      }
+    }
+
+    // 1-Click Action: Import Authentic Store Directly as GDCDA Member
+    function importFdaShopAsMember(fdaFirm, fdaTaluka, fdaAddr, fdaPharma, fdaLic) {
+      const cleanPhName = fdaPharma.split(',')[0].trim();
+      const newMember = {
+        id: `mem-gdcda-${Date.now()}`,
+        firm: fdaFirm.toUpperCase(),
+        owner: "",
+        pharmacist: cleanPhName,
+        pharmacists: cleanPhName ? [cleanPhName] : [],
+        dlNo: fdaLic,
+        dlExpiry: "",
+        fssaiNo: "",
+        fssaiExpiry: "",
+        mobile: "",
+        phone: "",
+        area: fdaTaluka || "Gondia",
+        address: fdaAddr || `${fdaTaluka}, Maharashtra`,
+        feeStatus: "PENDING",
+        feeAmount: 251
+      };
+
+      appState.members.unshift(newMember);
+      persistLocal();
+      updateStats();
+      renderMembersTable();
+      executeRegulatoryReconciliation();
+      showToast(`Imported ${fdaFirm} to GDCDA Directory!`);
+      autoPushToGitHub();
     }
 
     function exportFdaAuditReport() {
@@ -2390,10 +2418,10 @@
       else if (activeFdaTab === 'unmatched') list = fdaAuditResults.unmatched;
       else list = fdaAuditResults.ghost;
 
-      let csv = "Taluka,Firm Name,Address,Pharmacist,Audit Status\n";
+      let csv = "Taluka,Firm Name,Address,Pharmacist,License_Category,Audit Status\n";
       list.forEach(i => {
         const t = i.fda || i.gdcda;
-        csv += `"${t.taluka || t.area || ''}","${(t.firm || '').replace(/"/g, '""')}","${(t.address || '').replace(/"/g, '""')}","${(t.pharmacist || t.owner || '').replace(/"/g, '""')}","${activeFdaTab}"\n`;
+        csv += `"${t.taluka || t.area || ''}","${(t.firm || '').replace(/"/g, '""')}","${(t.address || '').replace(/"/g, '""')}","${(t.pharmacist || t.owner || '').replace(/"/g, '""')}","${(t.license || t.dlNo || '').replace(/"/g, '""')}","${activeFdaTab}"\n`;
       });
 
       const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
