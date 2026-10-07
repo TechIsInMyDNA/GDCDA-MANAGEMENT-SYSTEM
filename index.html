@@ -38,6 +38,12 @@
 
       <!-- Action Toolbar -->
       <div class="flex items-center gap-2">
+        <!-- NEW: FDA Audit Vault Quick Access Button -->
+        <button onclick="openFdaAuditModal()" title="FDA Regulatory Cross-Audit" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-rose-500/40 bg-rose-500/10 hover:bg-rose-500/20 text-xs font-semibold text-rose-300 transition cursor-pointer shadow-sm">
+          <i data-lucide="shield-alert" class="w-3.5 h-3.5 text-rose-400"></i>
+          <span>FDA Audit Vault</span>
+        </button>
+
         <button onclick="openCloudConfigModal()" title="Live Sync Config (Alt+S)" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-800 bg-slate-900 hover:bg-slate-800 text-xs text-slate-300 transition cursor-pointer">
           <i data-lucide="cloud" class="w-3.5 h-3.5 text-teal-400" id="sync-gear-icon"></i>
           <span id="sync-status-text">Live Sync</span>
@@ -224,6 +230,91 @@
 
     </div>
   </main>
+
+  <!-- FDA REGULATORY AUDIT VAULT MODAL (ZERO RISK INTACT ADDITION) -->
+  <div id="fdaAuditModal" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 hidden flex items-center justify-center p-2 sm:p-4">
+    <div class="bg-slate-900 w-full max-w-6xl h-[92vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden border border-slate-800">
+      
+      <!-- Modal Header -->
+      <div class="p-4 bg-slate-950 text-white flex justify-between items-center border-b border-slate-800">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-rose-600/20 text-rose-400 flex items-center justify-center font-black text-lg border border-rose-500/30">
+            FDA
+          </div>
+          <div>
+            <h2 class="text-base font-bold text-slate-100 flex items-center gap-2">
+              FDA Regulatory Cross-Audit (Gondia District)
+              <span id="fdaSyncStatus" class="text-[10px] bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded border border-emerald-500/30">Live Reconciliation</span>
+            </h2>
+            <p class="text-xs text-slate-400">Authentic FDA Maharashtra Portal vs GDCDA Directory Reconciliation</p>
+          </div>
+        </div>
+        <button onclick="closeFdaAuditModal()" class="text-slate-400 hover:text-white p-1 text-2xl font-bold cursor-pointer">&times;</button>
+      </div>
+
+      <!-- Quick Metrics Bar -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-3 p-4 bg-slate-900/60 border-b border-slate-800">
+        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 shadow-sm">
+          <div class="text-[11px] font-semibold text-slate-400 uppercase">Total FDA Licenses</div>
+          <div id="fdaStatTotal" class="text-xl font-black text-slate-100">0</div>
+          <div class="text-[10px] text-slate-500">District snapshot count</div>
+        </div>
+        <div class="bg-slate-950 p-3 rounded-xl border border-emerald-500/30 bg-emerald-950/10 shadow-sm">
+          <div class="text-[11px] font-semibold text-emerald-400 uppercase">Verified Active</div>
+          <div id="fdaStatMatched" class="text-xl font-black text-emerald-400">0</div>
+          <div class="text-[10px] text-emerald-500/70">FDA & GDCDA Match</div>
+        </div>
+        <div class="bg-slate-950 p-3 rounded-xl border border-rose-500/30 bg-rose-950/10 shadow-sm">
+          <div class="text-[11px] font-semibold text-rose-400 uppercase">Non-Member / Bogus Suspect</div>
+          <div id="fdaStatUnmatched" class="text-xl font-black text-rose-400">0</div>
+          <div class="text-[10px] text-rose-400/70">FDA par active, GDCDA me missing</div>
+        </div>
+        <div class="bg-slate-950 p-3 rounded-xl border border-amber-500/30 bg-amber-950/10 shadow-sm">
+          <div class="text-[11px] font-semibold text-amber-400 uppercase">GDCDA Missing in FDA</div>
+          <div id="fdaStatGhost" class="text-xl font-black text-amber-400">0</div>
+          <div class="text-[10px] text-amber-400/70">License expired / Surrendered</div>
+        </div>
+      </div>
+
+      <!-- Filter Controls & Actions -->
+      <div class="p-3 bg-slate-900 border-b border-slate-800 flex flex-wrap gap-2 justify-between items-center">
+        <div class="flex items-center gap-2">
+          <button onclick="setFdaAuditTab('unmatched')" id="tabBtnUnmatched" class="px-3 py-1.5 text-xs font-bold rounded-lg bg-teal-600 text-white transition cursor-pointer">Non-Member Flags (0)</button>
+          <button onclick="setFdaAuditTab('matched')" id="tabBtnMatched" class="px-3 py-1.5 text-xs font-bold rounded-lg bg-slate-800 text-slate-400 hover:text-white transition cursor-pointer">Matched Active (0)</button>
+          <button onclick="setFdaAuditTab('ghost')" id="tabBtnGhost" class="px-3 py-1.5 text-xs font-bold rounded-lg bg-slate-800 text-slate-400 hover:text-white transition cursor-pointer">Missing in FDA (0)</button>
+        </div>
+        <div class="flex items-center gap-2">
+          <input type="text" id="fdaSearchFilter" oninput="renderFdaAuditList()" placeholder="Filter shop, pharmacist, taluka..." class="border border-slate-800 bg-slate-950 text-slate-100 rounded-lg px-3 py-1 text-xs w-64 focus:outline-none focus:border-teal-500">
+          <button onclick="exportFdaAuditReport()" class="px-3 py-1 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-xs font-medium flex items-center gap-1.5 shadow cursor-pointer">
+            <i data-lucide="file-spreadsheet" class="w-3.5 h-3.5 text-teal-400"></i> Export CSV
+          </button>
+        </div>
+      </div>
+
+      <!-- Audit Results Table -->
+      <div class="flex-1 overflow-y-auto p-4 bg-slate-950/50 custom-scrollbar">
+        <div class="bg-slate-900 rounded-xl border border-slate-800 shadow-sm overflow-hidden">
+          <table class="w-full text-left border-collapse text-xs">
+            <thead class="bg-slate-950 border-b border-slate-800 text-slate-400 uppercase text-[11px] font-semibold sticky top-0 z-10">
+              <tr>
+                <th class="p-2.5">Taluka / Licences</th>
+                <th class="p-2.5">Firm Name</th>
+                <th class="p-2.5">Address</th>
+                <th class="p-2.5">Registered Pharmacist (FDA)</th>
+                <th class="p-2.5 text-right">Audit Status</th>
+              </tr>
+            </thead>
+            <tbody id="fdaAuditRows" class="divide-y divide-slate-800/60 text-slate-300">
+              <tr>
+                <td colspan="5" class="p-8 text-center text-slate-400">Click to load and reconcile audit records...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
 
   <!-- CLOUD CONFIG MODAL -->
   <div id="cloud-config-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md hidden flex items-center justify-center p-4">
@@ -427,7 +518,7 @@
     </div>
   </div>
 
-  <!-- PIN VERIFICATION MODAL (NO PIN DISPLAYED) -->
+  <!-- PIN VERIFICATION MODAL -->
   <div id="pin-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md hidden flex items-center justify-center p-4">
     <div class="w-full max-w-xs bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl p-5 space-y-4">
       <div class="text-center space-y-1">
@@ -617,7 +708,7 @@
           </div>
         </div>
 
-        <!-- TAB 3: EXPENSE CREATOR (NOW BLANK & CLEAN BY DEFAULT) -->
+        <!-- TAB 3: EXPENSE CREATOR -->
         <div id="ec-tab-creator" class="space-y-5 hidden">
           <div class="flex items-center justify-between pb-3 border-b border-slate-800">
             <h3 class="text-sm font-semibold text-white flex items-center gap-2">
@@ -1219,7 +1310,7 @@
       autoPushToGitHub();
     }
 
-    // SAVED VOUCHERS TABLE (WITH PRINT AND DELETE OPTIONS)
+    // SAVED VOUCHERS TABLE
     function renderVouchersLedger() {
       const tbody = document.getElementById("vouchers-ledger-body");
       if (!tbody) return;
@@ -1497,7 +1588,7 @@
       if (!tbody) return;
       const s = (document.getElementById("ec-checkin-search").value || "").toLowerCase();
       const am = appState.meetings.find(m => m.id === appState.activeMeetingId) || appState.meetings[0];
-      const att = (am && am.attendance) ? am.attendance : {};
+      const att = (am && am.attendance) ? activeMeetingAttendance(am) : {};
       tbody.innerHTML = appState.members.filter(m => !s || (m.firm && m.firm.toLowerCase().includes(s))).map(m => `
         <tr class="hover:bg-slate-900 transition">
           <td class="py-2 px-3 font-semibold text-slate-200">${escapeHtml(m.firm)}</td>
@@ -1507,6 +1598,10 @@
           <td class="py-2 px-3 text-right"><button onclick="toggleEcCheckin('${m.id}')" class="px-3 py-1 rounded text-[11px] font-bold cursor-pointer ${att[m.id] === 'PRESENT' ? 'bg-rose-500/10 text-rose-400' : 'bg-emerald-500/10 text-emerald-400'}">${att[m.id] === 'PRESENT' ? 'Mark Absent' : 'Mark Present'}</button></td>
         </tr>
       `).join("");
+    }
+
+    function activeMeetingAttendance(m) {
+      return (m && m.attendance) ? m.attendance : {};
     }
 
     function toggleEcCheckin(memberId) {
@@ -1638,7 +1733,7 @@
       ps.innerHTML = appState.ecMembers.map(m => `<option value="${escapeHtml(m.name)} - ${escapeHtml(m.role)}">${escapeHtml(m.name)} - ${escapeHtml(m.role)}</option>`).join("");
     }
 
-    // GITHUB CLOUD SYNC ENGINE (ALWAYS DIRECT GITHUB SYNC)
+    // GITHUB CLOUD SYNC ENGINE
     function openCloudConfigModal() {
       const cfg = appState.cloudConfig;
       document.getElementById("cfg-token").value = cfg.token || "";
@@ -1669,69 +1764,6 @@
 
       showToast("Connecting to GitHub data.json...");
       await pullFromGitHubVault();
-    }
-
-    async function pullFromGitHubVault() {
-      const cfg = appState.cloudConfig;
-      if (!cfg.token) return;
-      const st = document.getElementById("sync-status-text");
-      st.textContent = "Pulling Live...";
-
-      try {
-        const url = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${cfg.path}?ref=${cfg.branch || 'main'}&_nocache=${Date.now()}`;
-        const res = await fetch(url, {
-          headers: {
-            "Authorization": `Bearer ${cfg.token}`,
-            "Accept": "application/vnd.github.v3+json"
-          },
-          cache: "no-store"
-        });
-
-        if (!res.ok) throw new Error("GitHub error: " + res.status);
-
-        const data = await res.json();
-        const contentStr = safeBase64Decode(data.content);
-
-        let parsedData = null;
-        let isEncrypted = false;
-        try {
-          const test = JSON.parse(contentStr);
-          if (test && test.encrypted === true && test.payload) {
-            isEncrypted = true;
-          } else {
-            parsedData = test;
-          }
-        } catch(e) {
-          isEncrypted = true;
-        }
-
-        if (isEncrypted) {
-          if (!cfg.passphrase) throw new Error("Passphrase needed for encrypted vault");
-          parsedData = await decryptPayload(contentStr, cfg.passphrase);
-        }
-
-        if (Array.isArray(parsedData) && parsedData.length > 0) {
-          appState.members = parsedData;
-        } else if (parsedData && parsedData.members && Array.isArray(parsedData.members)) {
-          appState.members = parsedData.members;
-          if (parsedData.vouchers) appState.vouchers = parsedData.vouchers;
-          if (parsedData.meetings) appState.meetings = parsedData.meetings;
-          if (parsedData.ecMembers) appState.ecMembers = parsedData.ecMembers;
-        }
-
-        persistLocal();
-        updateStats();
-        renderMembersTable();
-        renderEcFeesTable();
-        renderEcMeetingCheckinTable();
-        renderVouchersLedger();
-        renderSettlementsLedger();
-        st.textContent = "Synced Live";
-        showToast(`Loaded ${appState.members.length} Members from GitHub!`);
-      } catch(err) {
-        console.error("Pull Failed:", err);
-        st.textContent = "Sync Offline";
-      }
     }
 
     async function pullFromGitHubVault() {
@@ -1813,6 +1845,72 @@
       }
     }
 
+    async function autoPushToGitHub() {
+      const cfg = appState.cloudConfig;
+      if (!cfg.token) return;
+
+      const st = document.getElementById("sync-status-text");
+      st.textContent = "Pushing...";
+
+      try {
+        const cleanToken = cfg.token.trim();
+        const cleanPath = (cfg.path || 'data.json').trim();
+        const cleanOwner = (cfg.owner || 'techisinmydna').trim();
+        const cleanRepo = (cfg.repo || 'GDCDA-MANAGEMENT-SYSTEM').trim();
+        const cleanBranch = (cfg.branch || 'main').trim();
+
+        const getUrl = `https://api.github.com/repos/${cleanOwner}/${cleanRepo}/contents/${cleanPath}?ref=${cleanBranch}&_nocache=${Date.now()}`;
+        let sha = "";
+
+        const getRes = await fetch(getUrl, {
+          headers: { "Authorization": `Bearer ${cleanToken}`, "Accept": "application/vnd.github.v3+json" },
+          cache: "no-store"
+        });
+        if (getRes.ok) {
+          const getData = await getRes.json();
+          sha = getData.sha;
+        }
+
+        const dataToPush = {
+          members: appState.members,
+          vouchers: appState.vouchers,
+          meetings: appState.meetings,
+          ecMembers: appState.ecMembers,
+          lastUpdated: new Date().toISOString()
+        };
+
+        let rawPayload = "";
+        if (cfg.passphrase && cfg.passphrase.trim() !== "") {
+          rawPayload = await encryptPayload(dataToPush, cfg.passphrase.trim());
+        } else {
+          rawPayload = JSON.stringify(dataToPush, null, 2);
+        }
+
+        const encodedContent = await safeBase64Encode(rawPayload);
+
+        const putRes = await fetch(getUrl, {
+          method: "PUT",
+          headers: {
+            "Authorization": `Bearer ${cleanToken}`,
+            "Accept": "application/vnd.github.v3+json",
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            message: `Auto-Sync GDCDA Management System [${new Date().toLocaleTimeString()}]`,
+            content: encodedContent,
+            sha: sha || undefined,
+            branch: cleanBranch
+          })
+        });
+
+        if (!putRes.ok) throw new Error("Push HTTP " + putRes.status);
+        st.textContent = "Synced Live";
+      } catch(err) {
+        console.error("AutoPush Failed:", err);
+        st.textContent = "Sync Pending";
+      }
+    }
+
     // WEBCRYPTO AES-256-GCM ENGINE
     async function getDerivedKey(passphrase, salt) {
       const enc = new TextEncoder();
@@ -1883,7 +1981,7 @@
       event.target.value = "";
     }
 
-    // PIN VERIFICATION (PROTECTED ACTIONS - NEVER PRINTS PIN ON SCREEN)
+    // PIN VERIFICATION
     function triggerProtectedAction(type, id) {
       pendingAction = { type, id };
       document.getElementById("pin-input").value = "";
@@ -2125,6 +2223,183 @@
       const a = document.createElement("a");
       a.href = URL.createObjectURL(blob);
       a.download = `Attendance.csv`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    }
+
+    // ==========================================
+    // FDA REGULATORY CROSS-AUDIT ENGINE (BUILT-IN)
+    // ==========================================
+    let fdaMasterList = [];
+    let fdaAuditResults = {
+      matched: [],
+      unmatched: [],
+      ghost: []
+    };
+    let activeFdaTab = 'unmatched';
+
+    function normalizeFirmName(str) {
+      if (!str) return "";
+      return str.toLowerCase()
+        .replace(/\b(m\/s|ms|shree|shri|medical|medicals|chemist|chemists|druggist|druggists|agency|agencies|pharma|pharmacy|store|stores|hospital|pvt|ltd)\b/gi, "")
+        .replace(/[^a-z0-9]/gi, "")
+        .trim();
+    }
+
+    async function openFdaAuditModal() {
+      document.getElementById("fdaAuditModal").classList.remove("hidden");
+      lucide.createIcons();
+
+      if (fdaMasterList.length === 0) {
+        try {
+          const res = await fetch("FDA_Gondia_Master_Full.json?v=" + Date.now());
+          if (!res.ok) throw new Error("FDA_Gondia_Master_Full.json file repository root me nahi mili.");
+          fdaMasterList = await res.json();
+          executeRegulatoryReconciliation();
+        } catch (e) {
+          alert("Notice: " + e.message + "\nEnsure file repository me uploaded hai.");
+        }
+      } else {
+        executeRegulatoryReconciliation();
+      }
+    }
+
+    function closeFdaAuditModal() {
+      document.getElementById("fdaAuditModal").classList.add("hidden");
+    }
+
+    function executeRegulatoryReconciliation() {
+      const gdcdaMembers = appState.members || [];
+
+      fdaAuditResults.matched = [];
+      fdaAuditResults.unmatched = [];
+      fdaAuditResults.ghost = [];
+
+      const matchedMemberIds = new Set();
+
+      // Match FDA records against GDCDA members
+      fdaMasterList.forEach(fda => {
+        const fdaNorm = normalizeFirmName(fda.firm);
+
+        const match = gdcdaMembers.find(m => {
+          const gdcdaNorm = normalizeFirmName(m.firm);
+          if (!fdaNorm || !gdcdaNorm) return false;
+          return fdaNorm === gdcdaNorm || fdaNorm.includes(gdcdaNorm) || gdcdaNorm.includes(fdaNorm);
+        });
+
+        if (match) {
+          matchedMemberIds.add(match.id);
+          fdaAuditResults.matched.push({ fda, gdcda: match });
+        } else {
+          fdaAuditResults.unmatched.push({ fda });
+        }
+      });
+
+      // Find GDCDA members missing in FDA
+      gdcdaMembers.forEach(m => {
+        if (!matchedMemberIds.has(m.id)) {
+          fdaAuditResults.ghost.push({ gdcda: m });
+        }
+      });
+
+      // Update counters
+      document.getElementById("fdaStatTotal").textContent = fdaMasterList.length;
+      document.getElementById("fdaStatMatched").textContent = fdaAuditResults.matched.length;
+      document.getElementById("fdaStatUnmatched").textContent = fdaAuditResults.unmatched.length;
+      document.getElementById("fdaStatGhost").textContent = fdaAuditResults.ghost.length;
+
+      document.getElementById("tabBtnUnmatched").textContent = `Non-Member Flags (${fdaAuditResults.unmatched.length})`;
+      document.getElementById("tabBtnMatched").textContent = `Matched Active (${fdaAuditResults.matched.length})`;
+      document.getElementById("tabBtnGhost").textContent = `Missing in FDA (${fdaAuditResults.ghost.length})`;
+
+      renderFdaAuditList();
+    }
+
+    function setFdaAuditTab(tab) {
+      activeFdaTab = tab;
+      ['unmatched', 'matched', 'ghost'].forEach(t => {
+        const btn = document.getElementById("tabBtn" + t.charAt(0).toUpperCase() + t.slice(1));
+        if (!btn) return;
+        if (t === tab) {
+          btn.className = "px-3 py-1.5 text-xs font-bold rounded-lg bg-teal-600 text-white transition cursor-pointer";
+        } else {
+          btn.className = "px-3 py-1.5 text-xs font-bold rounded-lg bg-slate-800 text-slate-400 hover:text-white transition cursor-pointer";
+        }
+      });
+      renderFdaAuditList();
+    }
+
+    function renderFdaAuditList() {
+      const tbody = document.getElementById("fdaAuditRows");
+      const q = (document.getElementById("fdaSearchFilter")?.value || "").toLowerCase().trim();
+
+      let list = [];
+      if (activeFdaTab === 'matched') list = fdaAuditResults.matched;
+      else if (activeFdaTab === 'unmatched') list = fdaAuditResults.unmatched;
+      else if (activeFdaTab === 'ghost') list = fdaAuditResults.ghost;
+
+      const filtered = list.filter(item => {
+        const t = item.fda || item.gdcda;
+        const str = `${t.firm || ''} ${t.pharmacist || t.owner || ''} ${t.taluka || t.area || ''} ${t.address || ''}`.toLowerCase();
+        return str.includes(q);
+      });
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" class="p-8 text-center text-slate-500 font-medium">No audit discrepancy found matching filter.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = filtered.slice(0, 150).map(item => {
+        if (activeFdaTab === 'matched') {
+          return `
+            <tr class="hover:bg-slate-900/60 transition">
+              <td class="p-2.5 font-semibold text-slate-300">${escapeHtml(item.fda.taluka || '-')}<br><span class="text-[10px] text-slate-500 font-mono">${escapeHtml(item.fda.license || '')}</span></td>
+              <td class="p-2.5 font-bold text-slate-100">${escapeHtml(item.fda.firm)}<br><span class="text-[10px] text-teal-400 font-medium">GDCDA: ${escapeHtml(item.gdcda.firm)}</span></td>
+              <td class="p-2.5 text-slate-400 text-[11px] max-w-xs truncate">${escapeHtml(item.fda.address || '')}</td>
+              <td class="p-2.5 text-slate-300 text-[11px]">${escapeHtml(item.fda.pharmacist || '-')}</td>
+              <td class="p-2.5 text-right"><span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">🟢 Verified Active</span></td>
+            </tr>`;
+        } else if (activeFdaTab === 'unmatched') {
+          return `
+            <tr class="hover:bg-slate-900/60 transition">
+              <td class="p-2.5 font-semibold text-slate-300">${escapeHtml(item.fda.taluka || '-')}<br><span class="text-[10px] text-slate-500 font-mono">${escapeHtml(item.fda.license || '')}</span></td>
+              <td class="p-2.5 font-bold text-rose-400">${escapeHtml(item.fda.firm)}</td>
+              <td class="p-2.5 text-slate-400 text-[11px] max-w-xs truncate">${escapeHtml(item.fda.address || '')}</td>
+              <td class="p-2.5 text-slate-300 text-[11px]">${escapeHtml(item.fda.pharmacist || '-')}</td>
+              <td class="p-2.5 text-right">
+                <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-500/10 text-rose-400 border border-rose-500/20">🔴 Non-Member Suspect</span>
+              </td>
+            </tr>`;
+        } else {
+          return `
+            <tr class="hover:bg-slate-900/60 transition">
+              <td class="p-2.5 font-semibold text-slate-300">${escapeHtml(item.gdcda.area || '-')}</td>
+              <td class="p-2.5 font-bold text-amber-400">${escapeHtml(item.gdcda.firm)}</td>
+              <td class="p-2.5 text-slate-400 text-[11px] max-w-xs truncate">${escapeHtml(item.gdcda.address || '-')}</td>
+              <td class="p-2.5 text-slate-300 text-[11px]">${escapeHtml(item.gdcda.pharmacist || item.gdcda.owner || '-')}</td>
+              <td class="p-2.5 text-right"><span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20">🟡 Missing in FDA Active</span></td>
+            </tr>`;
+        }
+      }).join("");
+    }
+
+    function exportFdaAuditReport() {
+      let list = [];
+      if (activeFdaTab === 'matched') list = fdaAuditResults.matched;
+      else if (activeFdaTab === 'unmatched') list = fdaAuditResults.unmatched;
+      else list = fdaAuditResults.ghost;
+
+      let csv = "Taluka,Firm Name,Address,Pharmacist,Audit Status\n";
+      list.forEach(i => {
+        const t = i.fda || i.gdcda;
+        csv += `"${t.taluka || t.area || ''}","${(t.firm || '').replace(/"/g, '""')}","${(t.address || '').replace(/"/g, '""')}","${(t.pharmacist || t.owner || '').replace(/"/g, '""')}","${activeFdaTab}"\n`;
+      });
+
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = `FDA_Audit_${activeFdaTab}_Report.csv`;
       document.body.appendChild(a);
       a.click();
       a.remove();
