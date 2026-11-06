@@ -38,7 +38,6 @@
 
       <!-- Action Toolbar -->
       <div class="flex items-center gap-2">
-        <!-- FDA Audit Vault Action -->
         <button onclick="openFdaAuditModal()" title="FDA Regulatory Cross-Audit" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-rose-500/40 bg-rose-500/10 hover:bg-rose-500/20 text-xs font-semibold text-rose-300 transition cursor-pointer shadow-sm">
           <i data-lucide="shield-check" class="w-3.5 h-3.5 text-rose-400"></i>
           <span>FDA Audit Vault</span>
@@ -326,7 +325,7 @@
           </div>
           <div>
             <h3 class="text-sm font-bold text-white">GitHub Cloud Vault Live Sync Config</h3>
-            <p class="text-xs text-slate-400">Direct GitHub REST API Engine</p>
+            <p class="text-xs text-slate-400">Direct GitHub Branch Isolation Engine</p>
           </div>
         </div>
         <button onclick="closeCloudConfigModal()" class="text-slate-400 hover:text-white cursor-pointer"><i data-lucide="x" class="w-5 h-5"></i></button>
@@ -353,8 +352,8 @@
             <input type="text" id="cfg-path" value="data.json" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-100 font-mono focus:outline-none focus:border-teal-500">
           </div>
           <div>
-            <label class="block font-medium text-slate-300 mb-1">Branch *</label>
-            <input type="text" id="cfg-branch" value="main" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-100 font-mono focus:outline-none focus:border-teal-500">
+            <label class="block font-medium text-slate-300 mb-1">Data Storage Branch (Zero Deployments) *</label>
+            <input type="text" id="cfg-branch" value="data" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-100 font-mono focus:outline-none focus:border-teal-500" title="Uses isolated 'data' branch so GitHub Pages is never redeployed on sync">
           </div>
         </div>
         <div>
@@ -1023,7 +1022,7 @@
         owner: "techisinmydna",
         repo: "GDCDA-MANAGEMENT-SYSTEM",
         path: "data.json",
-        branch: "main",
+        branch: "data",
         passphrase: ""
       }
     };
@@ -1040,7 +1039,12 @@
     async function initSystem() {
       const savedCfg = localStorage.getItem("GDCDA_CLOUD_CONFIG");
       if (savedCfg) {
-        try { appState.cloudConfig = Object.assign(appState.cloudConfig, JSON.parse(savedCfg)); } catch(e){}
+        try { 
+          appState.cloudConfig = Object.assign(appState.cloudConfig, JSON.parse(savedCfg)); 
+          if (appState.cloudConfig.branch === "main") {
+            appState.cloudConfig.branch = "data";
+          }
+        } catch(e){}
       }
 
       const local = localStorage.getItem("GDCDA_APP_VAULT");
@@ -1635,14 +1639,14 @@
       ps.innerHTML = appState.ecMembers.map(m => `<option value="${escapeHtml(m.name)} - ${escapeHtml(m.role)}">${escapeHtml(m.name)} - ${escapeHtml(m.role)}</option>`).join("");
     }
 
-    // GITHUB CLOUD SYNC ENGINE
+    // GITHUB CLOUD SYNC ENGINE WITH AUTO-BRANCH CREATION (ZERO DEPLOYS)
     function openCloudConfigModal() {
       const cfg = appState.cloudConfig;
       document.getElementById("cfg-token").value = cfg.token || "";
       document.getElementById("cfg-owner").value = cfg.owner || "techisinmydna";
       document.getElementById("cfg-repo").value = cfg.repo || "GDCDA-MANAGEMENT-SYSTEM";
       document.getElementById("cfg-path").value = cfg.path || "data.json";
-      document.getElementById("cfg-branch").value = cfg.branch || "main";
+      document.getElementById("cfg-branch").value = cfg.branch || "data";
       document.getElementById("cfg-passphrase").value = cfg.passphrase || "";
       document.getElementById("cloud-config-modal").classList.remove("hidden");
     }
@@ -1657,15 +1661,52 @@
       cfg.owner = document.getElementById("cfg-owner").value.trim();
       cfg.repo = document.getElementById("cfg-repo").value.trim();
       cfg.path = document.getElementById("cfg-path").value.trim();
-      cfg.branch = document.getElementById("cfg-branch").value.trim();
+      cfg.branch = document.getElementById("cfg-branch").value.trim() || "data";
       cfg.passphrase = document.getElementById("cfg-passphrase").value.trim();
 
       localStorage.setItem("GDCDA_CLOUD_CONFIG", JSON.stringify(cfg));
       persistLocal();
       closeCloudConfigModal();
 
-      showToast("Connecting to GitHub data.json...");
+      showToast("Connecting to GitHub data branch...");
       await pullFromGitHubVault();
+    }
+
+    async function ensureDataBranchExists(token, owner, repo, branch) {
+      if (branch === "main") return;
+      try {
+        const checkUrl = `https://api.github.com/repos/${owner}/${repo}/branches/${branch}`;
+        const checkRes = await fetch(checkUrl, {
+          headers: { "Authorization": `Bearer ${token}`, "Accept": "application/vnd.github.v3+json" }
+        });
+        if (checkRes.ok) return;
+
+        if (checkRes.status === 404) {
+          const mainRefUrl = `https://api.github.com/repos/${owner}/${repo}/git/ref/heads/main`;
+          const mainRefRes = await fetch(mainRefUrl, {
+            headers: { "Authorization": `Bearer ${token}`, "Accept": "application/vnd.github.v3+json" }
+          });
+          if (!mainRefRes.ok) return;
+          const mainRefData = await mainRefRes.json();
+          const mainSha = mainRefData.object.sha;
+
+          await fetch(`https://api.github.com/repos/${owner}/${repo}/git/refs`, {
+            method: "POST",
+            headers: {
+              "Authorization": `Bearer ${token}`,
+              "Accept": "application/vnd.github.v3+json",
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              ref: `refs/heads/${branch}`,
+              sha: mainSha
+            })
+          });
+          console.log(`[Auto-Branch] Created storage branch '${branch}' successfully.`);
+        }
+      } catch(e) {
+        console.warn("Branch check/creation skipped:", e);
+      }
     }
 
     async function pullFromGitHubVault() {
@@ -1682,17 +1723,29 @@
         const cleanPath = (cfg.path || 'data.json').trim();
         const cleanOwner = (cfg.owner || 'techisinmydna').trim();
         const cleanRepo = (cfg.repo || 'GDCDA-MANAGEMENT-SYSTEM').trim();
-        const cleanBranch = (cfg.branch || 'main').trim();
+        let targetBranch = (cfg.branch || 'data').trim();
 
-        const url = `https://api.github.com/repos/${cleanOwner}/${cleanRepo}/contents/${cleanPath}?ref=${cleanBranch}&_nocache=${Date.now()}`;
-        
-        const res = await fetch(url, {
+        await ensureDataBranchExists(cleanToken, cleanOwner, cleanRepo, targetBranch);
+
+        let url = `https://api.github.com/repos/${cleanOwner}/${cleanRepo}/contents/${cleanPath}?ref=${targetBranch}&_nocache=${Date.now()}`;
+        let res = await fetch(url, {
           headers: {
             "Authorization": `Bearer ${cleanToken}`,
             "Accept": "application/vnd.github.v3+json"
           },
           cache: "no-store"
         });
+
+        if (!res.ok && res.status === 404 && targetBranch !== "main") {
+          const fallbackUrl = `https://api.github.com/repos/${cleanOwner}/${cleanRepo}/contents/${cleanPath}?ref=main&_nocache=${Date.now()}`;
+          res = await fetch(fallbackUrl, {
+            headers: {
+              "Authorization": `Bearer ${cleanToken}`,
+              "Accept": "application/vnd.github.v3+json"
+            },
+            cache: "no-store"
+          });
+        }
 
         if (!res.ok) throw new Error(`GitHub HTTP ${res.status}`);
 
@@ -1749,9 +1802,11 @@
         const cleanPath = (cfg.path || 'data.json').trim();
         const cleanOwner = (cfg.owner || 'techisinmydna').trim();
         const cleanRepo = (cfg.repo || 'GDCDA-MANAGEMENT-SYSTEM').trim();
-        const cleanBranch = (cfg.branch || 'main').trim();
+        const targetBranch = (cfg.branch || 'data').trim();
 
-        const getUrl = `https://api.github.com/repos/${cleanOwner}/${cleanRepo}/contents/${cleanPath}?ref=${cleanBranch}&_nocache=${Date.now()}`;
+        await ensureDataBranchExists(cleanToken, cleanOwner, cleanRepo, targetBranch);
+
+        const getUrl = `https://api.github.com/repos/${cleanOwner}/${cleanRepo}/contents/${cleanPath}?ref=${targetBranch}&_nocache=${Date.now()}`;
         let sha = "";
 
         const getRes = await fetch(getUrl, {
@@ -1788,10 +1843,10 @@
             "Content-Type": "application/json"
           },
           body: JSON.stringify({
-            message: `Auto-Sync GDCDA Management System [${new Date().toLocaleTimeString()}]`,
+            message: `Cloud Data Sync [${targetBranch}] [${new Date().toLocaleTimeString()}]`,
             content: encodedContent,
             sha: sha || undefined,
-            branch: cleanBranch
+            branch: targetBranch
           })
         });
 
@@ -2131,7 +2186,6 @@
     };
     let activeFdaTab = 'matched';
 
-    // Standardized normalizers
     function normalizeTalukaName(t) {
       if (!t) return "";
       const s = t.toLowerCase().replace(/[^a-z]/g, "");
@@ -2151,7 +2205,6 @@
       return str.toLowerCase().replace(/[^a-z0-9]/g, "").trim();
     }
 
-    // Core business token extractor without losing distinguishing words
     function getBusinessTokens(str) {
       if (!str) return [];
       return str.toLowerCase()
@@ -2191,7 +2244,6 @@
 
       const matchedMemberIds = new Set();
 
-      // Loop through each official FDA record
       fdaMasterList.forEach(fda => {
         const fdaTalukaNorm = normalizeTalukaName(fda.taluka);
         const fdaFirmClean = cleanAlphaNumeric(fda.firm);
@@ -2200,28 +2252,24 @@
 
         let bestMatch = null;
 
-        // 1. Strict Taluka Match First
         for (const m of gdcdaMembers) {
           const memTalukaNorm = normalizeTalukaName(m.area);
           if (fdaTalukaNorm && memTalukaNorm && fdaTalukaNorm !== memTalukaNorm) {
-            continue; // Taluka isolation prevents wrong cross-city matches
+            continue;
           }
 
           const memFirmClean = cleanAlphaNumeric(m.firm);
 
-          // Direct Exact Clean Match
           if (fdaFirmClean && memFirmClean && fdaFirmClean === memFirmClean) {
             bestMatch = m;
             break;
           }
 
-          // Exact DL No Match
           if (m.dlNo && fda.license && cleanAlphaNumeric(m.dlNo) === cleanAlphaNumeric(fda.license)) {
             bestMatch = m;
             break;
           }
 
-          // High-precision Token Jaccard Match (handles spacing/slight differences)
           const memTokens = getBusinessTokens(m.firm);
           if (fdaTokens.length > 0 && memTokens.length > 0) {
             const common = fdaTokens.filter(t => memTokens.includes(t));
@@ -2232,7 +2280,6 @@
             }
           }
 
-          // Fallback Registered Pharmacist Name Match
           const memPharmaClean = cleanAlphaNumeric(m.pharmacist || "");
           if (fdaPharmaClean && memPharmaClean && memPharmaClean.length > 6 && fdaPharmaClean.includes(memPharmaClean)) {
             bestMatch = m;
@@ -2248,14 +2295,12 @@
         }
       });
 
-      // Calculate accurately which GDCDA members are missing in FDA Active master
       gdcdaMembers.forEach(m => {
         if (!matchedMemberIds.has(m.id)) {
           fdaAuditResults.ghost.push({ gdcda: m });
         }
       });
 
-      // Update UI Counters
       document.getElementById("fdaStatTotal").textContent = fdaMasterList.length;
       document.getElementById("fdaStatMatched").textContent = fdaAuditResults.matched.length;
       document.getElementById("fdaStatUnmatched").textContent = fdaAuditResults.unmatched.length;
@@ -2357,7 +2402,6 @@
       }).join("");
     }
 
-    // 1-Click Action: Sync Government Standard Data to GDCDA Member Record
     function syncFdaDetailsToMember(memId, fdaFirm, fdaAddr, fdaPharma, fdaLic) {
       const m = appState.members.find(x => x.id === memId);
       if (!m) return;
@@ -2366,7 +2410,6 @@
         if (fdaAddr) m.address = fdaAddr;
         if (fdaLic && !m.dlNo) m.dlNo = fdaLic;
         
-        // Extract pharmacist name
         const cleanPhName = fdaPharma.split(',')[0].trim();
         if (cleanPhName) {
           m.pharmacist = cleanPhName;
@@ -2382,7 +2425,6 @@
       }
     }
 
-    // 1-Click Action: Import Authentic Store Directly as GDCDA Member
     function importFdaShopAsMember(fdaFirm, fdaTaluka, fdaAddr, fdaPharma, fdaLic) {
       const cleanPhName = fdaPharma.split(',')[0].trim();
       const newMember = {
